@@ -1,0 +1,205 @@
+//
+//  RegisterViewController.m
+//  flashapp
+//
+//  Created by 李 电森 on 11-12-15.
+//  Copyright (c) 2011年 __MyCompanyName__. All rights reserved.
+//
+
+#import "RegisterViewController.h"
+#import "AppDelegate.h"
+#import "StringUtil.h"
+
+@implementation RegisterViewController
+
+@synthesize phoneTextField;
+@synthesize passwordTextField;
+@synthesize getPasswdButton;
+@synthesize scrollView;
+
+
+#pragma mark - init & destroy
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Release any cached data, images, etc that aren't in use.
+}
+
+
+- (void) dealloc
+{
+    [phoneTextField release];
+    [passwordTextField release];
+    [getPasswdButton release];
+    [scrollView release];
+    [super dealloc];
+}
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+    self.navigationItem.title = @"飞速FlashApp";
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"帮助" style:UIBarButtonItemStylePlain target:self action:@selector(showHelp)];
+    
+    self.scrollView.contentSize = CGSizeMake(320, 600);
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+    self.passwordTextField = nil;
+    self.phoneTextField = nil;
+    self.getPasswdButton = nil;
+    self.scrollView = nil;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+
+#pragma mark - bussinuess methods
+
+- (IBAction) getpassword:(id)sender
+{
+    NSString* phone = self.phoneTextField.text;
+    if ( [phone length] == 0 ) {
+        [AppDelegate showAlert:@"请输入手机号！"];
+        return;
+    }
+    
+    if ( ![phone checkPhone] ) {
+        [AppDelegate showAlert:@"请输入正确的手机号！"];
+        return;
+    }
+    
+    if ( client ) return;
+    
+    NSString* userId = [NSString stringWithRandomNum:11];
+    client = [[TwitterClient alloc] initWithTarget:self action:@selector(didGetPassword:obj:)];
+    [client registerAtGziWithUserId:userId phone:phone];
+}
+
+
+- (void) didGetPassword:(TwitterClient*)twitterClient obj:(NSObject*)obj
+{
+    client = nil;
+    
+    if ( [twitterClient hasError] ) {
+        [AppDelegate showAlert:@"抱歉，获取密码失败！"];
+    }
+    else {
+        [AppDelegate showAlert:@"已经将密码发送到您的手机，请查收。"];
+    }
+}
+
+
+- (IBAction) registerPhone
+{
+    NSString* phone = phoneTextField.text;
+    NSString* password = passwordTextField.text;
+    
+    if ( [phone length] == 0 ) {
+        [AppDelegate showAlert:@"请输入手机号"];
+        return;
+    }
+    
+    if ( [password length] == 0 ) {
+        [AppDelegate showAlert:@"请输入密码"];
+        return;
+    }
+    
+    if ( ![phone checkPhone] ) {
+        [AppDelegate showAlert:@"请输入正确的手机号"];
+        return;
+    }
+    
+    if ( client ) return;
+    client = [[TwitterClient alloc] initWithTarget:self action:@selector(didRegisterPhone:obj:)];
+    [client login:phone password:password];
+}
+
+
+- (void) didRegisterPhone:(TwitterClient*)twitterClient obj:(NSObject*)obj
+{
+    client = nil;
+    
+    if ( [twitterClient hasError] ) {
+        [AppDelegate showAlert:@"抱歉，请求服务器错误"];
+        return;
+    }
+    
+    DeviceInfo* deviceInfo = [[DeviceInfo alloc] initWithJSON:obj];
+    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
+    [userDefault setInteger:[deviceInfo.quantity intValue] forKey:@"quantity"];
+    [userDefault setInteger:[deviceInfo.status intValue] forKey:@"status"];
+    [userDefault synchronize];
+
+    [AppDelegate showAlert:[NSString stringWithFormat:@"注册成功，您的容量已经升级为%dM/月。", [deviceInfo.quantity intValue]]];
+    [[AppDelegate getAppDelegate] showDatasaveView];
+}
+
+
+- (IBAction) skip
+{
+    if ( self.navigationController && [[AppDelegate getAppDelegate] currentNavigationController] ) {
+        //在服务界面中安装(DataServiceViewController)
+        [self.navigationController dismissModalViewControllerAnimated:YES];
+    }
+    else {
+        [[AppDelegate getAppDelegate] showDatasaveView];
+    }
+}
+
+
+- (void) showHelp
+{
+    [AppDelegate showHelp];
+}
+
+
+#pragma mark - Textfield delegate
+
+- (BOOL) textFieldShouldBeginEditing:(UITextField *)textField
+{
+    CGPoint offset = self.scrollView.contentOffset;
+    if ( offset.y == 0 ) {
+        self.scrollView.contentOffset = CGPointMake(0, 190);
+    }
+    
+    return YES;
+}
+
+
+
+- (IBAction) passwdFieldChanged
+{
+    if ( [passwordTextField.text length] > 0 ) {
+        self.getPasswdButton.hidden = YES;
+    }
+    else {
+        self.getPasswdButton.hidden = NO;
+    }
+}
+
+
+@end

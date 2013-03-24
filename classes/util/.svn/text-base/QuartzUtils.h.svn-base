@@ -1,0 +1,14 @@
+/*
+ *  QuartzUtils.h
+ *  TwitterFon
+ *
+ *  Created by kaz on 11/17/08.
+ *  Copyright 2008 naan studio. All rights reserved.
+ *
+ */
+
+#include <QuartzCore/QuartzCore.h>
+
+void drawLine( CGContextRef context, CGFloat lineWidth, CGColorRef color, CGPoint start, CGPoint end );
+void drawRoundedRect(CGContextRef context, CGRect rrect);
+void drawRectangle( CGContextRef context, CGFloat lineWidth, CGColorRef lineColor, CGColorRef fillColor, CGRect rect );

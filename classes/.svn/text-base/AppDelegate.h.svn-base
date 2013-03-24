@@ -1,0 +1,50 @@
+//
+//  AppDelegate.h
+//  flashapp
+//
+//  Created by 李 电森 on 11-12-12.
+//  Copyright (c) 2011年 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "UIDevice-Reachability.h"
+
+
+typedef enum {
+    INSTALL_FLAG_UNKNOWN,
+    INSTALL_FLAG_YES,
+    INSTALL_FLAG_NO
+} InstallFlag;
+
+
+typedef enum {
+    STATUS_NEW,
+    STATUS_INSTALLED,
+    STATUS_REGISTERED,
+    STATUS_REGISTERED_ACTIVE
+} accountStatus;
+
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate> {
+    
+    NSObject* dbWriteLock;
+    ConnectionType connType;
+}
+
+@property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) UITabBarController *tabBarController;
+@property (nonatomic, retain) NSObject* dbWriteLock;
+
++ (AppDelegate*)getAppDelegate;
++ (void) showAlert:(NSString*)title message:(NSString*)message;
++ (void) showAlert:(NSString*)message;
+- (void) showDatasaveView;
+- (void) showProfileView;
++ (void) showHelp;
++ (void) installProfile:(NSString*)nextPage;
+
+- (UINavigationController*) currentNavigationController;
+- (UIViewController*) currentViewController;
+
+
+@end

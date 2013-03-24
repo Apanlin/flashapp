@@ -1,0 +1,299 @@
+//
+//  Connection.m
+//  TwitterFon
+//
+//  Created by kaz on 7/25/08.
+//  Copyright 2008 naan studio. All rights reserved.
+//
+
+#import "TFConnection.h"
+#import "JSON.h"
+#import "StringUtil.h"
+
+
+#define NETWORK_TIMEOUT 60.0
+
+
+@implementation TFConnection
+
+@synthesize buf;
+@synthesize statusCode;
+@synthesize requestURL;
+
+NSString *TWITTERFON_FORM_BOUNDARY = @"0194784892923";
+
+- (id)initWithDelegate:(id)aDelegate
+{
+	self = [super init];
+	delegate = aDelegate;
+    statusCode = 0;
+    needAuth = false;
+	return self;
+}
+
+- (void)dealloc
+{
+    [requestURL release];
+	[connection release];
+	[buf release];
+	[super dealloc];
+}
+
+
+/*
+- (void)addAuthHeader:(NSMutableURLRequest*)req
+{
+    if (!needAuth) return;
+	[TFConnection addAuthorizationHeader:req];
+}
+
+
++ (void) addAuthorizationHeader:(NSMutableURLRequest*)req
+{
+    NSString* username = [GuaziAppDelegate getAppDelegate].user.name;
+    NSString* password = [GuaziAppDelegate getAppDelegate].user.password;
+    [self addAuthorizationHeader:req username:username password:password];
+    
+}*/
+
+
++ (void) addAuthorizationHeader:(NSMutableURLRequest*)req username:(NSString*)username password:(NSString*)password
+{
+    NSString* auth = [NSString stringWithFormat:@"%@:%@", username, password];
+    NSString* basicauth = [NSString stringWithFormat:@"Basic %@", [NSString base64encode:auth]];
+    [req setValue:basicauth forHTTPHeaderField:@"Authorization"];
+}
+
+
++ (id) sendSynchronousRequest:(NSString*)aURL 
+                     response:(NSHTTPURLResponse**)response error:(NSError**)error
+{
+    return [TFConnection sendSynchronousRequest:aURL method:@"GET" body:nil
+                                       response:response error:error];
+}
+
+
++ (id) sendSynchronousRequest:(NSString *)aURL body:(NSString*)body
+                     response:(NSHTTPURLResponse **)response error:(NSError **)error
+{
+    int contentLength = [body lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+    NSData* data = [NSData dataWithBytes:[body UTF8String] length:contentLength];
+    return [TFConnection sendSynchronousRequest:aURL method:@"POST" body:data response:response error:error];
+}
+
+
+
++ (id) sendSynchronousRequest:(NSString*)aURL method:(NSString*)method body:(NSData*)body
+                     response:(NSHTTPURLResponse**)response error:(NSError**)error
+{
+    NSString *URL = (NSString*)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)aURL, (CFStringRef)@"%", NULL, kCFStringEncodingUTF8);
+	[URL autorelease];
+    NSLog(@"%@", URL);
+	
+    NSURL* finalURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@source=%@", 
+                                         URL,
+                                         ([URL rangeOfString:@"?"].location != NSNotFound) ? @"&" : @"?" , 
+                                         kOAuthConsumerKey]];
+
+	NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:finalURL
+													   cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+												   timeoutInterval:NETWORK_TIMEOUT];
+    [req setHTTPMethod:method];
+    //[req setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    int contentLength = [body length];
+    [req setValue:[NSString stringWithFormat:@"%d", contentLength] forHTTPHeaderField:@"Content-Length"];
+    
+    if ( [@"POST" compare:method] == NSOrderedSame && body != nil ) {
+        [req setHTTPBody:body];
+        //[req setHTTPBodyStream:[NSInputStream inputStreamWithData:body]];
+    }
+	
+	//[TFConnection addAuthorizationHeader:req username:username password:password];
+	
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+	NSData* data = [NSURLConnection sendSynchronousRequest:req returningResponse:response error:error];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+	
+    NSLog( @"url=%@", URL );
+	NSLog(@"Response: %d, length=%d", (*response).statusCode, [data length] );
+    //NSString* s = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    //NSLog(@"Response text:%@", s);
+	if ( (*response).statusCode == 200 ) {
+		NSString* s = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+        NSLog(@"Response text:%@", s);
+		NSObject* object = [s JSONValue];
+		return object;
+	}
+	else {
+		return nil;
+	}
+}
+
+
+
+- (void)get:(NSString*)aURL
+{
+    [connection release];
+	[buf release];
+    statusCode = 0;
+    
+    self.requestURL = aURL;
+    
+    NSString *URL = (NSString*)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)aURL, (CFStringRef)@"%", NULL, kCFStringEncodingUTF8);
+	
+	[URL autorelease];
+    NSLog(@"%@", URL);
+	
+	NSURL *finalURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@source=%@", 
+											URL,
+											([URL rangeOfString:@"?"].location != NSNotFound) ? @"&" : @"?" , 
+											kOAuthConsumerKey]];
+	NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:finalURL
+                                         cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                     timeoutInterval:NETWORK_TIMEOUT];
+
+    //[self addAuthHeader:req];
+    
+  	buf = [[NSMutableData data] retain];
+	connection = [[NSURLConnection alloc] initWithRequest:req delegate:self];
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
+
+-(void)post:(NSString*)aURL body:(NSString*)body
+{
+    [connection release];
+	[buf release];
+    statusCode = 0;
+    
+    self.requestURL = aURL;
+    
+    NSString *URL = (NSString*)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)aURL, (CFStringRef)@"%", NULL, kCFStringEncodingUTF8);
+    [URL autorelease];
+	NSURL *finalURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@source=%@", 
+											URL,
+											([URL rangeOfString:@"?"].location != NSNotFound) ? @"&" : @"?" , 
+											kOAuthConsumerKey]];
+	NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:finalURL
+                                                       cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                                   timeoutInterval:NETWORK_TIMEOUT];
+    
+    
+    [req setHTTPMethod:@"POST"];
+    [req setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    
+    //[self addAuthHeader:req];
+    
+    int contentLength = [body lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+    [req setValue:[NSString stringWithFormat:@"%d", contentLength] forHTTPHeaderField:@"Content-Length"];
+    [req setHTTPBody:[NSData dataWithBytes:[body UTF8String] length:contentLength]];
+    
+	buf = [[NSMutableData data] retain];
+	connection = [[NSURLConnection alloc] initWithRequest:req delegate:self];
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
+
+-(void)post:(NSString*)aURL data:(NSData*)data
+{
+    [connection release];
+	[buf release];
+    statusCode = 0;
+
+    self.requestURL = aURL;
+
+    NSString *URL = (NSString*)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)aURL, (CFStringRef)@"%", NULL, kCFStringEncodingUTF8);
+    [URL autorelease];
+	NSURL *finalURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@source=%@", 
+											URL,
+											([URL rangeOfString:@"?"].location != NSNotFound) ? @"&" : @"?" , 
+											kOAuthConsumerKey]];
+	NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:finalURL
+                                                       cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                                   timeoutInterval:NETWORK_TIMEOUT];
+    
+
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", TWITTERFON_FORM_BOUNDARY];
+    [req setHTTPMethod:@"POST"];
+    [req setValue:contentType forHTTPHeaderField:@"Content-Type"];
+    [req setValue:[NSString stringWithFormat:@"%d", [data length]] forHTTPHeaderField:@"Content-Length"];
+    [req setHTTPBody:data];
+    //[self addAuthHeader:req];
+    
+	buf = [[NSMutableData data] retain];
+	connection = [[NSURLConnection alloc] initWithRequest:req delegate:self];
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
+
+- (void)cancel
+{
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;    
+    if (connection) {
+        [connection cancel];
+        [connection autorelease];
+        connection = nil;
+    }
+}
+
+- (void)connection:(NSURLConnection *)aConnection didReceiveResponse:(NSURLResponse *)aResponse
+{
+    NSHTTPURLResponse *resp = (NSHTTPURLResponse*)aResponse;
+    if (resp) {
+        statusCode = resp.statusCode;
+        NSLog(@"Response: %d", statusCode);
+    }
+	[buf setLength:0];
+}
+
+- (void)connection:(NSURLConnection *)aConn didReceiveData:(NSData *)data
+{
+	[buf appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)aConn didFailWithError:(NSError *)error
+{
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    
+	[connection autorelease];
+	connection = nil;
+	[buf autorelease];
+	buf = nil;
+    
+    NSString* msg = [NSString stringWithFormat:@"Error: %@ %@",
+                     [error localizedDescription],
+                     [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]];
+    
+    NSLog(@"Connection failed: %@", msg);
+    
+    [self TFConnectionDidFailWithError:error];
+    
+}
+
+
+- (void)TFConnectionDidFailWithError:(NSError*)error
+{
+    // To be implemented in subclass
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)aConn
+{
+    
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    
+    //NSString* s = [[[NSString alloc] initWithData:buf encoding:NSUTF8StringEncoding] autorelease];
+    //NSLog(@"response: %@", s);
+    [self TFConnectionDidFinishLoading];
+
+    [connection autorelease];
+    connection = nil;
+    [buf autorelease];
+    buf = nil;
+}
+
+- (void)TFConnectionDidFinishLoading
+{
+    // To be implemented in subclass
+}
+
+@end

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>1.9</key>
+	<array>
+		<string>alter table STATS_DETAIL add uaid varchar(200)</string>
+		<string>alter table STATS_MONTH_DETAIL add uaid varchar(200)</string>
+		<string>alter table STATS_DETAIL add uastr varchar(200)</string>
+		<string>alter table STATS_MONTH_DETAIL add uastr varchar(200)</string>
+	</array>
+	<key>1.5</key>
+	<array>
+		<string>CREATE  TABLE &quot;main&quot;.&quot;STATS_NETFLOW&quot; (&quot;id&quot; INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , &quot;send_bytes&quot; INTEGER, &quot;receive_bytes&quot; INTEGER, &quot;total&quot; INTEGER, &quot;delta&quot; INTEGER, &quot;last_change_time&quot; DATETIME, &quot;create_time&quot; DATETIME, &quot;tc_day&quot; INTEGER, &quot;tc_used&quot; INTEGER, &quot;type&quot; INTEGER,&quot;desc&quot; VARCHAR)</string>
+		<string>CREATE  TABLE &quot;main&quot;.&quot;STATS_IFDATA&quot; (&quot;id&quot; INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , &quot;if_name&quot; VARCHAR, &quot;receive_bytes&quot; INTEGER, &quot;send_bytes&quot; INTEGER, &quot;last_change_time&quot; INTEGER, &quot;create_time&quot; INTEGER, &quot;total_bytes&quot; INTEGER)</string>
+	</array>
+	<key>1.8</key>
+	<array>
+		<string>CREATE TABLE &quot;user_agent_lock&quot; (&quot;useragent&quot; VARCHAR PRIMARY KEY  NOT NULL , &quot;locked&quot; BOOL, &quot;locktime&quot; INTEGER, &quot;timelength&quot; INTEGER, &quot;resumetime&quot; INTEGER)</string>
+	</array>
+</dict>
+</plist>

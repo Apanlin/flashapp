@@ -1,0 +1,264 @@
+//
+//  TwitterClient.m
+//  TwitterFon
+//
+//  Created by kaz on 7/13/08.
+//  Copyright naan studio 2008. All rights reserved.
+//
+
+#import "TwitterClient.h"
+#import "JSON.h"
+#import "StringUtil.h"
+#import "AppDelegate.h"
+#import "OpenUDID.h"
+#import "Profile.h"
+#import "DeviceInfo.h"
+
+@implementation TwitterClient
+
+@synthesize context;
+@synthesize hasError;
+@synthesize errorMessage;
+@synthesize errorDetail;
+
+
+#pragma mark - init & destroy methods
+
+- (id)initWithTarget:(id)aDelegate action:(SEL)anAction
+{
+    [super initWithDelegate:aDelegate];
+    action = anAction;
+    hasError = false;
+    return self;
+}
+
+- (void)dealloc
+{
+    [errorMessage release];
+    [errorDetail release];
+    [context release];
+    [super dealloc];
+}
+
+
+#pragma mark - business methods
+
++ (DeviceInfo*) getRegisteredDevice
+{
+    DeviceInfo* device = [DeviceInfo deviceInfoWithLocalDevice];
+    NSString* deviceId = device.deviceId;
+    NSString* name= device.name;
+    NSString* plateform = device.platform;
+    NSString* version = device.version;
+    NSString* url = [NSString stringWithFormat:@"http://p.flashget.com/api/accesslog/getDevice?deviceId=%@&name=%@&platform=%@&osversion=%@&createIfNeed=Y",deviceId,[name encodeAsURIComponent],[plateform encodeAsURIComponent],[version encodeAsURIComponent]];
+    NSLog(@"%@", url);
+    
+    NSHTTPURLResponse* response;
+    NSError* error;
+    NSObject* obj = [TwitterClient sendSynchronousRequest:url method:@"GET" body:nil response:&response error:&error];
+    DeviceInfo* deviceInfo = [[DeviceInfo alloc] initWithJSON:obj];
+    return deviceInfo;
+}
+
+
+#pragma mark - explain accessLog methods
++(NSArray*) getStatsData:(NSString *)lastDaySting
+{
+    NSString* deviceId = [OpenUDID value];
+    //deviceId = @"30efb1a621c4bd711652ecafb7cbd3673a062b3f";
+    //deviceId = @"guest";
+    deviceId = @"993738debed301dc397665717347fb59eb931a9d";
+    NSString* url = [NSString stringWithFormat:@"http://p.flashget.com/api/accesslog/getAccesslogs?accessTime=%@&uuid=%@",lastDaySting,deviceId];
+    NSHTTPURLResponse* response;
+    NSError* error;
+    NSObject* obj = [TwitterClient sendSynchronousRequest:url method:@"GET" body:nil response:&response error:&error];
+    
+    NSMutableArray* resultArr = [NSMutableArray array];
+    if ( !obj || ![obj isKindOfClass:[NSArray class]] ) return resultArr;
+    
+    NSArray* arr = (NSArray*) obj;
+    for ( NSDictionary* d in arr ) {
+        NSDictionary* dic = [d objectForKey:@"trip"];
+        StatsDay* statsObj = [[StatsDay alloc] initWithJSON:dic];
+        if ( statsObj ) {
+            [resultArr addObject:statsObj];
+            [statsObj release];
+        }
+    }
+    
+    return resultArr;
+}
+
+
+#pragma mark - verify profile
++(BOOL)verifyProfile{
+    NSString* deviceId = [OpenUDID value];
+   // deviceId = @"30efb1a621c4bd711652ecafb7cbd3673a062b3f";
+    NSString* url = [NSString stringWithFormat:@"http://p.flashget.com/api/accesslog/verified?uuid=%@",deviceId];
+    NSHTTPURLResponse* response;
+    NSError* error;
+    NSObject* obj = [TwitterClient sendSynchronousRequest:url method:@"GET" body:nil response:&response error:&error];
+    BOOL islegal = [Profile verifyProfile:obj];
+    return islegal;
+}
+
+
++(void)getUserService:(Profile*)profile{
+     NSString* deviceId = [OpenUDID value];
+    DeviceInfo* deviceInfo = [DeviceInfo deviceInfoWithLocalDevice];
+    NSString* name= deviceInfo.name;
+    NSString* plateform = deviceInfo.platform;
+    NSString* version = deviceInfo.version;
+    NSString* url = [NSString stringWithFormat:@"http://p.flashget.com/api/accesslog/getDevice?deviceId=%@&name=%@&platform=%@&osversion=%@&createIfNeed=Y",deviceId,name,plateform,version];
+    NSHTTPURLResponse* response;
+    NSError* error;
+    NSObject* obj = [TwitterClient sendSynchronousRequest:url method:@"GET" body:nil response:&response error:&error];
+
+}
+
+
+- (void) registerAtGziWithUserId:(NSString*)userId phone:(NSString*)phone
+{
+    NSString* url = [NSString stringWithFormat:@"http://gzi.me/api/regist/regist.json?source=ec29c04b4d224fe9a32176b67be1e8fb&userId=%@&username=%@", userId, phone];
+    [self get:url];
+}
+
+
+- (void) login:(NSString*)phone password:(NSString*)password
+{
+    NSString* url = [NSString stringWithFormat:@"http://p.flashget.com/api/accesslog/login.json?deviceId=%@&phone=%@&password=%@", [OpenUDID value], phone, password];
+    [self get:url];
+}
+
+
+#pragma mark - http request basic methods
+
+- (void)TFConnectionDidFailWithError:(NSError*)error
+{
+    hasError = true;
+    if (error.code ==  NSURLErrorUserCancelledAuthentication) {
+        statusCode = 401;
+        [AppDelegate showAlert:@"错误的用户名或者密码"];
+    }
+    else {
+        self.errorMessage = @"Connection Failed";
+        self.errorDetail  = [error localizedDescription];
+        [delegate performSelector:action withObject:self withObject:nil];
+    }
+    [self autorelease];
+}
+
+
+-(void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
+{
+    if ([challenge previousFailureCount] == 0) {
+        NSLog(@"Authentication Challenge");
+        NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:@"username"];
+        NSString *password = [[NSUserDefaults standardUserDefaults] stringForKey:@"password"];
+        NSURLCredential* cred = [NSURLCredential credentialWithUser:username password:password persistence:NSURLCredentialPersistenceNone];
+        [[challenge sender] useCredential:cred forAuthenticationChallenge:challenge];
+    } else {
+        NSLog(@"Failed auth (%d times)", [challenge previousFailureCount]);
+        [[challenge sender] cancelAuthenticationChallenge:challenge];
+    }
+}
+
+
+- (void)connection:(NSURLConnection *)connection didCancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
+{
+    hasError = true;
+    [AppDelegate showAlert:@"HttpCode=401, 错误的用户名或者密码"];
+    [self autorelease];
+}
+
+
+- (void)TFConnectionDidFinishLoading
+{
+    NSString* content = [[[NSString alloc] initWithData:buf encoding:NSUTF8StringEncoding] autorelease];
+    NSLog(@"response:%@", content);
+    switch (statusCode) {
+        case 401: // Not Authorized: either you need to provide authentication credentials, or the credentials provided aren't valid.
+            hasError = true;
+            [AppDelegate showAlert:@"HttpCode=401, 错误的用户名或者密码"];
+            goto out;
+            
+        case 304: // Not Modified: there was no new data to return.
+            [delegate performSelector:action withObject:self withObject:nil];
+            goto out;
+            
+        case 400: // Bad Request: your request is invalid, and we'll return an error message that tells you why. This is the status code returned if you've exceeded the rate limit
+        case 200: // OK: everything went awesome.
+        case 403: // Forbidden: we understand your request, but are refusing to fulfill it.  An accompanying error message should explain why.
+            break;
+                
+        case 404: // Not Found: either you're requesting an invalid URI or the resource in question doesn't exist (ex: no such user). 
+        case 500: // Internal Server Error: we did something wrong.  Please post to the group about it and the Twitter team will investigate.
+        case 502: // Bad Gateway: returned if Twitter is down or being upgraded.
+        case 503: // Service Unavailable: the Twitter servers are up, but are overloaded with requests.  Try again later.
+        default:
+        {
+            hasError = true;
+            self.errorMessage = @"抱歉，服务器发生内部错误";
+            self.errorDetail  = [NSHTTPURLResponse localizedStringForStatusCode:statusCode];
+            [delegate performSelector:action withObject:self withObject:nil];
+            goto out;
+        }
+    }
+#if 0
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *pathStr;
+    if (request == 0) {
+        pathStr = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"friends_timeline.json"];
+    }
+    else if (request == 1) {
+        pathStr = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"replies.json"];
+    }
+    else if (request == 2) {
+        pathStr = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"direct_messages.json"];
+    }
+    if (request <= 2) {
+        NSData *data = [fileManager contentsAtPath:pathStr];
+        content = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    }
+#endif
+
+    NSObject *obj = [content JSONValue];
+    [delegate performSelector:action withObject:self withObject:obj];
+    
+  out:
+    [self autorelease];
+}
+
+
++ (NSDictionary*) urlParameters:(NSString*)url
+{
+    NSMutableDictionary* dic = [NSMutableDictionary dictionary];
+    if ( !url || [url length] == 0 ) return dic;
+    
+    NSRange range = [url rangeOfString:@"?"];
+    if ( range.location == NSNotFound ) return dic;
+    
+    NSString* queryString = [url substringFromIndex:range.location+1];
+    if ( [queryString length] == 0 ) return dic;
+    
+    NSArray* array = [queryString componentsSeparatedByString:@"&"];
+    NSString* name;
+    NSString* value;
+    
+    for ( NSString* s in array ) {
+        NSArray* arr = [s componentsSeparatedByString:@"="];
+        if ( [arr count] == 2 ) {
+            name = [arr objectAtIndex:0];
+            value = [arr objectAtIndex:1];
+            [dic setObject:value forKey:name];
+        }
+        else if ( [arr count] == 1 ) {
+            name = [arr objectAtIndex:0];
+            [dic setObject:@"" forKey:name];
+        }
+    }
+    
+    return dic;
+}
+
+@end

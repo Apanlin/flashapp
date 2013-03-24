@@ -1,0 +1,35 @@
+//
+//  FirstViewController.h
+//  flashapp
+//
+//  Created by 李 电森 on 11-12-12.
+//  Copyright (c) 2011年 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+@interface FirstViewController : UIViewController {
+    UIImageView *imageView; 
+    IBOutlet UILabel* nameLable;
+    IBOutlet UILabel* divideLable;
+    IBOutlet UILabel* monthUseLable;
+    IBOutlet UILabel* monthOverLable;
+    IBOutlet UILabel* totalUseLable;
+    IBOutlet UILabel* netLable;
+    UIButton* userAgentButton;
+}
+
+
+@property (nonatomic, retain) UILabel *nameLable;
+@property (nonatomic, retain) UILabel *divideLable;
+@property (nonatomic, retain) UILabel *monthUseLable;
+@property (nonatomic, retain) UILabel *monthOverLable;
+@property (nonatomic, retain) UILabel *totalUseLable;
+@property (nonatomic, retain) UILabel *netLable;
+@property (nonatomic, retain) IBOutlet UIButton* userAgentButton;
+
+-(void)drawLineStyle;
+- (IBAction) userAgentButtonTouchDown;
+- (IBAction) userAgentButtonTouchUp;
+
+@end

@@ -1,0 +1,54 @@
+//
+//  StatsDetailDAO.m
+//  flashapp
+//
+//  Created by zhen fang on 11-12-14.
+//  Copyright (c) 2011年 __MyCompanyName__. All rights reserved.
+//
+
+#import "StatsDetailDAO.h"
+#import "DBConnection.h"
+#import "Statement.h"
+
+@implementation StatsDetailDAO
+
+#pragma delete statsDetail
++ (void) deleteStatsDetail : (long long)accessDay {
+    sqlite3* conn = [DBConnection getDatabase];
+	char* sql = "delete from  STATS_DETAIL  where accessDay = ?";
+	
+	Statement* stmt = [[Statement alloc] initWithDB:conn sql:sql];
+	[stmt bindInt64:accessDay forIndex:1];
+	if ( [stmt step] != SQLITE_DONE ) {
+        [stmt release];
+		NSAssert2( 0, @"sql error. %s (%s)", sql, sqlite3_errmsg(conn) );
+	}	
+    else {
+        [stmt release];
+    }
+}
+
+
+#pragma add statsDetail
++ (void) addStatsDetail : (StatsDetail *)statsDetail{
+    sqlite3* conn = [DBConnection getDatabase];
+    char* sql = "INSERT INTO STATS_DETAIL (userAgent, before,after, accessDay,createTime) VALUES(?,?,?,?,?)";
+    
+	Statement* stmt = [[Statement alloc] initWithDB:conn sql:sql];
+	[stmt bindString:statsDetail.userAgent forIndex:1];
+	[stmt bindInt64:statsDetail.before forIndex:2];
+	[stmt bindInt64:statsDetail.after forIndex:3];    
+	[stmt bindInt64:statsDetail.accessDay forIndex:4];
+    [stmt bindInt64:statsDetail.createTime forIndex:5];
+	
+	if ( [stmt step] != SQLITE_DONE ) {
+        [stmt release];   
+		NSAssert2( 0, @"sql error. %s (%s)", sql, sqlite3_errmsg(conn) );
+	}	
+    else {
+        [stmt release];   
+    }
+}
+
+
+@end

@@ -1,0 +1,334 @@
+//
+//  AppDelegate.m
+//  flashapp
+//
+//  Created by 李 电森 on 11-12-12.
+//  Copyright (c) 2011年 __MyCompanyName__. All rights reserved.
+//
+
+#import "AppDelegate.h"
+#import "DataServiceViewController.h"
+#import "MonthStatViewController.h"
+#import "DBConnection.h"
+#import "DeviceInfo.h"
+#import "TwitterClient.h"
+#import "ProfileViewController.h"  
+#import "RegisterViewController.h"
+#import "DateUtils.h"
+#import "StringUtil.h"
+
+
+@implementation AppDelegate
+
+@synthesize window = _window;
+@synthesize tabBarController = _tabBarController;
+@synthesize dbWriteLock;
+
+#pragma mark - init & destroy
+
+- (void)dealloc
+{
+    [_window release];
+    [_tabBarController release];
+    [dbWriteLock release];
+    [super dealloc];
+}
+
+
+#pragma mark - bussiness methods
+
+- (void) initDatabase
+{
+    self.dbWriteLock = [[[NSObject alloc] init] autorelease];
+ 	BOOL forceCreate = [[NSUserDefaults standardUserDefaults] boolForKey:@"dropDatabase"];
+	//forceCreate = YES;
+    [DBConnection createEditableCopyOfDatabaseIfNeeded:forceCreate];
+    [DBConnection getDatabase];
+}
+
+- (DeviceInfo*) getDeviceInfo
+{
+    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
+    
+    DeviceInfo* deviceInfo = [TwitterClient getRegisteredDevice];
+    if ( deviceInfo ) {
+        [userDefault setInteger:[deviceInfo.quantity intValue] forKey:@"quantity"];
+        [userDefault setInteger:[deviceInfo.status intValue] forKey:@"status"];
+
+        if ( connType == CELL_2G || connType == CELL_3G || connType == CELL_4G ) {
+            int proxyFlag = [deviceInfo.proxyflag intValue];
+            if ( proxyFlag ) {
+                //安装了profile
+                [userDefault setInteger:INSTALL_FLAG_YES forKey:@"proxyFlag"];
+            }
+            else {
+                //没有安装profile
+                [userDefault setInteger:INSTALL_FLAG_NO forKey:@"proxyFlag"];
+            }
+        }
+        [userDefault synchronize];
+    }
+    
+    return deviceInfo;
+}
+
+
++ (void) installProfile:(NSString*)nextPage
+{
+    DeviceInfo* device = [DeviceInfo deviceInfoWithLocalDevice];
+    NSString* type = [UIDevice connectionTypeString];
+    
+    NSMutableString* url = [NSMutableString stringWithFormat:@"http://p.flashget.com/install?_method=profile&deviceId=%@&name=%@&platform=%@&osversion=%@&connType=%@", device.deviceId, [device.name encodeAsURIComponent], [device.platform encodeAsURIComponent], [device.version encodeAsURIComponent], type];
+    if ( nextPage && [nextPage length] > 0 ) {
+        [url appendFormat:@"&nextPage=%@", [nextPage encodeAsURIComponent]];
+    }
+    NSLog(@"%@", url);
+    
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+}
+
+
+
+#pragma mark - basic tool methods
+
++ (AppDelegate*)getAppDelegate
+{
+    return (AppDelegate*)[UIApplication sharedApplication].delegate;
+}
+
+
++ (void) showAlert:(NSString*)message
+{
+	UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"提示" 
+														message:message 
+													   delegate:nil 
+											  cancelButtonTitle:@"确定" 
+											  otherButtonTitles:nil];
+	[alertView show];
+	[alertView release];
+}
+
+
++ (void) showAlert:(NSString*)title message:(NSString*)message
+{
+	UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:title 
+														message:message 
+													   delegate:nil 
+											  cancelButtonTitle:@"确定" 
+											  otherButtonTitles:nil];
+	[alertView show];
+	[alertView release];
+}
+
+
++ (void) showHelp
+{
+    NSString* url = @"http://p.flashget.com/faq.html";
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+}
+
+
+- (UINavigationController*) currentNavigationController
+{
+    return (UINavigationController*) _tabBarController.selectedViewController;
+}
+
+
+- (UIViewController*) currentViewController
+{
+    UINavigationController* nav = [self currentNavigationController];
+    return [nav topViewController];
+}
+
+
+#pragma mark - application delegate
+
+
+- (void) showDatasaveView
+{
+    UIViewController *dataserviceViewController = [[[DataServiceViewController alloc] initWithNibName:@"DataServiceViewController" bundle:nil] autorelease];
+    UINavigationController* firstNav = [[UINavigationController alloc] initWithRootViewController:dataserviceViewController];
+    
+    time_t now;
+    time(&now);
+    time_t firstDayOfMonth = [DateUtils getFirstDayOfMonth:now];
+    MonthStatViewController *monthStatsController = [[[MonthStatViewController alloc] init] autorelease];
+    monthStatsController.month = firstDayOfMonth;
+    UINavigationController* secondNav = [[UINavigationController alloc] initWithRootViewController:monthStatsController];
+    
+    self.tabBarController = [[[UITabBarController alloc] init] autorelease];
+    self.tabBarController.viewControllers = [NSArray arrayWithObjects:firstNav, secondNav, nil];
+    self.window.rootViewController = self.tabBarController;
+    [firstNav release];
+    [secondNav release];
+}
+
+
+- (void) showProfileView
+{
+    ProfileViewController* profileViewController = [[ProfileViewController alloc] init];
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:profileViewController];
+    self.window.rootViewController = nav;
+    [profileViewController release];
+    [nav release];
+}
+
+
+- (void) showRegisterView
+{
+    RegisterViewController* controller = [[RegisterViewController alloc] init];
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    self.window.rootViewController = nav;
+    [controller release];
+    [nav release];
+}
+
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions  
+{
+    //initialize database
+    [self initDatabase];
+    
+    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
+    DeviceInfo* deviceInfo = nil;
+    int n = [userDefault integerForKey:@"quantity"];
+    if ( n == 0 ) {
+        connType = [UIDevice connectionType];
+        if ( connType == CELL_2G || connType == CELL_3G || connType == CELL_4G || connType == WIFI || connType == ETHERNET ) {
+            deviceInfo = [self getDeviceInfo];
+        }
+    }
+    
+    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    if (false) {
+        [self showRegisterView];
+        [self.window makeKeyAndVisible];  
+        return YES;
+    }
+    
+    if ( n == 0 && deviceInfo && [deviceInfo.status intValue] == STATUS_NEW ) {
+        [self showProfileView];
+    }
+    else {
+        [self showDatasaveView];
+    }
+
+    [self.window makeKeyAndVisible];  
+    
+    return YES;
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+    /*
+     Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+     Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+     */
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+    /*
+     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+     If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+     */
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    /*
+     Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+     */
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    /*
+     Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+     */
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application
+{
+    /*
+     Called when the application is about to terminate.
+     Save data if appropriate.
+     See also applicationDidEnterBackground:.
+     */
+}
+
+/*
+// Optional UITabBarControllerDelegate method.
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+{
+}
+*/
+
+/*
+// Optional UITabBarControllerDelegate method.
+- (void)tabBarController:(UITabBarController *)tabBarController didEndCustomizingViewControllers:(NSArray *)viewControllers changed:(BOOL)changed
+{
+}
+*/
+
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url 
+{
+    NSString* urlString = [url absoluteString];
+    NSLog(@"application:handleOpenURL: %@", urlString);
+    
+    NSRange range = [urlString rangeOfString:@"flashapp://"];
+    if ( range.location == 0 ) {
+        NSString* page = [urlString substringFromIndex:11];
+        
+        if ( [page length] > 0 ) {
+            NSDictionary* params = [TwitterClient urlParameters:page];
+            NSArray* array = [page componentsSeparatedByString:@"?"];
+            NSString* queryString = nil;
+            if ( [array count] > 1 ) {
+                page = [array objectAtIndex:0];
+                queryString = [array objectAtIndex:1];
+            }
+            
+            //profile已经安装
+            if ( queryString ) {
+                NSString* setInstall = [params objectForKey:@"setInstall"];
+                if ( [@"1" compare:setInstall] == NSOrderedSame ) {
+                    NSString* status = [params objectForKey:@"status"];
+                    NSString* capacity = [params objectForKey:@"quantity"];
+                    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
+                    [userDefault setInteger:INSTALL_FLAG_YES forKey:@"proxyFlag"];
+                    [userDefault setInteger:[capacity intValue] forKey:@"quantity"];
+                    [userDefault setInteger:[status intValue] forKey:@"status"];
+                    [userDefault synchronize];
+                }
+            }
+            
+            if ( [@"register" compare:page] == NSOrderedSame ) {
+                [self showRegisterView];
+                return YES;
+            }
+            else if ( [@"datasave" compare:page] == NSOrderedSame ) {
+                UIViewController* controller = [self currentViewController];
+                if ( [controller isKindOfClass:[DataServiceViewController class]] ) {
+                    DataServiceViewController* dataController = (DataServiceViewController*) controller;
+                    [dataController showConnectMessage];
+                }
+                return YES;
+            }
+            else {
+                UIViewController* controller = [self currentViewController];
+                if ( [controller isKindOfClass:[DataServiceViewController class]] ) {
+                    DataServiceViewController* dataController = (DataServiceViewController*) controller;
+                    [dataController showConnectMessage];
+                }
+                return YES;
+            }
+        }
+    }
+    
+    return YES;
+}
+
+
+@end

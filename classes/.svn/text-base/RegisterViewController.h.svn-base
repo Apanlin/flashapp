@@ -1,0 +1,32 @@
+//
+//  RegisterViewController.h
+//  flashapp
+//
+//  Created by 李 电森 on 11-12-15.
+//  Copyright (c) 2011年 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "TwitterClient.h"
+
+@interface RegisterViewController : UIViewController <UITextFieldDelegate> {
+    
+    UITextField* phoneTextField;
+    UITextField* passwordTextField;
+    UIButton* getPasswdButton;
+    UIScrollView* scrollView;
+    
+    TwitterClient* client;
+}
+
+@property (nonatomic, retain) IBOutlet UITextField* phoneTextField;
+@property (nonatomic, retain) IBOutlet UITextField* passwordTextField;
+@property (nonatomic, retain) IBOutlet UIButton* getPasswdButton;
+@property (nonatomic, retain) IBOutlet UIScrollView* scrollView;
+
+- (IBAction) registerPhone;
+- (IBAction) skip;
+- (IBAction) getpassword:(id)sender;
+- (IBAction) passwdFieldChanged;
+
+@end

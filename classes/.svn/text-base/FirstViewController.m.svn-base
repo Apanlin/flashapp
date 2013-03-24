@@ -1,0 +1,163 @@
+//
+//  FirstViewController.m
+//  flashapp
+//
+//  Created by 李 电森 on 11-12-12.
+//  Copyright (c) 2011年 __MyCompanyName__. All rights reserved.
+//
+
+#import "FirstViewController.h"
+#import "StatsDayService.h"
+
+@implementation FirstViewController
+
+@synthesize nameLable;
+@synthesize divideLable;
+@synthesize monthUseLable;
+@synthesize monthOverLable;
+@synthesize totalUseLable;
+@synthesize netLable;
+@synthesize userAgentButton;
+
+
+#pragma mark - init & destroy
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        self.title = @"flashApp";
+        self.tabBarItem.title = @"流量统计";
+        self.tabBarItem.image = [UIImage imageNamed:@"first"];
+    }
+    return self;
+}
+
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Release any cached data, images, etc that aren't in use.
+}
+
+
+- (void) dealloc
+{
+    [userAgentButton release];
+    [nameLable release];
+    [divideLable release];
+    [monthUseLable release];
+    [monthOverLable release];
+    [totalUseLable release];
+    [netLable release];
+    [super dealloc];
+}
+
+
+#pragma mark - loadData
+
+- (void) loadData
+{
+    [StatsDayService explainURL];
+}
+
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+	// Do any additional setup after loading the view, typically from a nib.
+    
+    [self drawLineStyle];
+    userAgentButton.backgroundColor = [UIColor clearColor];
+}
+
+-(void)showStats{
+    StatsDay* statsDay = [[StatsDay alloc]init];
+    StatsDayService* service = [[StatsDayService alloc]init];
+    [service getMaxStats:statsDay];
+    [service release];
+    long long totalStats = statsDay.totalStats;
+    
+    
+}
+
+
++(NSString *)converseStats:(long long)totalStats{
+    NSString * statsStr;
+    
+    return statsStr;
+}
+
+-(void)drawLineStyle
+{
+    imageView=[[UIImageView alloc] initWithFrame:self.view.frame];  
+    [self.view addSubview:imageView];  
+    
+    UIGraphicsBeginImageContext(imageView.frame.size);  
+    CGContextSetLineWidth(UIGraphicsGetCurrentContext(), 0.3);  
+    CGContextSetAllowsAntialiasing(UIGraphicsGetCurrentContext(), YES);      
+    
+    CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 0.0, 0.0, 0.0, 1.0);  
+    CGContextBeginPath(UIGraphicsGetCurrentContext());  
+    CGContextMoveToPoint(UIGraphicsGetCurrentContext(), 20, 100);  
+    CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), 300, 100);  
+    CGContextStrokePath(UIGraphicsGetCurrentContext());  
+    imageView.image=UIGraphicsGetImageFromCurrentImageContext();  
+    UIGraphicsEndImageContext();  
+ }
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    self.userAgentButton = nil;
+    self.nameLable = nil;
+    self.divideLable = nil;
+    self.monthUseLable = nil;
+    self.monthOverLable = nil;
+    self.totalUseLable = nil;
+    self.netLable = nil;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+	[super viewDidDisappear:animated];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+
+#pragma mark - operation methods
+
+- (IBAction) userAgentButtonTouchDown
+{
+    [userAgentButton setBackgroundColor:[UIColor colorWithRed:0.0f green:0.5f blue:1.0f alpha:0.7f]];
+}
+
+
+- (IBAction) userAgentButtonTouchUp
+{
+    [userAgentButton setBackgroundColor:[UIColor clearColor]];
+}
+
+@end

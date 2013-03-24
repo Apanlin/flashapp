@@ -1,0 +1,29 @@
+//
+//  TouchedLabel.m
+//  flashapp
+//
+//  Created by 李 电森 on 11-12-21.
+//  Copyright (c) 2011年 __MyCompanyName__. All rights reserved.
+//
+
+#import "TouchedLabel.h"
+
+@implementation TouchedLabel
+
+@synthesize delegate;
+
+- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    if ( delegate && [delegate respondsToSelector:@selector(labelTouchesBegan:)] ) {
+        [delegate performSelector:@selector(labelTouchesBegan:) withObject:self ];
+    }
+}
+
+
+- (void) dealloc
+{
+    [delegate release];
+    [super dealloc];
+}
+
+@end

@@ -1,0 +1,25 @@
+//
+//  StatsDetail.m
+//  flashapp
+//
+//  Created by zhen fang on 11-12-14.
+//  Copyright (c) 2011年 __MyCompanyName__. All rights reserved.
+//
+
+#import "StatsDetail.h"
+
+@implementation StatsDetail
+
+@synthesize id;
+@synthesize userAgent;
+@synthesize before;
+@synthesize after;
+@synthesize accessDay;
+@synthesize createTime;
+
+
+-(void)dealloc{
+    [userAgent release];
+    [super dealloc];
+}
+@end

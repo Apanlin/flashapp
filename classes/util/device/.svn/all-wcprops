@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/repos/!svn/ver/31/flashapp/classes/util/device
+END
+UIDevice-Reachability.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repos/!svn/ver/38/flashapp/classes/util/device/UIDevice-Reachability.h
+END
+DeviceInfo.h
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/repos/!svn/ver/40/flashapp/classes/util/device/DeviceInfo.h
+END
+OpenUDID.m
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/repos/!svn/ver/7/flashapp/classes/util/device/OpenUDID.m
+END
+UIDevice-Reachability.m
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/repos/!svn/ver/38/flashapp/classes/util/device/UIDevice-Reachability.m
+END
+DeviceInfo.m
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/repos/!svn/ver/40/flashapp/classes/util/device/DeviceInfo.m
+END
+OpenUDID.h
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/repos/!svn/ver/7/flashapp/classes/util/device/OpenUDID.h
+END

@@ -1,0 +1,29 @@
+#import <UIKit/UIKit.h>
+#import "TFConnection.h"
+#import "DeviceInfo.h"
+#import "StatsDay.h"
+
+@interface TwitterClient : TFConnection
+{
+    id          context;
+    SEL         action;
+    BOOL        hasError;
+    NSString*   errorMessage;
+    NSString*   errorDetail;
+}
+
+@property(nonatomic, retain) id context;
+@property(nonatomic, assign) BOOL hasError;
+@property(nonatomic, copy) NSString* errorMessage;
+@property(nonatomic, copy) NSString* errorDetail;
+
+- (id)initWithTarget:(id)delegate action:(SEL)action;
++ (NSDictionary*) urlParameters:(NSString*)url;
+
++ (DeviceInfo*) getRegisteredDevice;
+- (void) registerAtGziWithUserId:(NSString*)userId phone:(NSString*)phone;
+- (void) login:(NSString*)phone password:(NSString*)password;
+
++(NSArray*) getStatsData:(NSString *)lastDaySting;
+
+@end

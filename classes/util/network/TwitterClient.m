@@ -394,7 +394,7 @@
     NSString* lastDayString = [DateUtils stringWithDateFormat:t format:@"yyyy-MM-dd"];
     
 //    NSString* url = [NSString stringWithFormat:@"http://%@/api/%@.json?accessTime=%@&host=%@&port=%d&platform=%@&cpi=%lld", user.idcServer, API_LOG_LOG, lastDayString, user.proxyServer, user.proxyPort, [platform encodeAsURIComponent], lastDayLong];
-    NSString* url = [NSString stringWithFormat:@"http://%@/api/%@.json?accessTime=%@&host=%@&port=%d&platform=%@&cpi=%lld", user.idcServer, API_LOG_LOG, lastDayString, @"z6.bj.flashapp.cn", user.proxyPort, [platform encodeAsURIComponent], lastDayLong];
+    NSString* url = [NSString stringWithFormat:@"http://%@/api/%@.json?accessTime=%@&host=%@&port=%d&platform=%@&cpi=%lld", user.idcServer, API_LOG_LOG, lastDayString, user.proxyServer, user.proxyPort, [platform encodeAsURIComponent], lastDayLong];
     url = [TwitterClient composeURLVerifyCode:url];
     [self get:url];
 }

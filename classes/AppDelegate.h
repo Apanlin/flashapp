@@ -64,8 +64,8 @@
 #define TCChangedNotification @"TCChangedNotification"
 #define RefreshAppLockedNotification @"refreshAppLockedNotification"
 
-//#define CHANNEL @"appstore"
-#define CHANNEL @"91_market"
+#define CHANNEL @"appstore"
+//#define CHANNEL @"91_market"
 //#define CHANNEL @"flashapp_market"
 //#define CHANNEL @"flashapp_91_market"
 
@@ -85,7 +85,8 @@
     BOOL timerTaskDoing;
     
     ConnectionType connType;
-    Reachability* networkReachablity;
+    Reachability* networkReachablity;//Reachablity to P_Host
+    Reachability* internetReachablity;//Reachablity to internet
     
     UserSettings* user;
     CTCarrier* carrier;

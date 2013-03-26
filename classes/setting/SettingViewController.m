@@ -358,7 +358,12 @@
                     }
                     else if ( row == 5 ) {
                         //删除描述文件
-                        cell.textLabel.text = NSLocalizedString(@"set.profile.delete", nil);
+                        if ( [@"appstore" compare:CHANNEL] == NSOrderedSame ) {
+                            cell.textLabel.text = @"VPN设置";
+                        }
+                        else {
+                            cell.textLabel.text = NSLocalizedString(@"set.profile.delete", nil);
+                        }
                     }
                 }
             }
@@ -379,7 +384,12 @@
                     }
                     else if ( row == 3 ) {
                         //删除描述文件
-                        cell.textLabel.text = NSLocalizedString(@"set.profile.delete", nil);
+                        if ( [@"appstore" compare:CHANNEL] == NSOrderedSame ) {
+                            cell.textLabel.text = @"VPN设置";
+                        }
+                        else {
+                            cell.textLabel.text = NSLocalizedString(@"set.profile.delete", nil);
+                        }
                     }
                 }
             }
@@ -637,7 +647,12 @@
                         //删除描述文件
                         HelpViewController* controller = [[HelpViewController alloc] init];
                         controller.showCloseButton = NO;
-                        controller.page = @"profile/YDD";
+                        if ( [@"appstore" compare:CHANNEL] == NSOrderedSame ) {
+                            controller.page = @"vpn/YDD";
+                        }
+                        else {
+                            controller.page = @"profile/YDD";
+                        }
                         [self.navigationController pushViewController:controller animated:YES];
                         [controller release];
                     }

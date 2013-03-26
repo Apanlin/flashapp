@@ -31,6 +31,7 @@
 #import "UIDevice-Reachability.h"
 #import "TCUtils.h"
 #import "TitleView.h"
+#import "GetAddress.h"
 
 #define MESSAGE_HEIGHT 28
 #define NICKNAME_FONT [UIFont systemFontOfSize:12]
@@ -44,26 +45,12 @@
 #define TAG_ALERT_INVITE 100
 #define TAG_ALERT_TAOCAN 101
 
-@interface DatasaveViewController (private)
-- (void) setLastUpdateDate;
-- (void) renderDB;
-- (void) viewShowData;
-- (void) displayAfterLoad:(StageStats*)oldMonthStats;
-- (void) loadDataFromDB;
-- (void)doneLoadingTableViewData;
-- (void) sendSMS:(NSString*)body;
-- (void) displaySMSComposerSheet:(NSString*)body;
-- (void) sendMail:(NSString*)subject body:(NSString*)body;
-- (void) checkConnection;
-- (void) getAccessData:(BOOL)dropdownRefresh;
-- (void) showAfterInstallProfile;
-@end
-
 typedef enum {
     MT_REFRESH,
     MT_WIFI,
     MT_PROFILE,
-    MT_PROXY_SLOW
+    MT_PROXY_SLOW,
+    MT_VPN
 } MessageType;
 
 
@@ -391,7 +378,12 @@ typedef enum {
         regButton.hidden = NO;
     }
     
-    [self checkProfile];
+    if ( [@"appstore" compare:CHANNEL]==NSOrderedSame ) {
+        [self checkVPN];
+    }
+    else {
+        [self checkProfile];
+    }
     
     //if ( installingProfile ) {
     //    installingProfile = NO;
@@ -603,6 +595,46 @@ typedef enum {
 }
 
 
+- (void) showVPNMessage:(BOOL)shouldOpen
+{
+    NSString* message = nil;
+    NSString* buttonTitle = nil;
+    SEL sel = nil;
+    
+    if ( shouldOpen ) {
+        message = @"请打开VPN";
+        buttonTitle = @"开启VPN";
+    }
+    else {
+        message = @"请关闭VPN";
+        buttonTitle = @"关拨VPN";
+    }
+    [self showMessage:message andType:MT_VPN andBtnTitle:buttonTitle andBtnSel:sel];
+}
+
+
+- (void) showMessage:(NSString*)message andType:(MessageType)type andBtnTitle:(NSString*)title andBtnSel:(SEL)sel
+{
+    if ( !messageView.hidden && messageView.type == type ) return;
+    
+    if ( messageView.hidden ) {
+        CGSize s = scrollView.contentSize;
+        s.height += MESSAGE_HEIGHT;
+        scrollView.contentSize = s;
+        
+        CGRect r = contentView.frame;
+        r.origin.y = MESSAGE_HEIGHT - 3;
+        contentView.frame = r;
+    }
+    
+    [messageView setMessage:message button:title];
+    messageView.type = type;
+    [messageView.button addTarget:self action:sel forControlEvents:UIControlEventTouchUpInside];
+    messageView.hidden = NO;
+}
+
+
+
 - (void) hiddenProfileMessage
 {
     if ( messageView.hidden || messageView.type != MT_PROFILE ) return;
@@ -660,6 +692,13 @@ typedef enum {
 }
 
 
+- (void) hiddenVPNMessage
+{
+    [self hiddenMessage:MT_VPN];
+}
+
+
+
 - (void) setLastUpdateDate
 {
     NSString* refreshDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"EGORefreshTableView_LastRefresh"];
@@ -697,7 +736,7 @@ typedef enum {
 
 - (void) checkConnection
 {
-    ConnectionType type = [UIDevice connectionType]; 
+    ConnectionType type = [UIDevice connectionType];
     NSString* desc = nil;
     
     switch (type) {
@@ -708,9 +747,14 @@ typedef enum {
             [self performSelector:@selector(hiddenMessage) withObject:nil afterDelay:5.0f];
             break;
         case WIFI:
-            desc = NSLocalizedString(@"Connection.type.WIFI",nil);
-            [self showMessage:desc type:MT_WIFI];
-            [self performSelector:@selector(hiddenMessage) withObject:nil afterDelay:2.0f];
+            if ( [@"appstore" compare:CHANNEL] == NSOrderedSame ) {
+            }
+            else {
+                desc = NSLocalizedString(@"Connection.type.WIFI",nil);
+                [self showMessage:desc type:MT_WIFI];
+                [self performSelector:@selector(hiddenMessage) withObject:nil afterDelay:2.0f];
+            }
+            
             break;
         default:
             break;
@@ -718,6 +762,61 @@ typedef enum {
 }
 
 
+- (void) checkVPN
+{
+    if ( [@"appstore" compare:CHANNEL] != NSOrderedSame ) return;
+    
+    ConnectionType type = [UIDevice connectionType];
+    NSString* desc = nil;
+    
+    BOOL vpnStarted = NO;
+    GetAddress* ga = [[GetAddress alloc] init];
+    [ga getIPAddress];
+    NSArray* ipNames = ga.ipNames;
+    NSArray* ifNames = ga.ifNames;
+    int len = [ipNames count];
+    NSString* ifName;
+    NSString* ipName;
+    for ( int i=0; i<len; i++ ) {
+        ifName = [ifNames objectAtIndex:i];
+        ipName = [ipNames objectAtIndex:i];
+        NSRange r = [ifName rangeOfString:@"utun"];
+        if ( r.location == NSNotFound ) {
+            continue;
+        }
+        else {
+            vpnStarted = YES;
+            break;
+        }
+    }
+    [ga release];
+    
+    switch (type) {
+        case WIFI:
+            if ( vpnStarted ) {
+                desc = @"WIFI下请暂停服务  ";
+                [self showMessage:desc andType:MT_VPN andBtnTitle:@"关闭VPN" andBtnSel:@selector(showVPNHelp)];
+                //[self performSelector:@selector(hiddenVPNMessage) withObject:nil afterDelay:2.0f];
+            }
+            else {
+                [self hiddenMessage:MT_VPN];
+            }
+            break;
+        case CELL_2G:
+        case CELL_3G:
+        case CELL_4G:
+            if ( !vpnStarted ) {
+                desc = @"您的加速服务暂停了  ";
+                [self showMessage:desc andType:MT_VPN andBtnTitle:@"开启VPN" andBtnSel:@selector(showVPNHelp)];
+                //[self performSelector:@selector(hiddenVPNMessage) withObject:nil afterDelay:2.0f];
+            }
+            else {
+                [self hiddenMessage:MT_VPN];
+            }
+        default:
+            break;
+    }
+}
 
 
 - (void) renderDB
@@ -835,8 +934,13 @@ typedef enum {
     [self displayAfterLoad:mstats];
     [mstats release];
     
-    //显示profile是否安装
-    [self checkProfile];
+    if ( [@"appstore" compare:CHANNEL]==NSOrderedSame ) {
+        [self checkVPN];
+    }
+    else {
+        //显示profile是否安装
+        [self checkProfile];
+    }
     
     //显示网速测试结果
     [self checkProxySpeed];
@@ -851,8 +955,6 @@ typedef enum {
 {
     StageStats* mstats = [monthStats retain];
     
-    NSLog(@"1212121212121211111");
-
     //从数据库中加载数据
     [self loadDataFromDB];
     
@@ -860,8 +962,14 @@ typedef enum {
     [self displayAfterLoad:mstats];
     [mstats release];
     
-    //显示profile是否安装
-    [self checkProfile];
+    if ( [@"appstore" compare:CHANNEL]==NSOrderedSame ) {
+        //显示VPN是否开启
+        [self checkVPN];
+    }
+    else {
+        //显示profile是否安装
+        [self checkProfile];
+    }
 
     //显示网速测试结果
     [self checkProxySpeed];

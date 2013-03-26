@@ -342,6 +342,7 @@
 		B3B3A6AA16F838E600D8DE95 /* weixin.png in Resources */ = {isa = PBXBuildFile; fileRef = B3B3A56116F838E600D8DE95 /* weixin.png */; };
 		B3B3A6AB16F838E600D8DE95 /* weixin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B3B3A56216F838E600D8DE95 /* weixin@2x.png */; };
 		B3B3A6AC16F838E600D8DE95 /* zheng.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B3B3A56316F838E600D8DE95 /* zheng.jpg */; };
+		EF2869541701675D0090CDE7 /* GetAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = EF2869531701675D0090CDE7 /* GetAddress.m */; };
 		EF63A26016758C3A009F1950 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A25F16758C3A009F1950 /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EF63A26216758C3A009F1950 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A26116758C3A009F1950 /* Foundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EF63A26416758C3A009F1950 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A26316758C3A009F1950 /* CoreGraphics.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -537,7 +538,6 @@
 		EF63A7601675B63F009F1950 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A75F1675B63F009F1950 /* MobileCoreServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EF63A7B71678383B009F1950 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = EF63A7B51678383B009F1950 /* JSONKit.m */; };
 		EF63A7BF16783DBD009F1950 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A7BE16783DBD009F1950 /* libWeChatSDK.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		EFA0539116FEF3B700084A57 /* GetAddress.c in Sources */ = {isa = PBXBuildFile; fileRef = EFA0539016FEF3B700084A57 /* GetAddress.c */; };
 		EFECD2E01679D3EB00BB1E41 /* SystemVariablesDAO.m in Sources */ = {isa = PBXBuildFile; fileRef = EFECD2DF1679D3EB00BB1E41 /* SystemVariablesDAO.m */; };
 /* End PBXBuildFile section */
 
@@ -877,6 +877,8 @@
 		B3B3A56116F838E600D8DE95 /* weixin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = weixin.png; sourceTree = "<group>"; };
 		B3B3A56216F838E600D8DE95 /* weixin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "weixin@2x.png"; sourceTree = "<group>"; };
 		B3B3A56316F838E600D8DE95 /* zheng.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = zheng.jpg; sourceTree = "<group>"; };
+		EF2869521701675D0090CDE7 /* GetAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetAddress.h; sourceTree = "<group>"; };
+		EF2869531701675D0090CDE7 /* GetAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetAddress.m; sourceTree = "<group>"; };
 		EF63A25B16758C3A009F1950 /* flashapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = flashapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF63A25F16758C3A009F1950 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		EF63A26116758C3A009F1950 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1285,8 +1287,6 @@
 		EF63A7B51678383B009F1950 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		EF63A7B816783880009F1950 /* libDFTraffic.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libDFTraffic.a; sourceTree = "<group>"; };
 		EF63A7BE16783DBD009F1950 /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
-		EFA0539016FEF3B700084A57 /* GetAddress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = GetAddress.c; sourceTree = "<group>"; };
-		EFA0539216FEF42200084A57 /* GetAddress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GetAddress.h; sourceTree = "<group>"; };
 		EFECD2DE1679D3EB00BB1E41 /* SystemVariablesDAO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemVariablesDAO.h; sourceTree = "<group>"; };
 		EFECD2DF1679D3EB00BB1E41 /* SystemVariablesDAO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SystemVariablesDAO.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2153,6 +2153,8 @@
 		EF63A36716758C68009F1950 /* device */ = {
 			isa = PBXGroup;
 			children = (
+				EF2869521701675D0090CDE7 /* GetAddress.h */,
+				EF2869531701675D0090CDE7 /* GetAddress.m */,
 				EF63A36816758C68009F1950 /* AppInfo.h */,
 				EF63A36916758C68009F1950 /* AppInfo.m */,
 				EF63A36A16758C68009F1950 /* DeviceInfo.h */,
@@ -2163,8 +2165,6 @@
 				EF63A36F16758C68009F1950 /* UIDevice-Reachability.m */,
 				EF63A37016758C68009F1950 /* UIDevice-software.h */,
 				EF63A37116758C68009F1950 /* UIDevice-software.m */,
-				EFA0539016FEF3B700084A57 /* GetAddress.c */,
-				EFA0539216FEF42200084A57 /* GetAddress.h */,
 			);
 			path = device;
 			sourceTree = "<group>";
@@ -2986,7 +2986,7 @@
 				EF63A48016758C68009F1950 /* ASINetworkQueue.m in Sources */,
 				EF63A7B71678383B009F1950 /* JSONKit.m in Sources */,
 				EFECD2E01679D3EB00BB1E41 /* SystemVariablesDAO.m in Sources */,
-				EFA0539116FEF3B700084A57 /* GetAddress.c in Sources */,
+				EF2869541701675D0090CDE7 /* GetAddress.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

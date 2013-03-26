@@ -186,7 +186,11 @@
     NSString *currentLanguage = [languages objectAtIndex:0];
     if ( !currentLanguage || currentLanguage.length == 0 ) currentLanguage = @"en";
     
-    NSMutableString* url = [NSMutableString stringWithFormat:@"http://%@/install?_method=profile&name=%@&platform=%@&osversion=%@&connType=%@&carrier=%@&mcc=%@&mnc=%@&install=%d&apn=%@%@&lang=%@", P_HOST, [device.hardware encodeAsURIComponent], [device.platform encodeAsURIComponent], [device.version encodeAsURIComponent], type,
+    NSString* action = @"install";
+    if ( [@"appstore" compare:CHANNEL] ) {
+        action = @"vpnn";
+    }
+    NSMutableString* url = [NSMutableString stringWithFormat:@"http://%@/%@?_method=profile&name=%@&platform=%@&osversion=%@&connType=%@&carrier=%@&mcc=%@&mnc=%@&install=%d&apn=%@%@&lang=%@", P_HOST, action, [device.hardware encodeAsURIComponent], [device.platform encodeAsURIComponent], [device.version encodeAsURIComponent], type,
                             carrier ? [carrier.carrierName encodeAsURIComponent] : @"", 
                             carrier ? carrier.mobileCountryCode : @"", 
                             carrier ? carrier.mobileNetworkCode : @"",
@@ -632,6 +636,10 @@
     self.refreshDatasave = NO;
     
     self.networkReachablity = [Reachability reachabilityWithHostName:P_HOST];
+    
+    internetReachablity = [[Reachability reachabilityForInternetConnection] retain];
+    [internetReachablity startNotifier];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
     
     connType = [UIDevice connectionType];
     /*DeviceInfo* deviceInfo = nil;

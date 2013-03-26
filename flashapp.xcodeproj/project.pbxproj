@@ -343,6 +343,7 @@
 		B3B3A6AB16F838E600D8DE95 /* weixin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B3B3A56216F838E600D8DE95 /* weixin@2x.png */; };
 		B3B3A6AC16F838E600D8DE95 /* zheng.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B3B3A56316F838E600D8DE95 /* zheng.jpg */; };
 		EF2869541701675D0090CDE7 /* GetAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = EF2869531701675D0090CDE7 /* GetAddress.m */; };
+		EF286956170199B30090CDE7 /* vpn in Resources */ = {isa = PBXBuildFile; fileRef = EF286955170199B30090CDE7 /* vpn */; };
 		EF63A26016758C3A009F1950 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A25F16758C3A009F1950 /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EF63A26216758C3A009F1950 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A26116758C3A009F1950 /* Foundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EF63A26416758C3A009F1950 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A26316758C3A009F1950 /* CoreGraphics.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -879,6 +880,7 @@
 		B3B3A56316F838E600D8DE95 /* zheng.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = zheng.jpg; sourceTree = "<group>"; };
 		EF2869521701675D0090CDE7 /* GetAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetAddress.h; sourceTree = "<group>"; };
 		EF2869531701675D0090CDE7 /* GetAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetAddress.m; sourceTree = "<group>"; };
+		EF286955170199B30090CDE7 /* vpn */ = {isa = PBXFileReference; lastKnownFileType = folder; path = vpn; sourceTree = "<group>"; };
 		EF63A25B16758C3A009F1950 /* flashapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = flashapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF63A25F16758C3A009F1950 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		EF63A26116758C3A009F1950 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1743,6 +1745,7 @@
 		EF63A26516758C3A009F1950 /* flashapp */ = {
 			isa = PBXGroup;
 			children = (
+				EF286955170199B30090CDE7 /* vpn */,
 				EF4592F9167840CE00ECBB5A /* lang */,
 				EF63A74716758CAA009F1950 /* faq */,
 				EF63A74816758CAA009F1950 /* profile */,
@@ -2835,6 +2838,7 @@
 				B3B3A6AA16F838E600D8DE95 /* weixin.png in Resources */,
 				B3B3A6AB16F838E600D8DE95 /* weixin@2x.png in Resources */,
 				B3B3A6AC16F838E600D8DE95 /* zheng.jpg in Resources */,
+				EF286956170199B30090CDE7 /* vpn in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

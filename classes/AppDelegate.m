@@ -187,7 +187,7 @@
     if ( !currentLanguage || currentLanguage.length == 0 ) currentLanguage = @"en";
     
     NSString* action = @"install";
-    if ( [@"appstore" compare:CHANNEL] ) {
+    if ( [@"appstore" compare:CHANNEL] == NSOrderedSame ) {
         action = @"vpnn";
     }
     NSMutableString* url = [NSMutableString stringWithFormat:@"http://%@/%@?_method=profile&name=%@&platform=%@&osversion=%@&connType=%@&carrier=%@&mcc=%@&mnc=%@&install=%d&apn=%@%@&lang=%@", P_HOST, action, [device.hardware encodeAsURIComponent], [device.platform encodeAsURIComponent], [device.version encodeAsURIComponent], type,
@@ -640,7 +640,7 @@
     internetReachablity = [[Reachability reachabilityForInternetConnection] retain];
     [internetReachablity startNotifier];
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
-    
+     
     connType = [UIDevice connectionType];
     /*DeviceInfo* deviceInfo = nil;
     if ( currentCapacity == 0 ) {
@@ -1046,6 +1046,26 @@
         }
     }
 }
+
+
+- (void) reachabilityChanged: (NSNotification* )note
+{
+	Reachability* curReach = [note object];
+    NetworkStatus netStatus = [curReach currentReachabilityStatus];
+    switch (netStatus)
+    {
+        case ReachableViaWWAN:
+        case ReachableViaWiFi:
+            [[NSNotificationCenter defaultCenter] postNotificationName:RefreshNotification object:nil];
+            break;
+        default: {
+            
+        }
+    }
+}
+
+
+
 
 
 #pragma mark - app info

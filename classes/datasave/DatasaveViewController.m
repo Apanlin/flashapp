@@ -1475,6 +1475,23 @@ typedef enum {
 }
 
 
+- (void) showVPNHelp
+{
+    HelpViewController* controller = [[HelpViewController alloc] init];
+    controller.showCloseButton = YES;
+    if ( [@"appstore" compare:CHANNEL] == NSOrderedSame ) {
+        controller.page = @"vpn/YDD";
+    }
+    else {
+        controller.page = @"profile/YDD";
+    }
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    [self.navigationController presentModalViewController:nav animated:YES];
+    [controller release];
+    [nav release];
+}
+
+
 - (void) showDiagnose
 {
     HelpListViewController* controller = [[HelpListViewController alloc] init];

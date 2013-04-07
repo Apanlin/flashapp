@@ -320,4 +320,5 @@
 "datastats.DatastatsScrollViewController.dateFormat2" = "YY年M月d日";
 "datastats.DatastatsScrollViewController.dateFormat3" = "M月d日";
 "datastats.DatastatsScrollViewController.dateFormat4" = "YY年M月";
+"set.alertIDCMessage.notopen" = "您的加速服务已经关闭，请先开启";
 

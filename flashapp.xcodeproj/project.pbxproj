@@ -3062,6 +3062,7 @@
 				);
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				VALID_ARCHS = "armv6 armv7";
 			};
 			name = Debug;
 		};
@@ -3091,6 +3092,7 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "armv6 armv7";
 			};
 			name = Release;
 		};

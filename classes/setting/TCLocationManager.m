@@ -77,7 +77,8 @@
 
 - (void) checkVPN
 {
-    if ( [@"appstore" compare:CHANNEL] != NSOrderedSame ) return;
+    UserSettings* user = [AppDelegate getAppDelegate].user;
+    if ( [@"appstore" compare:CHANNEL] != NSOrderedSame || ![user.stype isEqualToString:@"vpn"] ) return;
     
     ConnectionType type = [UIDevice connectionType];
     NSString* desc = nil;

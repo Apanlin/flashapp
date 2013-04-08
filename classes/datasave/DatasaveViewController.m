@@ -1481,7 +1481,8 @@ typedef enum {
 {
     HelpViewController* controller = [[HelpViewController alloc] init];
     controller.showCloseButton = YES;
-    if ( [@"appstore" compare:CHANNEL] == NSOrderedSame ) {
+    UserSettings* user = [AppDelegate getAppDelegate].user;
+    if ( [@"appstore" compare:CHANNEL] == NSOrderedSame && [user.stype isEqualToString:@"vpn"] ) {
         controller.page = @"vpn/YDD";
     }
     else {

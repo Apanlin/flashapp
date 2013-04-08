@@ -307,6 +307,8 @@
         cell.accessoryView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"left_arrow.png"]] autorelease];
     }
     
+    UserSettings* user = [AppDelegate getAppDelegate].user;
+    
     switch (section) {
         //section 0
         case 0:
@@ -358,7 +360,7 @@
                     }
                     else if ( row == 5 ) {
                         //删除描述文件
-                        if ( [@"appstore" compare:CHANNEL] == NSOrderedSame ) {
+                        if ( [@"appstore" compare:CHANNEL] == NSOrderedSame && [user.stype isEqualToString:@"vpn"] ) {
                             cell.textLabel.text = @"VPN设置";
                         }
                         else {
@@ -384,7 +386,7 @@
                     }
                     else if ( row == 3 ) {
                         //删除描述文件
-                        if ( [@"appstore" compare:CHANNEL] == NSOrderedSame ) {
+                        if ( [@"appstore" compare:CHANNEL] == NSOrderedSame && [user.stype isEqualToString:@"vpn"] ) {
                             cell.textLabel.text = @"VPN设置";
                         }
                         else {

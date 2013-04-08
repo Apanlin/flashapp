@@ -378,7 +378,7 @@ typedef enum {
         regButton.hidden = NO;
     }
     
-    if ( [@"appstore" compare:CHANNEL]==NSOrderedSame ) {
+    if ( [@"appstore" compare:CHANNEL]==NSOrderedSame && [user.stype isEqualToString:@"vpn"] ) {
         [self checkVPN];
     }
     else {
@@ -934,7 +934,7 @@ typedef enum {
     [self displayAfterLoad:mstats];
     [mstats release];
     
-    if ( [@"appstore" compare:CHANNEL]==NSOrderedSame ) {
+    if ( [@"appstore" compare:CHANNEL]==NSOrderedSame && [user.stype isEqualToString:@"vpn"] ) {
         [self checkVPN];
     }
     else {
@@ -955,6 +955,8 @@ typedef enum {
 {
     StageStats* mstats = [monthStats retain];
     
+    UserSettings *user = [UserSettings currentUserSettings];
+    
     //从数据库中加载数据
     [self loadDataFromDB];
     
@@ -962,7 +964,7 @@ typedef enum {
     [self displayAfterLoad:mstats];
     [mstats release];
     
-    if ( [@"appstore" compare:CHANNEL]==NSOrderedSame ) {
+    if ( [@"appstore" compare:CHANNEL]==NSOrderedSame && [user.stype isEqualToString:@"vpn"]) {
         //显示VPN是否开启
         [self checkVPN];
     }

@@ -743,6 +743,25 @@
     return YES;
 }
 
+//程序恢复
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    /*
+     Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+     */
+    NSLog(@"++++++++++++++applicationDidBecomeActive");
+    float currentCapacity = [UserSettings currentCapacity];
+    if ( currentCapacity > 0 ) {
+        [self incrDayCapacity];
+        
+        //访问getMemberInfo接口
+        [self getMemberInfo];
+    }
+    
+    /*if ( !timer || !timer.isValid ) {
+     [self performSelector:@selector(startTimer) withObject:nil afterDelay:60];
+     }*/
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
@@ -775,25 +794,6 @@
     NSLog(@"++++++++++++++applicationWillEnterForeground");
 }
 
-//程序恢复
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    /*
-     Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-     */
-    NSLog(@"++++++++++++++applicationDidBecomeActive");
-    float currentCapacity = [UserSettings currentCapacity];
-    if ( currentCapacity > 0 ) {
-        [self incrDayCapacity];
-        
-        //访问getMemberInfo接口
-        [self getMemberInfo];
-    }
-    
-    /*if ( !timer || !timer.isValid ) {
-        [self performSelector:@selector(startTimer) withObject:nil afterDelay:60];
-    }*/
-}
 
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -818,7 +818,6 @@
 {
 }
 */
-
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url 
 {
@@ -1063,10 +1062,6 @@
         }
     }
 }
-
-
-
-
 
 #pragma mark - app info
 

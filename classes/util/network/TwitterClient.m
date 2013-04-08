@@ -314,6 +314,11 @@
             user.idcCode = value;
         }
         
+        //add guangtao
+        value = [proxyDic objectForKey:@"stype"];
+        if (value && value != [NSNull null]) {
+            user.stype = value;
+        }
         //hist
     }
     

@@ -133,7 +133,9 @@ PictureQsLevel;
 @property (nonatomic, retain) NSString* idcServer;
 @property (nonatomic, retain) NSString* idcList;
 
-@property (nonatomic, assign) PictureQsLevel pictureQsLevel; 
+@property (nonatomic, assign) PictureQsLevel pictureQsLevel;
+
+@property (nonatomic ,retain) NSString *stype;
 
 
 + (float) currentCapacity;

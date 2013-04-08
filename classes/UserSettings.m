@@ -47,6 +47,7 @@
 @synthesize idcServer;
 @synthesize idcList;
 @synthesize pictureQsLevel;
+@synthesize stype;
 
 - (void) dealloc
 {
@@ -159,6 +160,8 @@
     
     settings.pictureQsLevel = [userDefaults integerForKey:@"pictureQsLevel"];
     
+    settings.stype = [userDefaults objectForKey:@"stype"];
+    
     return settings;
 }
 
@@ -199,6 +202,7 @@
     [userDefaults setObject:settings.idcServer forKey:@"idcServer"];
     [userDefaults setObject:settings.idcList forKey:@"idcList"];
     [userDefaults setInteger:settings.pictureQsLevel forKey:@"pictureQsLevel"];
+    [userDefaults setObject:settings.stype forKey:@"stype"];
     [userDefaults synchronize];
 }
 

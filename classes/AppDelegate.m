@@ -139,132 +139,6 @@
     return ret;
 }
 
-- (DeviceInfo*) getDeviceInfo
-{
-    DeviceInfo* deviceInfo = [TwitterClient getRegisteredDevice];
-    if ( deviceInfo ) {
-        user.capacity = [deviceInfo.quantity floatValue];
-        user.status = [deviceInfo.status intValue];
-
-        if ( connType == CELL_2G || connType == CELL_3G || connType == CELL_4G ) {
-            int proxyFlag = [deviceInfo.proxyflag intValue];
-            if ( proxyFlag == INSTALL_FLAG_CHAOSED ) {
-                user.proxyFlag = INSTALL_FLAG_CHAOSED;
-            }
-            else if ( proxyFlag == INSTALL_FLAG_YES ) {
-                //安装了profile
-                user.proxyFlag = INSTALL_FLAG_YES;
-            }
-            else {
-                //没有安装profile
-                user.proxyFlag = INSTALL_FLAG_NO;
-            }
-        }
-    }
-    else {
-        user.capacity = QUANTITY_INIT;
-        user.status = STATUS_NEW;
-    }
-    //user.proxyFlag = INSTALL_FLAG_NO;
-    
-    return deviceInfo;
-}
-
-
-+ (NSString*) getInstallURL:(NSString*)nextPage install:(BOOL)isInstall apn:(NSString*)apn idc:(NSString*)idcCode
-{
-    DeviceInfo* device = [DeviceInfo deviceInfoWithLocalDevice];
-    NSString* type = [UIDevice connectionTypeString];
-    
-    //获得Sim卡运行商
-    CTTelephonyNetworkInfo* tni = [[CTTelephonyNetworkInfo alloc] init];
-    CTCarrier* carrier = tni.subscriberCellularProvider;
-    [tni release];
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSArray *languages = [defaults objectForKey:@"AppleLanguages"];
-    NSString *currentLanguage = [languages objectAtIndex:0];
-    if ( !currentLanguage || currentLanguage.length == 0 ) currentLanguage = @"en";
-    
-    NSString* action = @"install";
-    if ( [@"appstore" compare:CHANNEL] == NSOrderedSame ) {
-        action = @"vpnn";
-    }
-    NSMutableString* url = [NSMutableString stringWithFormat:@"http://%@/%@?_method=profile&name=%@&platform=%@&osversion=%@&connType=%@&carrier=%@&mcc=%@&mnc=%@&install=%d&apn=%@%@&lang=%@", P_HOST, action, [device.hardware encodeAsURIComponent], [device.platform encodeAsURIComponent], [device.version encodeAsURIComponent], type,
-                            carrier ? [carrier.carrierName encodeAsURIComponent] : @"", 
-                            carrier ? carrier.mobileCountryCode : @"", 
-                            carrier ? carrier.mobileNetworkCode : @"",
-                            isInstall ? 1 : 0,
-                            apn && [apn length] > 0 ? [apn encodeAsURIComponent] : @"",
-                            idcCode ? [NSString stringWithFormat:@"&area=%@", idcCode] : @"",
-                            currentLanguage];
-//    NSMutableString* url = [NSMutableString stringWithFormat:@"http://%@/install?_method=profile&name=%@&platform=%@&osversion=%@&connType=%@&carrier=%@&mcc=%@&mnc=%@&install=%d&apn=%@%@", P_HOST, [device.hardware encodeAsURIComponent], [device.platform encodeAsURIComponent], [device.version encodeAsURIComponent], type,
-//                            [@"中国联通" encodeAsURIComponent],
-//                            @"460",
-//                            @"101",
-//                            isInstall ? 1 : 0,
-//                            @"3gnet",
-//                            idcCode ? [NSString stringWithFormat:@"&area=%@", idcCode] : @"" ];
-
-    if ( nextPage && [nextPage length] > 0 ) {
-        [url appendFormat:@"&nextPage=%@", [nextPage encodeAsURIComponent]];
-    }
-    
-    NSString* s = [TwitterClient composeURLVerifyCode:url];
-    NSLog(@"%@", s);
-    return s;
-}
-
-
-+ (void) installProfile:(NSString *)nextPage idc:(NSString*)idcCode
-{
-    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
-    NSString* apn = [userDefault objectForKey:@"apnName"];
-    
-    NSString* url = [AppDelegate getInstallURL:nextPage install:YES apn:apn idc:idcCode];
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-}
-
-
-+ (void) installProfile:(NSString *)nextPage apn:(NSString*)apn
-{
-    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
-    if ( apn && [apn length] > 0 ) {
-        [userDefault setObject:apn forKey:@"apnName"];
-    }
-    else {
-        [userDefault removeObjectForKey:@"apnName"];
-    }
-    [userDefault synchronize];
-    
-    NSString* url = [AppDelegate getInstallURL:nextPage install:YES apn:apn idc:nil];
-    NSLog(@"url=%@", url);
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-}
-
-
-+ (void) installProfile:(NSString*)nextPage
-{
-    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
-    NSString* apn = [userDefault objectForKey:@"apnName"];
-    
-    [self installProfile:nextPage apn:apn];
-}
-
-
-+ (void) uninstallProfile:(NSString*)nextPage
-{
-    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
-    NSString* apn = [userDefault objectForKey:@"apnName"];
-
-    NSString* url = [AppDelegate getInstallURL:nextPage install:NO apn:apn idc:nil];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-
-//    InstallProfileViewController* controller = [[InstallProfileViewController alloc] init];
-//    [[[AppDelegate getAppDelegate] currentNavigationController] pushViewController:controller animated:YES];
-//    [controller release];
-}
-
 
 - (void) switchUser
 {
@@ -513,6 +387,23 @@
 }
 
 
+- (void) showProfileHelp
+{
+    HelpViewController* controller = [[HelpViewController alloc] init];
+    controller.showCloseButton = YES;
+    if ( [@"vpn" isEqualToString:user.stype] ) {
+        controller.page = @"vpn/YDD";
+    }
+    else {
+        controller.page = @"profile/YDD";
+    }
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    [[self currentNavigationController] presentModalViewController:nav animated:YES];
+    [controller release];
+    [nav release];
+}
+
+
 - (void) incrDayCapacity
 {
     time_t now;
@@ -642,13 +533,6 @@
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
      
     connType = [UIDevice connectionType];
-    /*DeviceInfo* deviceInfo = nil;
-    if ( currentCapacity == 0 ) {
-        if ( connType == CELL_2G || connType == CELL_3G || connType == CELL_4G || connType == WIFI || connType == ETHERNET ) {
-            deviceInfo = [self getDeviceInfo];
-        }
-    }*/
-    
     proxySlow = NO;
     
         
@@ -872,8 +756,17 @@
                 }
 
                 if ( [@"1" compare:setInstall] == NSOrderedSame ) {
-                    [UserSettings saveCapacity:[capacity floatValue] status:[status intValue] proxyFlag:INSTALL_FLAG_YES];
-                    user.proxyFlag = INSTALL_FLAG_YES;
+                    NSString* stype = [params objectForKey:@"stype"];
+                    if ( stype ) {
+                        user.stype = stype;
+                    }
+
+                    if ( [@"vpn" isEqualToString:user.stype] ) {
+                        user.proxyFlag = INSTALL_FLAG_VPN_RIGHT_IDC_PAC;
+                    }
+                    else {
+                        user.proxyFlag = INSTALL_FLAG_APN_RIGHT_IDC;
+                    }
                 }
                 else {
                     [UserSettings saveCapacity:[capacity floatValue] status:[status intValue] proxyFlag:INSTALL_FLAG_NO];
@@ -994,6 +887,99 @@
 }
 
 
+#pragma mark - install profile
+
++ (NSString*) getInstallURLForServiceType:(NSString*)serviceType nextPage:(NSString*)nextPage install:(BOOL)isInstall apn:(NSString*)apn idc:(NSString*)idcCode
+{
+    DeviceInfo* device = [DeviceInfo deviceInfoWithLocalDevice];
+    NSString* type = [UIDevice connectionTypeString];
+    
+    //获得Sim卡运行商
+    CTTelephonyNetworkInfo* tni = [[CTTelephonyNetworkInfo alloc] init];
+    CTCarrier* carrier = tni.subscriberCellularProvider;
+    [tni release];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSArray *languages = [defaults objectForKey:@"AppleLanguages"];
+    NSString *currentLanguage = [languages objectAtIndex:0];
+    if ( !currentLanguage || currentLanguage.length == 0 ) currentLanguage = @"en";
+    
+    NSString* action = @"vpnn";
+    NSMutableString* url = [NSMutableString stringWithFormat:@"http://%@/%@?_method=profile&servicetype=%@&name=%@&platform=%@&osversion=%@&connType=%@&carrier=%@&mcc=%@&mnc=%@&install=%d&apn=%@%@&lang=%@",
+                            P_HOST, action, serviceType,
+                            [device.hardware encodeAsURIComponent], [device.platform encodeAsURIComponent],
+                            [device.version encodeAsURIComponent], type,
+                            carrier ? [carrier.carrierName encodeAsURIComponent] : @"",
+                            carrier ? carrier.mobileCountryCode : @"",
+                            carrier ? carrier.mobileNetworkCode : @"",
+                            isInstall ? 1 : 0,
+                            apn && [apn length] > 0 ? [apn encodeAsURIComponent] : @"",
+                            idcCode ? [NSString stringWithFormat:@"&area=%@", idcCode] : @"",
+                            currentLanguage];
+    if ( nextPage && [nextPage length] > 0 ) {
+        [url appendFormat:@"&nextPage=%@", [nextPage encodeAsURIComponent]];
+    }
+    
+    NSString* s = [TwitterClient composeURLVerifyCode:url];
+    NSLog(@"%@", s);
+    return s;
+}
+
+
+
++ (void) installProfile:(NSString *)nextPage idc:(NSString*)idcCode
+{
+    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
+    NSString* apn = [userDefault objectForKey:@"apnName"];
+    NSString* stype = [AppDelegate getAppDelegate].user.stype;
+    [self installProfileForServiceType:stype nextPage:nextPage apn:apn idc:nil];
+}
+
+
++ (void) installProfile:(NSString *)nextPage apn:(NSString*)apn
+{
+    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
+    if ( apn && [apn length] > 0 ) {
+        [userDefault setObject:apn forKey:@"apnName"];
+    }
+    else {
+        [userDefault removeObjectForKey:@"apnName"];
+    }
+    [userDefault synchronize];
+    
+    
+    NSString* stype = [AppDelegate getAppDelegate].user.stype;
+    [self installProfileForServiceType:stype nextPage:nextPage apn:apn idc:nil];
+}
+
+
++ (void) installProfile:(NSString*)nextPage
+{
+    NSString* stype = [AppDelegate getAppDelegate].user.stype;
+    NSString* apn = [[NSUserDefaults standardUserDefaults] objectForKey:@"apnName"];
+    [self installProfileForServiceType:stype nextPage:nextPage apn:apn idc:nil];
+}
+
+
++ (void) installProfileForServiceType:(NSString*)serviceType nextPage:(NSString*)nextPage apn:(NSString*)apn idc:(NSString*)idcCode
+{
+    NSString* url = [AppDelegate getInstallURLForServiceType:serviceType nextPage:nextPage install:YES apn:apn idc:idcCode];
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+}
+
+
++ (void) uninstallProfile:(NSString*)nextPage
+{
+    NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
+    NSString* apn = [userDefault objectForKey:@"apnName"];
+    NSString* stype = [AppDelegate getAppDelegate].user.stype;
+    
+    NSString* url = [AppDelegate getInstallURLForServiceType:stype nextPage:nextPage install:NO apn:apn idc:nil];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+}
+
+
+
 #pragma mark - refresh timer methods
 
 - (void) runRefresh:(void*)unused
@@ -1031,11 +1017,12 @@
                 
                 InstallFlag proxyFlag = user.proxyFlag;
                 connType = [UIDevice connectionType];
-                if ( proxyFlag == INSTALL_FLAG_YES && (connType == CELL_2G || connType == CELL_3G || connType == CELL_4G) ) {
-                    proxySlow = [self proxyServerSlow];
-                }
-                else {
-                    proxySlow = NO;
+                
+                proxySlow = NO;
+                if ( connType == CELL_2G || connType == CELL_3G || connType == CELL_4G ) {
+                    if ( proxyFlag == INSTALL_FLAG_APN_RIGHT_IDC || proxyFlag == INSTALL_FLAG_APN_WRONG_IDC ) {
+                        proxySlow = [self proxyServerSlow];
+                    }
                 }
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:RefreshNotification object:nil];

@@ -11,7 +11,8 @@
 @interface InstallProfileViewController : UIViewController
 {
     UIView* bgView;
-    UIButton* installButton;
+    UIButton* installAPNButton;
+    UIButton* installVPNButton;
     
     UILabel* label1;
     UILabel* label2;
@@ -27,7 +28,8 @@
 }
 
 @property (nonatomic, retain) IBOutlet UIView* bgView;
-@property (nonatomic, retain) IBOutlet UIButton* installButton;
+@property (nonatomic, retain) IBOutlet UIButton* installAPNButton;
+@property (nonatomic, retain) IBOutlet UIButton* installVPNButton;
 @property (nonatomic, retain) IBOutlet UILabel* label1;
 @property (nonatomic, retain) IBOutlet UILabel* label2;
 @property (nonatomic, retain) IBOutlet UILabel* label3;
@@ -39,7 +41,8 @@
 @property (nonatomic, retain) IBOutlet UIImageView* imageView;
 @property (nonatomic, retain) IBOutlet UIButton* linkButton;
 
-- (IBAction) installProfile:(id)sender;
+- (IBAction) installAPNProfile:(id)sender;
+- (IBAction) installVPNProfile:(id)sender;
 - (IBAction) copyInstallURL:(id)sender;
 
 @end

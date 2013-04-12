@@ -11,7 +11,8 @@
 
 @implementation InstallProfileViewController
 
-@synthesize installButton;
+@synthesize installAPNButton;
+@synthesize installVPNButton;
 @synthesize bgView;
 @synthesize label1;
 @synthesize label2;
@@ -46,7 +47,8 @@
 
 - (void) dealloc
 {
-    [installButton release];
+    [installAPNButton release];
+    [installVPNButton release];
     [bgView release];
     [label1 release];
     [label2 release];
@@ -73,7 +75,12 @@
     
     //self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"帮助" style:UIBarButtonItemStyleBordered target:self action:@selector(showHelp)];
     
-    [installButton setBackgroundImage:[[UIImage imageNamed:@"blueButton2"] stretchableImageWithLeftCapWidth:7 topCapHeight:8] forState:UIControlStateNormal];
+    [installAPNButton setBackgroundImage:[[UIImage imageNamed:@"blueButton2"] stretchableImageWithLeftCapWidth:7 topCapHeight:8] forState:UIControlStateNormal];
+    [installAPNButton setTitle:@"自动开启" forState:UIControlStateNormal];
+
+    [installVPNButton setBackgroundImage:[[UIImage imageNamed:@"grayButton"] stretchableImageWithLeftCapWidth:12 topCapHeight:15] forState:UIControlStateNormal];
+    [installVPNButton setTitle:@"手动开启" forState:UIControlStateNormal];
+    
     [linkButton setBackgroundImage:[[UIImage imageNamed:@"copyLinkButton.png"] stretchableImageWithLeftCapWidth:10 topCapHeight:11] forState:UIControlStateNormal];
     [linkButton setTitle:@"复制" forState:UIControlStateNormal];
     linkButton.titleLabel.font = [UIFont systemFontOfSize:13];
@@ -91,7 +98,6 @@
     label8.text = NSLocalizedString(@"pfofile.InstallProfileView.lable8", nil);
     
     //[linkButton setTitle: NSLocalizedString(@"pfofile.InstallProfileView.copyButton.title", nil) forState:UIControlStateNormal];
-    [installButton setTitle:NSLocalizedString(@"pfofile.InstallProfileView.installButton.title", nil) forState:UIControlStateNormal];
     
     UIImage* image = [UIImage imageNamed:@"ins_profile.jpg"];
     imageView.image = image;
@@ -101,6 +107,15 @@
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setObject:version forKey:@"systemVersion"];
     [userDefaults synchronize]; //强制写入
+    
+    //如果是非appstore渠道，则不显示“手动开启”
+    if ( ![@"appstore" isEqualToString:CHANNEL] ) {
+        installVPNButton.hidden = YES;
+        CGRect rect = installAPNButton.frame;
+        rect = CGRectMake( installAPNButton.frame.origin.x, installAPNButton.frame.origin.y + 20,
+                          installAPNButton.frame.size.width, installAPNButton.frame.size.height);
+        installAPNButton.frame = rect;
+    }
 } 
 
 - (void)viewDidUnload
@@ -108,7 +123,8 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-    self.installButton = nil;
+    self.installAPNButton = nil;
+    self.installVPNButton = nil;
     self.bgView = nil;
 }
 
@@ -121,15 +137,23 @@
 
 #pragma mark - operation method
 
-- (IBAction) installProfile:(id)sender
+- (IBAction) installAPNProfile:(id)sender
 {
-    [AppDelegate installProfile:nil apn:nil];
+    [UserSettings saveServiceType:@"apn"];
+    [AppDelegate installProfileForServiceType:@"apn" nextPage:nil apn:nil idc:nil];
+}
+
+
+- (IBAction) installVPNProfile:(id)sender
+{
+    [UserSettings saveServiceType:@"vpn"];
+    [AppDelegate installProfileForServiceType:@"vpn" nextPage:nil apn:nil idc:nil];
 }
 
 
 - (IBAction) copyInstallURL:(id)sender
 {
-    NSString* url = [AppDelegate getInstallURL:nil install:YES apn:nil idc:nil];
+    NSString* url = [AppDelegate getInstallURLForServiceType:@"apn" nextPage:nil install:YES apn:nil idc:nil];
     UIPasteboard* pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = url;
     

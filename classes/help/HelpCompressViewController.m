@@ -12,6 +12,7 @@
 #import "StatsDayDAO.h"
 #import "Reachability.h"
 #import "TCUtils.h"
+#import "UIDevice-Reachability.h"
 
 @interface HelpCompressViewController ()
 
@@ -129,6 +130,22 @@
         return;
     }
     
+    UserSettings* user = [AppDelegate getAppDelegate].user;
+    ConnectionType connectionType = [UIDevice connectionType];
+    
+    if ( [@"vpn" isEqualToString:user.stype] ) {
+        //检测是否开启了VPN
+        if ( connectionType == CELL_2G || connectionType == CELL_3G || connectionType == CELL_4G ) {
+            if ( ![UIDevice isVPNEnabled] ) {
+                [self showResult:NO msg:@"您的压缩服务没有开启"];
+                [openServiceButton setTitle:@"开启服务" forState:UIControlStateNormal];
+                openServiceButton.hidden = NO;
+                [openServiceButton addTarget:[AppDelegate getAppDelegate] action:@selector(showProfileHelp) forControlEvents:UIControlEventTouchUpInside];
+                return;
+            }
+        }
+    }
+
     //测试是否安装了profile
     [self checkProfile];
 }
@@ -172,16 +189,28 @@
 
 - (void) finishCheck
 {
-    InstallFlag flag = [AppDelegate getAppDelegate].user.proxyFlag;
+    AppDelegate* appDelegate = [AppDelegate getAppDelegate];
+    UserSettings* user = appDelegate.user;
+    InstallFlag flag = user.proxyFlag;
+    NSString* stype = user.stype;
+    
     if ( flag == INSTALL_FLAG_NO ) {
         [self showResult:NO msg:@"您的压缩服务未启用"];
         [openServiceButton setTitle:@"启动压缩服务" forState:UIControlStateNormal];
         openServiceButton.hidden = NO;
+        
+        if ( [@"vpn" isEqualToString:stype] ) {
+            [openServiceButton addTarget:appDelegate action:@selector(showProfileHelp) forControlEvents:UIControlEventTouchUpInside];
+        }
+        else {
+            [openServiceButton addTarget:self action:@selector(installProfile) forControlEvents:UIControlEventTouchUpInside];
+        }
     }
-    else if ( flag == INSTALL_FLAG_CHAOSED ) {
+    else if ( flag == INSTALL_FLAG_APN_WRONG_IDC ) {
         [self showResult:NO msg:@"您的机房设置错误"];
         [openServiceButton setTitle:@"修复机房设置" forState:UIControlStateNormal];
         openServiceButton.hidden = NO;
+        [openServiceButton addTarget:self action:@selector(installProfile) forControlEvents:UIControlEventTouchUpInside];
     }
     else {
         [self showResult:YES msg:@"压缩服务工作正常"];
@@ -199,7 +228,7 @@
     if ( user.proxyFlag == INSTALL_FLAG_NO ) {
         [AppDelegate installProfile:@"current"];
     }
-    else if ( user.proxyFlag == INSTALL_FLAG_CHAOSED ) {
+    else if ( user.proxyFlag == INSTALL_FLAG_APN_WRONG_IDC ) {
         [AppDelegate installProfile:@"current" idc:user.idcCode];
     }
 }

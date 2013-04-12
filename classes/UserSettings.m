@@ -161,6 +161,10 @@
     settings.pictureQsLevel = [userDefaults integerForKey:@"pictureQsLevel"];
     
     settings.stype = [userDefaults objectForKey:@"stype"];
+    if ( !settings.stype || settings.stype.length == 0 ) {
+        if ( [@"appstore" isEqualToString:CHANNEL] ) settings.stype = @"vpn";
+        else settings.stype = @"apn";
+    }
     
     return settings;
 }
@@ -323,6 +327,23 @@
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setInteger:level forKey:@"pictureQsLevel"];
     [userDefaults synchronize];
+}
+
+
++ (void) saveServiceType:(NSString*)stype
+{
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:stype forKey:@"stype"];
+    [userDefaults synchronize];
+}
+
+
+- (int) proxyFlag
+{
+    if ( [@"vpn" isEqualToString:stype] && [UIDevice isVPNEnabled] && (proxyFlag==INSTALL_FLAG_NO || proxyFlag==INSTALL_FLAG_UNKNOWN) ) {
+        proxyFlag = INSTALL_FLAG_VPN_RIGHT_IDC_PAC;
+    }
+    return proxyFlag;
 }
 
 

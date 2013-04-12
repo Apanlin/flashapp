@@ -9,5 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface HelpListViewController : UITableViewController
+{
+    int totalRows;
+}
 
 @end

@@ -243,7 +243,10 @@
         }
     }
 
-    [AppDelegate installProfile:@"datasave" apn:apnName];
+    [[NSUserDefaults standardUserDefaults] setObject:apnName forKey:@"apnName"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [AppDelegate installProfile:@"datasace" apn:apnName];
 }
 
 

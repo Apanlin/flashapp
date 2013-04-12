@@ -81,29 +81,8 @@
     if ( [@"appstore" compare:CHANNEL] != NSOrderedSame || ![user.stype isEqualToString:@"vpn"] ) return;
     
     ConnectionType type = [UIDevice connectionType];
+    BOOL vpnStarted = [UIDevice isVPNEnabled];
     NSString* desc = nil;
-    
-    BOOL vpnStarted = NO;
-    GetAddress* ga = [[GetAddress alloc] init];
-    [ga getIPAddress];
-    NSArray* ipNames = ga.ipNames;
-    NSArray* ifNames = ga.ifNames;
-    int len = [ipNames count];
-    NSString* ifName;
-    NSString* ipName;
-    for ( int i=0; i<len; i++ ) {
-        ifName = [ifNames objectAtIndex:i];
-        ipName = [ipNames objectAtIndex:i];
-        NSRange r = [ifName rangeOfString:@"utun"];
-        if ( r.location == NSNotFound ) {
-            continue;
-        }
-        else {
-            vpnStarted = YES;
-            break;
-        }
-    }
-    [ga release];
     
     switch (type) {
         case WIFI:

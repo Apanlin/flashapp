@@ -203,7 +203,7 @@
 - (void) checkFlashappServer
 {
     InstallFlag flag = [AppDelegate getAppDelegate].user.proxyFlag;
-    if ( flag == INSTALL_FLAG_NO || flag == INSTALL_FLAG_CHAOSED ) {
+    if ( flag == INSTALL_FLAG_NO ) {
         flashappItem.icon = HELP_CELL_ICON_OK;
         [self createOKView];
         return;
@@ -679,9 +679,16 @@
 
 - (void) removeProfile
 {
+    UserSettings* user = [AppDelegate getAppDelegate].user;
+    
     HelpViewController* controller = [[HelpViewController alloc] init];
     controller.showCloseButton = YES;
-    controller.page = @"profile/YDD";
+    if ( [@"vpn" isEqualToString:user.stype] ) {
+        controller.page = @"profile/YDD";
+    }
+    else {
+        controller.page = @"profile/YDD";
+    }
     
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
     [self.navigationController presentModalViewController:nav animated:YES];

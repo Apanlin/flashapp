@@ -268,7 +268,7 @@ typedef enum {
         dialView = [[DatasaveDialView alloc] initWithFrame:CGRectMake(25, 22, 160, 170)];
     }
     
-    [contentView addSubview:dialView]; //添加仪表 盘
+    [contentView addSubview:dialView]; //添加仪表盘
     [dialView setNeedsDisplay];
     
     messageView = [[ProfileTipView alloc] initWithFrame:CGRectMake(0, 0, 320, 28)];
@@ -323,7 +323,7 @@ typedef enum {
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self checkConnection]; 
+    //[self checkConnection];
     [self setLastUpdateDate];
     
     //[TCUtils readIfData:-1];
@@ -378,17 +378,12 @@ typedef enum {
         regButton.hidden = NO;
     }
     
-    if ( [@"appstore" compare:CHANNEL]==NSOrderedSame && [user.stype isEqualToString:@"vpn"] ) {
+    if ( [@"vpn" isEqualToString:user.stype] ) {
         [self checkVPN];
     }
     else {
-        [self checkProfile];
+        [self checkAPN];
     }
-    
-    //if ( installingProfile ) {
-    //    installingProfile = NO;
-    //    [self showAfterInstallProfile];
-    //}
 }
 
 
@@ -510,7 +505,126 @@ typedef enum {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-#pragma mark - load & show data methods
+
+#pragma mark - check connection and apn/vpn profiles
+
+/*
+- (void) checkConnection
+{
+    ConnectionType type = [UIDevice connectionType];
+    NSString* desc = nil;
+    
+    UserSettings* user = [AppDelegate getAppDelegate].user;
+    
+    switch (type) {
+        case UNKNOWN:
+        case NONE:
+            desc =  NSLocalizedString(@"Connection.type.NONE",nil);
+            [self showMessage:desc type:MT_WIFI];
+            [self performSelector:@selector(hiddenMessage) withObject:nil afterDelay:5.0f];
+            break;
+        case WIFI:
+            if ( [@"apn" isEqualToString:user.stype] ) {
+                desc = NSLocalizedString(@"Connection.type.WIFI",nil);
+                [self showMessage:desc type:MT_WIFI];
+                [self performSelector:@selector(hiddenMessage) withObject:nil afterDelay:2.0f];
+            }
+            break;
+        default:
+            break;
+    }
+}
+*/
+
+- (void) checkVPN
+{
+    ConnectionType type = [UIDevice connectionType];
+    BOOL vpnStarted = [UIDevice isVPNEnabled];
+    NSString* desc = nil;
+    
+    switch (type) {
+        case WIFI:
+            if ( vpnStarted ) {
+                desc = @"WIFI下请暂停服务  ";
+                [self showMessage:desc andType:MT_VPN andBtnTitle:@"暂停服务" andBtnSel:@selector(showStopVPNHelp)];
+                //[self performSelector:@selector(hiddenVPNMessage) withObject:nil afterDelay:2.0f];
+            }
+            else {
+                [self hiddenMessage:MT_VPN];
+            }
+            break;
+        case CELL_2G:
+        case CELL_3G:
+        case CELL_4G:
+            if ( !vpnStarted ) {
+                desc = @"您的加速服务被暂停  ";
+                [self showMessage:desc andType:MT_VPN andBtnTitle:@"开启服务" andBtnSel:@selector(showStartVPNHelp)];
+                //[self performSelector:@selector(hiddenVPNMessage) withObject:nil afterDelay:2.0f];
+            }
+            else {
+                [self hiddenMessage:MT_VPN];
+            }
+        default:
+            break;
+    }
+}
+
+
+- (void) checkAPN
+{
+    //提示安装profile文件
+    InstallFlag proxyFlag = [AppDelegate getAppDelegate].user.proxyFlag;
+    ConnectionType type = [UIDevice connectionType];
+    
+    if ( type == WIFI ) {
+        NSString* desc = NSLocalizedString(@"Connection.type.WIFI",nil);
+        [self showMessage:desc type:MT_WIFI];
+        [self performSelector:@selector(hiddenMessage) withObject:nil afterDelay:2.0f];
+    }
+    else if ( type == CELL_2G || type == CELL_3G || type == CELL_4G ) {
+        if ( proxyFlag == INSTALL_FLAG_NO || proxyFlag == INSTALL_FLAG_APN_WRONG_IDC ) {
+            [self showAPNMessage];
+        }
+        else {
+            [self hiddenAPNMessage];
+        }
+    }
+}
+
+
+- (void) checkProxySpeed
+{
+    InstallFlag flag = [AppDelegate getAppDelegate].user.proxyFlag;
+    ConnectionType type = [UIDevice connectionType];
+    BOOL isVPNStart = [UIDevice isVPNEnabled];
+    
+    BOOL slow = [AppDelegate getAppDelegate].proxySlow;
+    BOOL shouldShow = NO;
+    if ( slow ) {
+        if ( isVPNStart ) {
+            shouldShow = YES;
+        }
+        else if ( type == CELL_2G || type == CELL_3G || type == CELL_4G ) {
+            if ( flag == INSTALL_FLAG_APN_RIGHT_IDC ) {
+                shouldShow = YES;
+            }
+        }
+    }
+    else {
+        shouldShow = NO;
+    }
+    
+    if ( shouldShow ) {
+        [self showProxySlowMessage];
+    }
+    else {
+        [self hiddenProxySlowMessage];
+    }
+}
+
+
+
+#pragma mark - show&hidden message methods
 
 - (void) showAfterInstallProfile
 {
@@ -540,8 +654,15 @@ typedef enum {
     
     [messageView setMessage:message button:buttonTitle];
     messageView.type = MT_PROXY_SLOW;
-    [messageView.button addTarget:self action:@selector(showUninstallProfile) forControlEvents:UIControlEventTouchUpInside];
     messageView.hidden = NO;
+
+    UserSettings* user = [AppDelegate getAppDelegate].user;
+    if ( [@"vpn" isEqualToString:user.stype] ) {
+        [messageView.button addTarget:self action:@selector(showStopVPNHelp) forControlEvents:UIControlEventTouchUpInside];
+    }
+    else {
+        [messageView.button addTarget:self action:@selector(showUninstallAPNProfile) forControlEvents:UIControlEventTouchUpInside];
+    }
 }
 
 
@@ -561,7 +682,7 @@ typedef enum {
 
 
 
-- (void) showProfileMessage
+- (void) showAPNMessage
 {
     if ( !messageView.hidden && messageView.type == MT_PROFILE ) return;
 
@@ -583,14 +704,14 @@ typedef enum {
         message = NSLocalizedString(@"showProfile.message",nil);
         buttonTitle =  NSLocalizedString(@"showProfile.button.title",nil);
     }
-    else if ( user.proxyFlag == INSTALL_FLAG_CHAOSED ) {
+    else if ( user.proxyFlag == INSTALL_FLAG_APN_WRONG_IDC ) {
         message = NSLocalizedString(@"showProfile.message.choased",nil);
         buttonTitle =  NSLocalizedString(@"showProfile.button.title.choased",nil);
     }
     
     [messageView setMessage:message button:buttonTitle];
     messageView.type = MT_PROFILE;
-    [messageView.button addTarget:self action:@selector(installProfile) forControlEvents:UIControlEventTouchUpInside];
+    [messageView.button addTarget:self action:@selector(installAPNProfile) forControlEvents:UIControlEventTouchUpInside];
     messageView.hidden = NO;
 }
 
@@ -635,7 +756,7 @@ typedef enum {
 
 
 
-- (void) hiddenProfileMessage
+- (void) hiddenAPNMessage
 {
     if ( messageView.hidden || messageView.type != MT_PROFILE ) return;
     messageView.hidden = YES;
@@ -697,127 +818,52 @@ typedef enum {
     [self hiddenMessage:MT_VPN];
 }
 
-
-
-- (void) setLastUpdateDate
+- (void) showHelp
 {
-    NSString* refreshDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"EGORefreshTableView_LastRefresh"];
-    if ( refreshDate && _refreshHeaderView ) {
-        [_refreshHeaderView setLastUpdatedDate:refreshDate];
-    }
+    HelpViewController* controller = [[HelpViewController alloc] init];
+    controller.showCloseButton = YES;
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    [self.navigationController presentModalViewController:nav animated:YES];
+    [controller release];
+    [nav release];
 }
 
 
-- (void) checkProfile
+- (void) showStartVPNHelp
 {
-    //提示安装profile文件
-    InstallFlag proxyFlag = [AppDelegate getAppDelegate].user.proxyFlag;
-    //proxyFlag = INSTALL_FLAG_NO ;
-    if ( proxyFlag == INSTALL_FLAG_NO || proxyFlag == INSTALL_FLAG_CHAOSED ) {
-        [self showProfileMessage];
-    }
-    else {
-        [self hiddenProfileMessage];
-    }
+    [[AppDelegate getAppDelegate] showProfileHelp];
 }
 
 
-- (void) checkProxySpeed
+- (void) showStopVPNHelp
 {
-    BOOL slow = [AppDelegate getAppDelegate].proxySlow;
-    if ( slow ) {
-        [self showProxySlowMessage];
-    }
-    else {
-        [self hiddenProxySlowMessage];
-    }
-}
-
-
-- (void) checkConnection
-{
-    ConnectionType type = [UIDevice connectionType];
-    NSString* desc = nil;
     
-    switch (type) {
-        case UNKNOWN:
-        case NONE:
-            desc =  NSLocalizedString(@"Connection.type.NONE",nil);
-            [self showMessage:desc type:MT_WIFI];
-            [self performSelector:@selector(hiddenMessage) withObject:nil afterDelay:5.0f];
-            break;
-        case WIFI:
-            if ( [@"appstore" compare:CHANNEL] == NSOrderedSame ) {
-            }
-            else {
-                desc = NSLocalizedString(@"Connection.type.WIFI",nil);
-                [self showMessage:desc type:MT_WIFI];
-                [self performSelector:@selector(hiddenMessage) withObject:nil afterDelay:2.0f];
-            }
-            
-            break;
-        default:
-            break;
-    }
 }
 
 
-- (void) checkVPN
+- (void) showDiagnose
 {
-    if ( [@"appstore" compare:CHANNEL] != NSOrderedSame ) return;
-    
-    ConnectionType type = [UIDevice connectionType];
-    NSString* desc = nil;
-    
-    BOOL vpnStarted = NO;
-    GetAddress* ga = [[GetAddress alloc] init];
-    [ga getIPAddress];
-    NSArray* ipNames = ga.ipNames;
-    NSArray* ifNames = ga.ifNames;
-    int len = [ipNames count];
-    NSString* ifName;
-    NSString* ipName;
-    for ( int i=0; i<len; i++ ) {
-        ifName = [ifNames objectAtIndex:i];
-        ipName = [ipNames objectAtIndex:i];
-        NSRange r = [ifName rangeOfString:@"utun"];
-        if ( r.location == NSNotFound ) {
-            continue;
-        }
-        else {
-            vpnStarted = YES;
-            break;
-        }
-    }
-    [ga release];
-    
-    switch (type) {
-        case WIFI:
-            if ( vpnStarted ) {
-                desc = @"WIFI下请暂停服务  ";
-                [self showMessage:desc andType:MT_VPN andBtnTitle:@"关闭VPN" andBtnSel:@selector(showVPNHelp)];
-                //[self performSelector:@selector(hiddenVPNMessage) withObject:nil afterDelay:2.0f];
-            }
-            else {
-                [self hiddenMessage:MT_VPN];
-            }
-            break;
-        case CELL_2G:
-        case CELL_3G:
-        case CELL_4G:
-            if ( !vpnStarted ) {
-                desc = @"您的加速服务暂停了  ";
-                [self showMessage:desc andType:MT_VPN andBtnTitle:@"开启VPN" andBtnSel:@selector(showVPNHelp)];
-                //[self performSelector:@selector(hiddenVPNMessage) withObject:nil afterDelay:2.0f];
-            }
-            else {
-                [self hiddenMessage:MT_VPN];
-            }
-        default:
-            break;
-    }
+    HelpListViewController* controller = [[HelpListViewController alloc] init];
+    controller.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:controller animated:YES];
+    [controller release];
 }
 
+
+- (void) showUninstallAPNProfile
+{
+    HelpViewController* controller = [[HelpViewController alloc] init];
+    controller.showCloseButton = YES;
+    controller.page = @"profile/YDD";
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    [self.navigationController presentModalViewController:nav animated:YES];
+    [controller release];
+    [nav release];
+}
+
+
+
+#pragma mark - load Data and show Data methods
 
 - (void) renderDB
 {
@@ -934,12 +980,12 @@ typedef enum {
     [self displayAfterLoad:mstats];
     [mstats release];
     
-    if ( [@"appstore" compare:CHANNEL]==NSOrderedSame && [user.stype isEqualToString:@"vpn"] ) {
+    if ( [@"vpn" isEqualToString:user.stype] ) {
         [self checkVPN];
     }
     else {
         //显示profile是否安装
-        [self checkProfile];
+        [self checkAPN];
     }
     
     //显示网速测试结果
@@ -964,13 +1010,13 @@ typedef enum {
     [self displayAfterLoad:mstats];
     [mstats release];
     
-    if ( [@"appstore" compare:CHANNEL]==NSOrderedSame && [user.stype isEqualToString:@"vpn"]) {
+    if ( [@"vpn" isEqualToString:user.stype]) {
         //显示VPN是否开启
         [self checkVPN];
     }
     else {
         //显示profile是否安装
-        [self checkProfile];
+        [self checkAPN];
     }
 
     //显示网速测试结果
@@ -1083,6 +1129,19 @@ typedef enum {
     else {
         [self showTCData];
     }
+}
+
+
+#pragma mark - taocan methods
+
+//流量校准按钮
+- (void) openTaocanSetting
+{
+    TCAdjustViewController* controller = [[TCAdjustViewController alloc] init];
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    [self.navigationController presentModalViewController:nav animated:YES];
+    [controller release];
+    [nav release];
 }
 
 
@@ -1393,7 +1452,7 @@ typedef enum {
 }
 
 
-- (void) installProfile
+- (void) installAPNProfile
 {
     UserSettings* user = [AppDelegate getAppDelegate].user;
     if ( user.proxyFlag == INSTALL_FLAG_NO ) {
@@ -1406,7 +1465,7 @@ typedef enum {
         [controller release];
         [nav release];
     }
-    else if ( user.proxyFlag == INSTALL_FLAG_CHAOSED ) {
+    else if ( user.proxyFlag == INSTALL_FLAG_APN_WRONG_IDC ) {
         //安装当前机房的profile
         NSString* code = user.idcCode;
         [AppDelegate installProfile:@"current" idc:code];
@@ -1463,67 +1522,6 @@ typedef enum {
     controller.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:controller animated:YES];
     [controller release];
-}
-
-
-- (void) showHelp
-{
-    HelpViewController* controller = [[HelpViewController alloc] init];
-    controller.showCloseButton = YES;
-    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self.navigationController presentModalViewController:nav animated:YES];
-    [controller release];
-    [nav release];
-}
-
-
-- (void) showVPNHelp
-{
-    HelpViewController* controller = [[HelpViewController alloc] init];
-    controller.showCloseButton = YES;
-    UserSettings* user = [AppDelegate getAppDelegate].user;
-    if ( [@"appstore" compare:CHANNEL] == NSOrderedSame && [user.stype isEqualToString:@"vpn"] ) {
-        controller.page = @"vpn/YDD";
-    }
-    else {
-        controller.page = @"profile/YDD";
-    }
-    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self.navigationController presentModalViewController:nav animated:YES];
-    [controller release];
-    [nav release];
-}
-
-
-- (void) showDiagnose
-{
-    HelpListViewController* controller = [[HelpListViewController alloc] init];
-    controller.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:controller animated:YES];
-    [controller release];
-}
-
-
-- (void) showUninstallProfile
-{
-    HelpViewController* controller = [[HelpViewController alloc] init];
-    controller.showCloseButton = YES;
-    controller.page = @"profile/YDD";
-    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self.navigationController presentModalViewController:nav animated:YES];
-    [controller release];
-    [nav release];
-}
-
-
-//流量校准按钮
-- (void) openTaocanSetting
-{
-    TCAdjustViewController* controller = [[TCAdjustViewController alloc] init];
-    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self.navigationController presentModalViewController:nav animated:YES];
-    [controller release];
-    [nav release];
 }
 
 
@@ -1876,6 +1874,13 @@ typedef enum {
 }
 
 
+- (void) setLastUpdateDate
+{
+    NSString* refreshDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"EGORefreshTableView_LastRefresh"];
+    if ( refreshDate && _refreshHeaderView ) {
+        [_refreshHeaderView setLastUpdatedDate:refreshDate];
+    }
+}
 
 
 @end

@@ -79,7 +79,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 8;
+    NSString* stype = [AppDelegate getAppDelegate].user.stype;
+    if ( [@"vpn" isEqualToString:stype] ) {
+        totalRows = 7;
+    }
+    else {
+        totalRows = 8;
+    }
+    return totalRows;
 }
 
 
@@ -95,7 +102,7 @@
     if ( row == 0 ) {
         return 39;
     }
-    else if ( row == 7 ) {
+    else if ( row == totalRows - 1 ) {
         return 44;
     }
     else {
@@ -143,6 +150,9 @@
     
     int row = indexPath.row;
     UILabel * label = (UILabel*) [cell.contentView viewWithTag:TAG_CELL_LABEL];
+    
+    NSString* stype = [AppDelegate getAppDelegate].user.stype;
+    if ( row >= 3 && [@"vpn" isEqualToString:stype] ) row++;
     switch (row) {
         case 0:
             label.text = @"无法使用网络怎么办？";
@@ -187,7 +197,7 @@
         imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 300, 39)];
         imageView.image = [[UIImage imageNamed:@"help_cell_bg_top.png"] stretchableImageWithLeftCapWidth:13 topCapHeight:0];
     }
-    else if ( row == 7 ) {
+    else if ( row == totalRows - 1 ) {
         imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 300, 44)];
         imageView.image = [[UIImage imageNamed:@"help_cell_bg_bottom.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:0];
     }
@@ -215,7 +225,7 @@
         imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 300, 39)];
         imageView.image = [[UIImage imageNamed:@"help_cell_bg_top_h.png"] stretchableImageWithLeftCapWidth:13 topCapHeight:0];
     }
-    else if ( row == 7 ) {
+    else if ( row == totalRows - 1 ) {
         imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 300, 44)];
         imageView.image = [[UIImage imageNamed:@"help_cell_bg_bottom_h.png"] stretchableImageWithLeftCapWidth:14 topCapHeight:0];
     }
@@ -281,7 +291,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     int row = indexPath.row;
-    ConnectionType type = [UIDevice connectionType]; 
+    ConnectionType type = [UIDevice connectionType];
+    
+    NSString* stype = [AppDelegate getAppDelegate].user.stype;
+    if ( row >= 3 && [@"vpn" isEqualToString:stype] ) row++;
     
     if ( row == 0 ) {
         if ( type != CELL_2G && type != CELL_3G && type != CELL_4G ) {

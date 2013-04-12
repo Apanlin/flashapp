@@ -28,11 +28,23 @@ typedef enum {
     LEVEL_7     //飞机
 } UserLevel;
 
-typedef enum {
+/*typedef enum {
     INSTALL_FLAG_UNKNOWN,
     INSTALL_FLAG_YES,
     INSTALL_FLAG_NO,
     INSTALL_FLAG_CHAOSED    //用户当前机房与profile不一致
+} InstallFlag;
+*/
+
+typedef enum {
+    INSTALL_FLAG_UNKNOWN = 0,
+    INSTALL_FLAG_NO = 1, //服务停止
+    INSTALL_FLAG_APN_RIGHT_IDC = 11,
+    INSTALL_FLAG_APN_WRONG_IDC = 13,
+    INSTALL_FLAG_VPN_RIGHT_IDC_PAC = 21,
+    INSTALL_FLAG_VPN_WRONG_IDC_PAC = 23,
+    INSTALL_FLAG_VPN_RIGHT_IDC_NO_PAC = 31,
+    INSTALL_FLAG_VPN_WRONG_IDC_NO_PAC = 33
 } InstallFlag;
 
 
@@ -154,6 +166,7 @@ PictureQsLevel;
 + (void) saveCarrier:(NSString*)code carrierType:(NSString*)type area:(NSString*)area;
 + (void) saveCarrier:(NSString*)code carrierType:(NSString*)type area:(NSString*)area snsnum:(NSString*)snsnum snstext:(NSString*)snstext;
 + (void) savePictureQsLevel:(PictureQsLevel)level;
++ (void) saveServiceType:(NSString*)stype;
 
 - (float) getTcTotal;
 - (float) getTcUsed;

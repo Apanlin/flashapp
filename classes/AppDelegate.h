@@ -58,7 +58,7 @@
 #define URL_SHARE @"/loginsns/share/device.jsp"
 
 #define API_KEY @"30efb1a621c4bd711652ecafb7cbd3673a062b3f"
-#define API_VER @"1.5.1"
+#define API_VER @"1.5.4"
 
 #define RefreshNotification @"refreshNotification"
 #define TCChangedNotification @"TCChangedNotification"
@@ -130,12 +130,14 @@
 - (void) showDatasaveView:(BOOL)justInstallProfile;
 - (void) showProfileView;
 + (void) showHelp;
+- (void) showProfileHelp;
 + (void) showUserReviews;
 + (void) installProfile:(NSString*)nextPage;
 + (void) installProfile:(NSString *)nextPage apn:(NSString*)apn;
 + (void) installProfile:(NSString *)nextPage idc:(NSString*)idcCode;
++ (void) installProfileForServiceType:(NSString*)serviceType nextPage:(NSString*)nextPage apn:(NSString*)apn idc:(NSString*)idcCode;
 + (void) uninstallProfile:(NSString*)nextPage;
-+ (NSString*) getInstallURL:(NSString*)nextPage install:(BOOL)isInstall apn:(NSString*)apn idc:(NSString*)idcCode;
++ (NSString*) getInstallURLForServiceType:(NSString*)serviceType nextPage:(NSString*)nextPage install:(BOOL)isInstall apn:(NSString*)apn idc:(NSString*)idcCode;
 
 - (UINavigationController*) currentNavigationController;
 - (UIViewController*) currentViewController;

@@ -307,8 +307,6 @@
         cell.accessoryView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"left_arrow.png"]] autorelease];
     }
     
-    UserSettings* user = [AppDelegate getAppDelegate].user;
-    
     switch (section) {
         //section 0
         case 0:
@@ -360,12 +358,7 @@
                     }
                     else if ( row == 5 ) {
                         //删除描述文件
-                        if ( [@"appstore" compare:CHANNEL] == NSOrderedSame && [user.stype isEqualToString:@"vpn"] ) {
-                            cell.textLabel.text = @"VPN设置";
-                        }
-                        else {
-                            cell.textLabel.text = NSLocalizedString(@"set.profile.delete", nil);
-                        }
+                        cell.textLabel.text = NSLocalizedString(@"set.profile.delete", nil);
                     }
                 }
             }
@@ -386,12 +379,7 @@
                     }
                     else if ( row == 3 ) {
                         //删除描述文件
-                        if ( [@"appstore" compare:CHANNEL] == NSOrderedSame && [user.stype isEqualToString:@"vpn"] ) {
-                            cell.textLabel.text = @"VPN设置";
-                        }
-                        else {
-                            cell.textLabel.text = NSLocalizedString(@"set.profile.delete", nil);
-                        }
+                        cell.textLabel.text = NSLocalizedString(@"set.profile.delete", nil);
                     }
                 }
             }
@@ -458,18 +446,25 @@
     }
     
     UserSettings* user = [AppDelegate getAppDelegate].user;
+    NSString* stype = user.stype;
     UISwitch* switcher = (UISwitch*) [cell.contentView viewWithTag:TAG_PROFILE_SWITCH];
-    if ( user.proxyFlag == INSTALL_FLAG_NO ) {
-        cell.textLabel.text = NSLocalizedString(@"set.service.status.closed", nil);
-        switcher.on = NO;
-    }
-    else if ( user.proxyFlag == INSTALL_FLAG_CHAOSED ) {
-        cell.textLabel.text = NSLocalizedString(@"set.service.status.closed", nil);
-        switcher.on = NO;
+    
+    if ( [@"vpn" isEqualToString:stype] ) {
+        cell.textLabel.text = @"自动模式(已关闭)";
     }
     else {
-        cell.textLabel.text = NSLocalizedString(@"set.service.status.opened", nil);
-        switcher.on = YES;
+        if ( user.proxyFlag == INSTALL_FLAG_NO ) {
+            cell.textLabel.text = NSLocalizedString(@"set.service.status.closed", nil);
+            switcher.on = NO;
+        }
+        else if ( user.proxyFlag == INSTALL_FLAG_APN_WRONG_IDC ) {
+            cell.textLabel.text = NSLocalizedString(@"set.service.status.closed", nil);
+            switcher.on = NO;
+        }
+        else {
+            cell.textLabel.text = NSLocalizedString(@"set.service.status.opened", nil);
+            switcher.on = YES;
+        }
     }
     
     return cell;
@@ -500,15 +495,7 @@
         cell.textLabel.text = [NSString stringWithFormat:@"%@ (%@)", NSLocalizedString(@"set.speed.optimization", nil), idc.name];
     }
     else {
-        if ( user.proxyFlag == INSTALL_FLAG_NO ) {
-            cell.textLabel.text = NSLocalizedString(@"set.service.status.closed", nil);
-        }
-        else if ( user.proxyFlag == INSTALL_FLAG_CHAOSED ) {
-            cell.textLabel.text = NSLocalizedString(@"set.service.status.closed", nil);
-        }
-        else {
-            cell.textLabel.text = NSLocalizedString(@"set.speed.optimization", nil);
-        }
+        cell.textLabel.text = NSLocalizedString(@"set.speed.optimization", nil);
     }
     
     return cell;
@@ -584,11 +571,11 @@
     int row = indexPath.row;
     UIDevice* device = [UIDevice currentDevice];
     float version = [device.systemVersion floatValue];
+    UserSettings* user = [AppDelegate getAppDelegate].user;
     
     switch (section) {
         case 0: {
             //帐号设置
-            UserSettings* user = [AppDelegate getAppDelegate].user;
             if ( user.username && user.username.length > 0 ) {
                 AccountViewController* controller = [[AccountViewController alloc] init];
                 [self.navigationController pushViewController:controller animated:YES];
@@ -649,8 +636,8 @@
                         //删除描述文件
                         HelpViewController* controller = [[HelpViewController alloc] init];
                         controller.showCloseButton = NO;
-                        if ( [@"appstore" compare:CHANNEL] == NSOrderedSame ) {
-                            controller.page = @"vpn/YDD";
+                        if ( [@"vpn" compare:user.stype] == NSOrderedSame ) {
+                            controller.page = @"vpn/CLO";
                         }
                         else {
                             controller.page = @"profile/YDD";
@@ -757,7 +744,7 @@
             [alertWifiView release];
             break;
         default:
-            if (user.proxyFlag == INSTALL_FLAG_CHAOSED ||user.proxyFlag == INSTALL_FLAG_NO) {
+            if (user.proxyFlag == INSTALL_FLAG_APN_WRONG_IDC ||user.proxyFlag == INSTALL_FLAG_NO) {
                 desc = NSLocalizedString(@"set.alertIDCMessage.notopen", nil);
                 UIAlertView* alertWifiView = [[UIAlertView alloc] initWithTitle:title message:desc delegate:self cancelButtonTitle:closeButtonTitle otherButtonTitles:nil, nil];
                 [alertWifiView show];
@@ -775,10 +762,10 @@
 
 #pragma mark - tool methods
 
-- (void) installProfile
+- (void) installAPNProfile
 {
     UserSettings* user = [AppDelegate getAppDelegate].user;
-    if ( user.proxyFlag == INSTALL_FLAG_CHAOSED ) {
+    if ( user.proxyFlag == INSTALL_FLAG_APN_WRONG_IDC ) {
         [AppDelegate installProfile:@"current" idc:user.idcCode];
     }
     else {
@@ -792,11 +779,25 @@
     [AppDelegate uninstallProfile:@"current"];
 }
 
+
+- (void) showStartVPNHelp
+{
+    //TODO: showStartVPNHelp
+}
+
+
 - (void) profileSetting:(id)sender
 {
+    NSString* stype = [AppDelegate getAppDelegate].user.stype;
     UISwitch* switcher = (UISwitch*)sender;
+    
     if ( switcher.on ) {
-        [self installProfile];
+        if ( [@"vpn" isEqualToString:stype] ) {
+            [AppDelegate installProfileForServiceType:@"apn" nextPage:@"current" apn:nil idc:nil];
+        }
+        else {
+            [self installAPNProfile];
+        }
     }
     else {
         profileSwitcher = switcher;
@@ -808,7 +809,6 @@
         [alertView show];
         [alertView release];
         alertView.tag = TAG_ALERT_PROFILE;
-        
     }
 }
 
@@ -840,25 +840,23 @@
 
 - (void) showProfileStatusCell
 {
+    //fwzt：服务状态;
     UITableViewCell* cell_fwzt = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:2]];
-    UITableViewCell* cell_wsyh = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
-    if ( !cell_fwzt || !cell_wsyh) return;
+    if ( !cell_fwzt ) return;
     
     UISwitch* switcher = (UISwitch*) [cell_fwzt.contentView viewWithTag:TAG_PROFILE_SWITCH];
     UserSettings* user = [AppDelegate getAppDelegate].user;
-    if ( user.proxyFlag == INSTALL_FLAG_NO ) {
-        cell_fwzt.textLabel.text = NSLocalizedString(@"set.service.status.closed", nil);
-        cell_wsyh.textLabel.text = NSLocalizedString(@"set.service.status.closed", nil);
-        if ( switcher ) switcher.on = NO;
-    }
-    else if ( user.proxyFlag == INSTALL_FLAG_CHAOSED ) {
-        cell_fwzt.textLabel.text = NSLocalizedString(@"set.service.status.closed", nil);
-        cell_wsyh.textLabel.text = NSLocalizedString(@"set.service.status.closed", nil);
+    if ( user.proxyFlag == INSTALL_FLAG_NO || user.proxyFlag == INSTALL_FLAG_APN_WRONG_IDC ) {
+        if ( [@"vpn" isEqualToString:user.stype] ) {
+            cell_fwzt.textLabel.text = @"自动模式(已关闭)";
+        }
+        else {
+            cell_fwzt.textLabel.text = NSLocalizedString(@"set.service.status.closed", nil);
+        }
         if ( switcher ) switcher.on = NO;
     }
     else {
         cell_fwzt.textLabel.text = NSLocalizedString(@"set.service.status.opened", nil);
-        cell_wsyh.textLabel.text = NSLocalizedString(@"set.speed.optimization", nil);
         if ( switcher ) switcher.on = YES;
     }
     

@@ -28,4 +28,5 @@ typedef enum {
 + (BOOL) reachableToHost:(NSString*)hostname;
 - (NSString*) hardware;
 - (BOOL)isJailbroken;
++ (BOOL) isVPNEnabled;
 @end

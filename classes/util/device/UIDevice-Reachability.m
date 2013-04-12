@@ -15,6 +15,7 @@
 #include <sys/sysctl.h>
 #import "UIDevice-Reachability.h"
 #import "Reachability.h"
+#import "GetAddress.h"
 
 @implementation UIDevice (Reachability)
 SCNetworkConnectionFlags connectionFlags;
@@ -179,7 +180,34 @@ SCNetworkConnectionFlags connectionFlags;
         jailbroken = YES;  
     }  
     return jailbroken;  
-}  
+}
+
+
++ (BOOL) isVPNEnabled
+{
+    BOOL vpnStarted = NO;
+    GetAddress* ga = [[GetAddress alloc] init];
+    [ga getIPAddress];
+    NSArray* ipNames = ga.ipNames;
+    NSArray* ifNames = ga.ifNames;
+    int len = [ipNames count];
+    NSString* ifName;
+    NSString* ipName;
+    for ( int i=0; i<len; i++ ) {
+        ifName = [ifNames objectAtIndex:i];
+        ipName = [ipNames objectAtIndex:i];
+        NSRange r = [ifName rangeOfString:@"utun"];
+        if ( r.location == NSNotFound ) {
+            continue;
+        }
+        else {
+            vpnStarted = YES;
+            break;
+        }
+    }
+    [ga release];
+    return vpnStarted;
+}
 
 
 @end

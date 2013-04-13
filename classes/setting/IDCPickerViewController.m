@@ -71,7 +71,7 @@
     
     //初始化变量
     children = [[NSMutableArray array]retain];
-    selectedRow = 0;
+    selectedIDC = nil;
     [self loadData]; //加载速度
     //  [self ping];
 }
@@ -259,103 +259,46 @@
     
     UserSettings* user = [AppDelegate getAppDelegate].user;
     
-    if ( [idc.code compare:user.idcCode] == NSOrderedSame ) {
-        selectedRow = rowNum;
-        selectButton.selected = YES;
+    if ( selectedIDC ) {
+        if ( [selectedIDC.code isEqualToString:idc.code] ) {
+            selectButton.selected = YES;
+        }
+        else {
+            selectButton.selected = NO;
+        }
     }
-    else {    
-        selectButton.selected = NO;
+    else {
+        if ( [idc.code compare:user.idcCode] == NSOrderedSame ) {
+            selectedIDC = idc;
+            selectButton.selected = YES;
+        }
+        else {
+            selectButton.selected = NO;
+        }
     }
+    
     cell.backgroundColor = bgColor;
     return cell;
 }
 
-/*
- 点击单选按钮，触发该动作
- */
--(void)checkboxClick:(id)sender
-{
-    NSInteger tag1 =[(UIButton *)sender tag];
-    selectedRow = tag1;
-    
-    
-    for ( UIButton * each in children ){
-        if(each.tag == tag1){
-            each.selected = YES;
-        }else{
-            each.selected = NO;
-        }
-    }
-}
 
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
-
-/*
- // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
- {
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
- }   
- else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }   
- }
- */
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
- {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
 
 #pragma mark - Table view delegate
 
 
-//- (NSIndexPath*) tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    IDCInfo* idc = [idcArray objectAtIndex:indexPath.row];
-//    UserSettings* user = [AppDelegate getAppDelegate].user;
-//    if ( ![idc.host compare:user.idcServer] == NSOrderedSame ) {
-//        return indexPath;
-//    }
-//    else {
-//        return nil;
-//    }
-//}
-
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    selectedRow = indexPath.row;
+    selectedIDC = [idcArray objectAtIndex:indexPath.row];
     
     NSArray* cells = [tableView visibleCells];
     for ( UITableViewCell* cell in cells ) {
-        UIButton* button = (UIButton*) [cell.contentView viewWithTag:TAG_SELECTRADIO];
-        button.selected = NO;
+        UIButton* radio = (UIButton*) [cell.contentView viewWithTag:TAG_SELECTRADIO];
+        radio.selected = NO;
     }
     
     UITableViewCell* cell = [tableView cellForRowAtIndexPath:indexPath];
-    UIButton* button = (UIButton*) [cell.contentView viewWithTag:TAG_SELECTRADIO];
-    button.selected = YES;
+    UIButton* radio = (UIButton*) [cell.contentView viewWithTag:TAG_SELECTRADIO];
+    radio.selected = YES;
     
     //    IDCInfo* idc = [idcArray objectAtIndex:indexPath.row];
     //    UserSettings* user = [AppDelegate getAppDelegate].user;
@@ -373,11 +316,12 @@
  */
 -(void)saveButtonClick:(id)sender
 {
-    IDCInfo* idc = [idcArray objectAtIndex:selectedRow];
-    NSString* message = [NSString stringWithFormat:@"%@“%@”?", NSLocalizedString(@"set.IDCView.saveButton.message",nil),idc.name];
-    UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"promptName", nil) message:message delegate:self cancelButtonTitle:NSLocalizedString(@"giveUpName", nil) otherButtonTitles:NSLocalizedString(@"defineName", nil), nil];
-    [alertView show];
-    [alertView release];
+    if ( selectedIDC ) {
+        NSString* message = [NSString stringWithFormat:@"%@“%@”?", NSLocalizedString(@"set.IDCView.saveButton.message",nil),selectedIDC.name];
+        UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"promptName", nil) message:message delegate:self cancelButtonTitle:NSLocalizedString(@"giveUpName", nil) otherButtonTitles:NSLocalizedString(@"defineName", nil), nil];
+        [alertView show];
+        [alertView release];
+    }
 }
 
 
@@ -425,11 +369,6 @@
     [children release];
     children = [[NSMutableArray array]retain];
     
-    selectedRow = 0;
-    //    if(idcCount == idcArray.count){
-    //        //[self sortTable];
-    //        [button setTitle:@"重新测速" forState:UIControlStateNormal];
-    //    }
     [self performSelectorOnMainThread:@selector(refreshTable) withObject:nil waitUntilDone:YES];
 }
 
@@ -675,29 +614,13 @@
 
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSIndexPath* indexPath = [NSIndexPath indexPathForRow:selectedRow inSection:0];
-    UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    if ( cell ) {
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    }
-    
     if ( buttonIndex == 1 ) {
-        NSArray* cells = [self.tableView visibleCells];
-        for ( UITableViewCell* c in cells ) {
-            c.accessoryType = UITableViewCellAccessoryNone;
-        }
-        
-        //        if ( cell ) {
-        //            cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        //        }
-        
-        //刷新访问数据
-        [TwitterClient getStatsData];
-        
-        //开始安装profile
-        IDCInfo* idc = [idcArray objectAtIndex:selectedRow];
-        if ( idc ) {
-            [AppDelegate installProfile:@"datasave" idc:idc.code];
+        if ( selectedIDC ) {
+            //刷新访问数据
+            [TwitterClient getStatsData];
+            
+            //开始安装profile
+            [AppDelegate installProfile:@"datasave" idc:selectedIDC.code];
         }
     }
 }

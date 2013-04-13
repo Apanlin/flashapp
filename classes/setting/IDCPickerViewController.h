@@ -17,7 +17,7 @@
     NSArray* idcArray;
     NSMutableDictionary* idcOrderArray; //用来放置每个机房测速后的集合。主要用于根据速度进行排序
     NSMutableDictionary* speedDic;
-    NSInteger selectedRow;
+    IDCInfo* selectedIDC;
     
     TwitterClient* client;
     NSOperationQueue* queue;

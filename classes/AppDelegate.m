@@ -934,7 +934,7 @@
     NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
     NSString* apn = [userDefault objectForKey:@"apnName"];
     NSString* stype = [AppDelegate getAppDelegate].user.stype;
-    [self installProfileForServiceType:stype nextPage:nextPage apn:apn idc:nil];
+    [self installProfileForServiceType:stype nextPage:nextPage apn:apn idc:idcCode];
 }
 
 

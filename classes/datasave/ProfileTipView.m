@@ -71,6 +71,27 @@
 }
 
 
+- (void) setTarget:(id)target action:(SEL)action
+{
+    [self clearButtonActions];
+    [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
+}
+
+
+- (void) clearButtonActions
+{
+    NSSet* allTarget = [button allTargets];
+    for ( id t in allTarget ) {
+        if ( t == [NSNull null] ) continue;
+        NSArray* actions = [button actionsForTarget:t forControlEvent:UIControlEventTouchUpInside];
+        for ( NSString* s in actions ) {
+            SEL action = NSSelectorFromString(s);
+            [button removeTarget:t action:action forControlEvents:UIControlEventTouchUpInside];
+        }
+    }
+}
+
+
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect

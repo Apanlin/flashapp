@@ -22,5 +22,6 @@
 
 
 - (void) setMessage:(NSString*)msg button:(NSString*)title;
+- (void) setTarget:(id)target action:(SEL)action;
 
 @end

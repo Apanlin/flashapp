@@ -659,10 +659,10 @@ typedef enum {
 
     UserSettings* user = [AppDelegate getAppDelegate].user;
     if ( [@"vpn" isEqualToString:user.stype] ) {
-        [messageView.button addTarget:self action:@selector(showStopVPNHelp) forControlEvents:UIControlEventTouchUpInside];
+        [messageView setTarget:self action:@selector(showStopVPNHelp)];
     }
     else {
-        [messageView.button addTarget:self action:@selector(showUninstallAPNProfile) forControlEvents:UIControlEventTouchUpInside];
+        [messageView setTarget:self action:@selector(showUninstallAPNProfile)];
     }
 }
 
@@ -685,7 +685,7 @@ typedef enum {
 
 - (void) showAPNMessage
 {
-    if ( !messageView.hidden && messageView.type == MT_PROFILE ) return;
+    if ( !messageView.hidden && messageView.type != MT_PROFILE ) return;
 
     if ( messageView.hidden ) {
         CGSize s = scrollView.contentSize;
@@ -712,14 +712,14 @@ typedef enum {
     
     [messageView setMessage:message button:buttonTitle];
     messageView.type = MT_PROFILE;
-    [messageView.button addTarget:self action:@selector(installAPNProfile) forControlEvents:UIControlEventTouchUpInside];
+    [messageView setTarget:self action:@selector(installAPNProfile)];
     messageView.hidden = NO;
 }
 
 
 - (void) showMessage:(NSString*)message andType:(MessageType)type andBtnTitle:(NSString*)title andBtnSel:(SEL)sel
 {
-    if ( !messageView.hidden && messageView.type == type ) return;
+    if ( !messageView.hidden && messageView.type != type ) return;
     
     if ( messageView.hidden ) {
         CGSize s = scrollView.contentSize;
@@ -733,7 +733,7 @@ typedef enum {
     
     [messageView setMessage:message button:title];
     messageView.type = type;
-    [messageView.button addTarget:self action:sel forControlEvents:UIControlEventTouchUpInside];
+    [messageView setTarget:self action:sel];
     messageView.hidden = NO;
 }
 
@@ -902,8 +902,9 @@ typedef enum {
         return;
     }
     
-    AppDelegate* app = [AppDelegate getAppDelegate];
-    if ( [app.networkReachablity currentReachabilityStatus] == NotReachable ) {
+//    AppDelegate* app = [AppDelegate getAppDelegate];
+    Reachability* reachable = [Reachability reachabilityForInternetConnection];
+    if ( [reachable currentReachabilityStatus] == NotReachable ) {
         if ( dropdownRefresh ) {
             [self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:0.3f];
         }

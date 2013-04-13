@@ -620,7 +620,7 @@
             [TwitterClient getStatsData];
             
             //开始安装profile
-            [AppDelegate installProfile:@"datasave" idc:selectedIDC.code];
+            [AppDelegate installProfileForServiceType:@"apn" nextPage:@"datasave" apn:nil idc:selectedIDC.code];
         }
     }
 }

@@ -47,7 +47,7 @@
     
     [button setBackgroundImage:[[UIImage imageNamed:@"blueButton2.png"] stretchableImageWithLeftCapWidth:7 topCapHeight:8] forState:UIControlStateNormal];
     button.titleLabel.textColor = [UIColor whiteColor];
-    [button addTarget:self action:@selector(installVPNProfile) forControlEvents:UIControlEventTouchUpInside];
+    [button addTarget:self action:@selector(installAPNProfile) forControlEvents:UIControlEventTouchUpInside];
 }
 
 
@@ -72,9 +72,9 @@
 }
 
 
-- (void) installVPNProfile
+- (void) installAPNProfile
 {
-    [AppDelegate installProfile:@"datasave"];
+    [AppDelegate installProfileForServiceType:@"apn" nextPage:@"datasave" apn:nil idc:nil];
 }
 
 

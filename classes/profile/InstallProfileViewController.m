@@ -116,6 +116,7 @@
         rect = CGRectMake( installAPNButton.frame.origin.x, installAPNButton.frame.origin.y + 20,
                           installAPNButton.frame.size.width, installAPNButton.frame.size.height);
         installAPNButton.frame = rect;
+        [installAPNButton setTitle:@"立即开启" forState:UIControlStateNormal];
     }
 } 
 

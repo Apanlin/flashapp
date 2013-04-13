@@ -17,6 +17,8 @@
 #import "LevelViewController.h"
 #import "TCAdjustViewController.h"
 #import "HelpListViewController.h"
+#import "OpenVPNViewController.h"
+#import "CloseVPNViewController.h"
 #import "AppDelegate.h"
 #import "DBConnection.h"
 #import "IFDataService.h"
@@ -50,7 +52,6 @@ typedef enum {
     MT_WIFI,
     MT_PROFILE,
     MT_PROXY_SLOW,
-    MT_VPN
 } MessageType;
 
 
@@ -546,11 +547,11 @@ typedef enum {
         case WIFI:
             if ( vpnStarted ) {
                 desc = @"WIFI下请暂停服务  ";
-                [self showMessage:desc andType:MT_VPN andBtnTitle:@"暂停服务" andBtnSel:@selector(showStopVPNHelp)];
+                [self showMessage:desc andType:MT_PROFILE andBtnTitle:@"暂停服务" andBtnSel:@selector(showStopVPNHelp)];
                 //[self performSelector:@selector(hiddenVPNMessage) withObject:nil afterDelay:2.0f];
             }
             else {
-                [self hiddenMessage:MT_VPN];
+                [self hiddenMessage:MT_PROFILE];
             }
             break;
         case CELL_2G:
@@ -558,11 +559,11 @@ typedef enum {
         case CELL_4G:
             if ( !vpnStarted ) {
                 desc = @"您的加速服务被暂停  ";
-                [self showMessage:desc andType:MT_VPN andBtnTitle:@"开启服务" andBtnSel:@selector(showStartVPNHelp)];
+                [self showMessage:desc andType:MT_PROFILE andBtnTitle:@"开启服务" andBtnSel:@selector(showStartVPNHelp)];
                 //[self performSelector:@selector(hiddenVPNMessage) withObject:nil afterDelay:2.0f];
             }
             else {
-                [self hiddenMessage:MT_VPN];
+                [self hiddenMessage:MT_PROFILE];
             }
         default:
             break;
@@ -586,7 +587,7 @@ typedef enum {
             [self showAPNMessage];
         }
         else {
-            [self hiddenAPNMessage];
+            [self hiddenProfileMessage];
         }
     }
 }
@@ -716,24 +717,6 @@ typedef enum {
 }
 
 
-- (void) showVPNMessage:(BOOL)shouldOpen
-{
-    NSString* message = nil;
-    NSString* buttonTitle = nil;
-    SEL sel = nil;
-    
-    if ( shouldOpen ) {
-        message = @"请打开VPN";
-        buttonTitle = @"开启VPN";
-    }
-    else {
-        message = @"请关闭VPN";
-        buttonTitle = @"关拨VPN";
-    }
-    [self showMessage:message andType:MT_VPN andBtnTitle:buttonTitle andBtnSel:sel];
-}
-
-
 - (void) showMessage:(NSString*)message andType:(MessageType)type andBtnTitle:(NSString*)title andBtnSel:(SEL)sel
 {
     if ( !messageView.hidden && messageView.type == type ) return;
@@ -756,21 +739,6 @@ typedef enum {
 
 
 
-- (void) hiddenAPNMessage
-{
-    if ( messageView.hidden || messageView.type != MT_PROFILE ) return;
-    messageView.hidden = YES;
-    
-    CGRect rect = contentView.frame;
-    rect.origin.y = 0;
-    contentView.frame = rect;
-    
-    CGSize s = scrollView.contentSize;
-    s.height -= MESSAGE_HEIGHT;
-    scrollView.contentSize = s;
-}
-
-
 - (BOOL) showMessage:(NSString*)msg type:(MessageType)mt
 {
     if ( !messageView.hidden ) return false;
@@ -791,6 +759,28 @@ typedef enum {
 }
 
 
+- (void) hiddenMessage
+{
+    [self hiddenMessage:MT_WIFI];
+}
+
+
+- (void) hiddenProfileMessage
+{
+    if ( messageView.hidden || messageView.type != MT_PROFILE ) return;
+    messageView.hidden = YES;
+    
+    CGRect rect = contentView.frame;
+    rect.origin.y = 0;
+    contentView.frame = rect;
+    
+    CGSize s = scrollView.contentSize;
+    s.height -= MESSAGE_HEIGHT;
+    scrollView.contentSize = s;
+}
+
+
+
 - (void) hiddenMessage:(MessageType)mt
 {
     if ( messageView.hidden || messageView.type != mt ) return;
@@ -807,17 +797,6 @@ typedef enum {
 }
 
 
-- (void) hiddenMessage
-{
-    [self hiddenMessage:MT_WIFI];
-}
-
-
-- (void) hiddenVPNMessage
-{
-    [self hiddenMessage:MT_VPN];
-}
-
 - (void) showHelp
 {
     HelpViewController* controller = [[HelpViewController alloc] init];
@@ -831,13 +810,22 @@ typedef enum {
 
 - (void) showStartVPNHelp
 {
-    [[AppDelegate getAppDelegate] showProfileHelp];
+    OpenVPNViewController* controller = [[OpenVPNViewController alloc] init];
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    [self.navigationController presentModalViewController:nav animated:YES];
+    [controller release];
+    [nav release];
+//    [[AppDelegate getAppDelegate] showProfileHelp];
 }
 
 
 - (void) showStopVPNHelp
 {
-    
+    CloseVPNViewController* controller = [[CloseVPNViewController alloc] init];
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    [self.navigationController presentModalViewController:nav animated:YES];
+    [controller release];
+    [nav release];
 }
 
 

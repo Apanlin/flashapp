@@ -18,5 +18,6 @@
 }
 
 - (void) showProfileStatusCell;
+- (void) refresh;
 
 @end

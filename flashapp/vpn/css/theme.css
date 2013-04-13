@@ -16,8 +16,8 @@ dd{ margin:0;}
 /*header */
 
 
-.main { margin:0 10px; }
-dl { text-align:center; margin:10px 0 ;}
-dt { font-weight:bold; margin:20px 0 10px 0; line-height:26px; text-align:left;}
-p { line-height:24px; text-indent:30px; margin-top:15px;}
+.main { margin:0; }
+.msg {margin:10px 0 0 10px;text-align:center;}
+.txt { font-weight:bold; margin:20px 0 10px 0; line-height:26px; text-align:left;}
+dl { margin:5px 0 0px 10; text-align:center;}
 .img {text-align:center; text-indent:0px; margin-bottom:15px;}

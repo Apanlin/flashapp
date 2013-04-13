@@ -21,6 +21,7 @@
 #import "HelpNetBadViewController.h"
 #import "HelpCompressViewController.h"
 #import "InstallProfileViewController.h"
+#import "OpenVPNViewController.h"
 #import "RegisterViewController.h"
 #import "HelpViewController.h"
 #import "SetupViewController.h"
@@ -806,7 +807,8 @@
                 //如果是setting界面，则需要刷新服务状态
                 if ( [controller isKindOfClass:[SettingViewController class]] ) {
                     SettingViewController* settingController = (SettingViewController*) controller;
-                    [settingController showProfileStatusCell];
+                    //[settingController showProfileStatusCell];
+                    [settingController refresh];
                 }
                 else if ( [controller isKindOfClass:[IDCPickerViewController class]] ) {
                     IDCPickerViewController* idcController = (IDCPickerViewController*) controller;

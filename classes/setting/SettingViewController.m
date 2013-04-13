@@ -142,6 +142,7 @@
 {
     UIDevice* device = [UIDevice currentDevice];
     float version = [device.systemVersion floatValue];
+    NSString* stype = [AppDelegate getAppDelegate].user.stype;
     
     if ( section == 0 ) {
         return 1;
@@ -152,7 +153,13 @@
      else if ( section == 2 ) {
          int count = 0;
          if ( version >= 4.0 ) {
-             count = 5;
+             if ( [@"vpn" isEqualToString:stype] ) {
+                 //vpn下不显示“APN校对”和“删除描述文件”
+                 count = 3;
+             }
+             else {
+                 count = 5;
+             }
          }
          else {
              count = 3;
@@ -180,6 +187,7 @@
     int row = indexPath.row;
     UIDevice* device = [UIDevice currentDevice];
     float version = [device.systemVersion floatValue];
+    NSString* stype = [AppDelegate getAppDelegate].user.stype;
     
     switch (section) {
         case 0:
@@ -221,13 +229,16 @@
                         //服务状态
                         return [self tableView:tableView profileCellForRowAtIndexPath:indexPath];
                     }
-                    else if ( row == 4 ) {
-                        //APN校对
-                        return [self tableView:tableView labelCellForRowAtIndexPath:indexPath];
-                    }
-                    else if ( row == 5 ) {
-                        //删除描述文件
-                        return [self tableView:tableView labelCellForRowAtIndexPath:indexPath];
+                    else {
+                        if ( [@"vpn" isEqualToString:stype] ) row++;
+                        if ( row == 4 ) {
+                            //APN校对
+                            return [self tableView:tableView labelCellForRowAtIndexPath:indexPath];
+                        }
+                        else if ( row == 5 ) {
+                            //删除描述文件
+                            return [self tableView:tableView labelCellForRowAtIndexPath:indexPath];
+                        }
                     }
                 }
             }
@@ -295,6 +306,7 @@
     NSInteger row = indexPath.row;
     UIDevice* device = [UIDevice currentDevice];
     float version = [device.systemVersion floatValue];
+    NSString* stype = [AppDelegate getAppDelegate].user.stype;
 
     NSString* myIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:myIdentifier];
@@ -352,13 +364,16 @@
                         //服务状态
                         //不会出现在这儿
                     }
-                    else if ( row == 4 ) {
-                        //APN校对
-                        cell.textLabel.text = NSLocalizedString(@"set.APN.adjust", nil);
-                    }
-                    else if ( row == 5 ) {
-                        //删除描述文件
-                        cell.textLabel.text = NSLocalizedString(@"set.profile.delete", nil);
+                    else {
+                        if ( [@"vpn" isEqualToString:stype] ) row++;
+                        if ( row == 4 ) {
+                            //APN校对
+                            cell.textLabel.text = NSLocalizedString(@"set.APN.adjust", nil);
+                        }
+                        else if ( row == 5 ) {
+                            //删除描述文件
+                            cell.textLabel.text = NSLocalizedString(@"set.profile.delete", nil);
+                        }
                     }
                 }
             }
@@ -626,24 +641,27 @@
                         //服务状态
                         //不可能执行到这儿
                     }
-                    else if ( row == 4 ) {
-                        //APN校对
-                        APNViewController* controller = [[APNViewController alloc] init];
-                        [self.navigationController pushViewController:controller animated:YES];
-                        [controller release];
-                    }
-                    else if ( row == 5 ) {
-                        //删除描述文件
-                        HelpViewController* controller = [[HelpViewController alloc] init];
-                        controller.showCloseButton = NO;
-                        if ( [@"vpn" compare:user.stype] == NSOrderedSame ) {
-                            controller.page = @"vpn/CLO";
+                    else {
+                        if ( [@"vpn" isEqualToString:user.stype] ) row++;
+                        if ( row == 4 ) {
+                            //APN校对
+                            APNViewController* controller = [[APNViewController alloc] init];
+                            [self.navigationController pushViewController:controller animated:YES];
+                            [controller release];
                         }
-                        else {
-                            controller.page = @"profile/YDD";
+                        else if ( row == 5 ) {
+                            //删除描述文件
+                            HelpViewController* controller = [[HelpViewController alloc] init];
+                            controller.showCloseButton = NO;
+                            if ( [@"vpn" compare:user.stype] == NSOrderedSame ) {
+                                controller.page = @"vpn/CLO";
+                            }
+                            else {
+                                controller.page = @"profile/YDD";
+                            }
+                            [self.navigationController pushViewController:controller animated:YES];
+                            [controller release];
                         }
-                        [self.navigationController pushViewController:controller animated:YES];
-                        [controller release];
                     }
                 }
             }
@@ -731,9 +749,6 @@
     NSString *cancelText = NSLocalizedString(@"cancleName", nil);
     NSString *continueText = NSLocalizedString(@"continueName", nil);
     
-    //得到用户来判断用户服务状态是 是开启 还是关闭
-    UserSettings* user = [AppDelegate getAppDelegate].user;
-    
     switch (type) {
         case UNKNOWN:
         case NONE:
@@ -744,18 +759,11 @@
             [alertWifiView release];
             break;
         default:
-            if (user.proxyFlag == INSTALL_FLAG_APN_WRONG_IDC ||user.proxyFlag == INSTALL_FLAG_NO) {
-                desc = NSLocalizedString(@"set.alertIDCMessage.notopen", nil);
-                UIAlertView* alertWifiView = [[UIAlertView alloc] initWithTitle:title message:desc delegate:self cancelButtonTitle:closeButtonTitle otherButtonTitles:nil, nil];
-                [alertWifiView show];
-                [alertWifiView release];
-            }else{
-                desc = NSLocalizedString(@"set.alertIDCMessage.default", nil);
-                UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:title message:desc delegate:self cancelButtonTitle:cancelText otherButtonTitles:continueText, nil];
-                [alertView show];
-                [alertView release];
-                alertView.tag = TAG_ALERT_IDC;
-            }
+            desc = NSLocalizedString(@"set.alertIDCMessage.default", nil);
+            UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:title message:desc delegate:self cancelButtonTitle:cancelText otherButtonTitles:continueText, nil];
+            [alertView show];
+            [alertView release];
+            alertView.tag = TAG_ALERT_IDC;
             break;
     }
 }
@@ -777,12 +785,6 @@
 - (void) removeProfile
 {
     [AppDelegate uninstallProfile:@"current"];
-}
-
-
-- (void) showStartVPNHelp
-{
-    //TODO: showStartVPNHelp
 }
 
 
@@ -931,6 +933,12 @@
 
 
 #pragma mark - load Data
+
+- (void) refresh
+{
+    [self.tableView reloadData];
+}
+
 
 - (void) loadData
 {

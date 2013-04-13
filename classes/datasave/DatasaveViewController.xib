@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1552</int>
-		<string key="IBDocument.SystemVersion">12D78</string>
+		<string key="IBDocument.SystemVersion">11G63b</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
-		<string key="IBDocument.AppKitVersion">1187.37</string>
-		<string key="IBDocument.HIToolboxVersion">626.00</string>
+		<string key="IBDocument.AppKitVersion">1138.51</string>
+		<string key="IBDocument.HIToolboxVersion">569.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			<string key="NS.object.0">2083</string>
@@ -969,7 +969,209 @@
 			<nil key="sourceID"/>
 			<int key="maxID">118</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">CapacityAnimateView</string>
+					<string key="superclassName">UIView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/CapacityAnimateView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">DatasaveViewController</string>
+					<string key="superclassName">UIViewController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="inviteFriend">id</string>
+						<string key="openTaocanSetting">id</string>
+						<string key="registerPhone">id</string>
+						<string key="showLevelDesc">id</string>
+						<string key="showMjoy91OfferWall">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="inviteFriend">
+							<string key="name">inviteFriend</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="openTaocanSetting">
+							<string key="name">openTaocanSetting</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="registerPhone">
+							<string key="name">registerPhone</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showLevelDesc">
+							<string key="name">showLevelDesc</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showMjoy91OfferWall">
+							<string key="name">showMjoy91OfferWall</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="balanceLabel">UILabel</string>
+						<string key="balanceUnitLabel">UILabel</string>
+						<string key="caView">CapacityAnimateView</string>
+						<string key="capacityLabel">UILabel</string>
+						<string key="capacityUnitLabel">UILabel</string>
+						<string key="contentView">UIView</string>
+						<string key="dataBgView">UIImageView</string>
+						<string key="inviteBgView">UIImageView</string>
+						<string key="inviteDownButton">UIButton</string>
+						<string key="inviteUpButton">UIButton</string>
+						<string key="levelImageButton">UIButton</string>
+						<string key="levelImageView">UIImageView</string>
+						<string key="levelLabel">UILabel</string>
+						<string key="nicknameLabel">UILabel</string>
+						<string key="nicknameView">UIImageView</string>
+						<string key="regButton">UIButton</string>
+						<string key="scrollView">UIScrollView</string>
+						<string key="taocanAdjectButton">UIButton</string>
+						<string key="taocanBarBgImageView">UIImageView</string>
+						<string key="taocanBarTriangleImageView">UIImageView</string>
+						<string key="taocanBgView">UIImageView</string>
+						<string key="taocanButton">UIButton</string>
+						<string key="taocanExceedBarImageView">UIImageView</string>
+						<string key="taocanLabel">UILabel</string>
+						<string key="taocanLabel2">UILabel</string>
+						<string key="taocanLeftLabel">UILabel</string>
+						<string key="taocanUnitLabel">UILabel</string>
+						<string key="taocanUsedBarImageView">UIImageView</string>
+						<string key="taocanUsedLabel">UILabel</string>
+						<string key="taocanUsedUnitLabel">UILabel</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="balanceLabel">
+							<string key="name">balanceLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="balanceUnitLabel">
+							<string key="name">balanceUnitLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="caView">
+							<string key="name">caView</string>
+							<string key="candidateClassName">CapacityAnimateView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="capacityLabel">
+							<string key="name">capacityLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="capacityUnitLabel">
+							<string key="name">capacityUnitLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="contentView">
+							<string key="name">contentView</string>
+							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="dataBgView">
+							<string key="name">dataBgView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="inviteBgView">
+							<string key="name">inviteBgView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="inviteDownButton">
+							<string key="name">inviteDownButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="inviteUpButton">
+							<string key="name">inviteUpButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="levelImageButton">
+							<string key="name">levelImageButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="levelImageView">
+							<string key="name">levelImageView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="levelLabel">
+							<string key="name">levelLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="nicknameLabel">
+							<string key="name">nicknameLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="nicknameView">
+							<string key="name">nicknameView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="regButton">
+							<string key="name">regButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="scrollView">
+							<string key="name">scrollView</string>
+							<string key="candidateClassName">UIScrollView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanAdjectButton">
+							<string key="name">taocanAdjectButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanBarBgImageView">
+							<string key="name">taocanBarBgImageView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanBarTriangleImageView">
+							<string key="name">taocanBarTriangleImageView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanBgView">
+							<string key="name">taocanBgView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanButton">
+							<string key="name">taocanButton</string>
+							<string key="candidateClassName">UIButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanExceedBarImageView">
+							<string key="name">taocanExceedBarImageView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanLabel">
+							<string key="name">taocanLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanLabel2">
+							<string key="name">taocanLabel2</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanLeftLabel">
+							<string key="name">taocanLeftLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanUnitLabel">
+							<string key="name">taocanUnitLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanUsedBarImageView">
+							<string key="name">taocanUsedBarImageView</string>
+							<string key="candidateClassName">UIImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanUsedLabel">
+							<string key="name">taocanUsedLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="taocanUsedUnitLabel">
+							<string key="name">taocanUsedUnitLabel</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/DatasaveViewController.h</string>
+					</object>
+				</object>
+			</array>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>

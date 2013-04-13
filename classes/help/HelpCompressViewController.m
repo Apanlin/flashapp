@@ -8,6 +8,7 @@
 
 #import "HelpCompressViewController.h"
 #import "FeedbackViewController.h"
+#import "OpenVPNViewController.h"
 #import "AppDelegate.h"
 #import "StatsDayDAO.h"
 #import "Reachability.h"
@@ -69,7 +70,6 @@
     UIImage* image = [[UIImage imageNamed:@"blueButton2.png"] stretchableImageWithLeftCapWidth:7 topCapHeight:8];
     [openServiceButton setBackgroundImage:image forState:UIControlStateNormal];
     [openServiceButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [openServiceButton addTarget:self action:@selector(installProfile) forControlEvents:UIControlEventTouchUpInside];
     
     [feedbackButton setBackgroundImage:image forState:UIControlStateNormal];
     [feedbackButton setTitle:@"意见反馈" forState:UIControlStateNormal];
@@ -140,14 +140,15 @@
                 [self showResult:NO msg:@"您的压缩服务没有开启"];
                 [openServiceButton setTitle:@"开启服务" forState:UIControlStateNormal];
                 openServiceButton.hidden = NO;
-                [openServiceButton addTarget:[AppDelegate getAppDelegate] action:@selector(showProfileHelp) forControlEvents:UIControlEventTouchUpInside];
+                [openServiceButton addTarget:self action:@selector(showStartVPNHelp) forControlEvents:UIControlEventTouchUpInside];
                 return;
             }
         }
     }
-
-    //测试是否安装了profile
-    [self checkProfile];
+    else {
+        //测试是否安装了profile
+        [self checkProfile];
+    }
 }
 
 
@@ -200,7 +201,7 @@
         openServiceButton.hidden = NO;
         
         if ( [@"vpn" isEqualToString:stype] ) {
-            [openServiceButton addTarget:appDelegate action:@selector(showProfileHelp) forControlEvents:UIControlEventTouchUpInside];
+            [openServiceButton addTarget:self action:@selector(showStartVPNHelp) forControlEvents:UIControlEventTouchUpInside];
         }
         else {
             [openServiceButton addTarget:self action:@selector(installProfile) forControlEvents:UIControlEventTouchUpInside];
@@ -241,6 +242,16 @@
     
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
     nav.navigationBar.tintColor = [UIColor blackColor];
+    [self.navigationController presentModalViewController:nav animated:YES];
+    [controller release];
+    [nav release];
+}
+
+
+- (void) showStartVPNHelp
+{
+    OpenVPNViewController* controller = [[OpenVPNViewController alloc] init];
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
     [self.navigationController presentModalViewController:nav animated:YES];
     [controller release];
     [nav release];

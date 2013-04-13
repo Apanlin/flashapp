@@ -344,6 +344,18 @@
 		EF2869541701675D0090CDE7 /* GetAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = EF2869531701675D0090CDE7 /* GetAddress.m */; };
 		EF286956170199B30090CDE7 /* vpn in Resources */ = {isa = PBXBuildFile; fileRef = EF286955170199B30090CDE7 /* vpn */; };
 		EF2982451717FF8E0084C10D /* grayButton.png in Resources */ = {isa = PBXBuildFile; fileRef = EF2982441717FF8E0084C10D /* grayButton.png */; };
+		EF29824C171833F70084C10D /* OpenVPNViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF29824A171833F60084C10D /* OpenVPNViewController.m */; };
+		EF29824D171833F70084C10D /* OpenVPNViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF29824B171833F60084C10D /* OpenVPNViewController.xib */; };
+		EF298250171836660084C10D /* henxian.png in Resources */ = {isa = PBXBuildFile; fileRef = EF29824E171836660084C10D /* henxian.png */; };
+		EF298251171836660084C10D /* icon_setting.png in Resources */ = {isa = PBXBuildFile; fileRef = EF29824F171836660084C10D /* icon_setting.png */; };
+		EF29825717183C600084C10D /* openvpn_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EF29825217183C600084C10D /* openvpn_1.jpg */; };
+		EF29825817183C600084C10D /* openvpn_2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EF29825317183C600084C10D /* openvpn_2.jpg */; };
+		EF29825917183C600084C10D /* openvpn_3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EF29825417183C600084C10D /* openvpn_3.jpg */; };
+		EF29825A17183C600084C10D /* openvpn_4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EF29825517183C600084C10D /* openvpn_4.jpg */; };
+		EF29825B17183C600084C10D /* openvpn_5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EF29825617183C600084C10D /* openvpn_5.jpg */; };
+		EF29825D171900190084C10D /* icon_setting@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EF29825C171900190084C10D /* icon_setting@2x.png */; };
+		EF298261171901FE0084C10D /* CloseVPNViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF29825F171901FE0084C10D /* CloseVPNViewController.m */; };
+		EF298262171901FE0084C10D /* CloseVPNViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF298260171901FE0084C10D /* CloseVPNViewController.xib */; };
 		EF367D6217158DB000104C2F /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EF367D6117158DB000104C2F /* libCorePlot-CocoaTouch.a */; };
 		EF63A26016758C3A009F1950 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A25F16758C3A009F1950 /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EF63A26216758C3A009F1950 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A26116758C3A009F1950 /* Foundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -883,6 +895,20 @@
 		EF2869531701675D0090CDE7 /* GetAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetAddress.m; sourceTree = "<group>"; };
 		EF286955170199B30090CDE7 /* vpn */ = {isa = PBXFileReference; lastKnownFileType = folder; path = vpn; sourceTree = "<group>"; };
 		EF2982441717FF8E0084C10D /* grayButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grayButton.png; path = flashapp/image/grayButton.png; sourceTree = SOURCE_ROOT; };
+		EF298249171833F60084C10D /* OpenVPNViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenVPNViewController.h; sourceTree = "<group>"; };
+		EF29824A171833F60084C10D /* OpenVPNViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenVPNViewController.m; sourceTree = "<group>"; };
+		EF29824B171833F60084C10D /* OpenVPNViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OpenVPNViewController.xib; sourceTree = "<group>"; };
+		EF29824E171836660084C10D /* henxian.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = henxian.png; path = flashapp/image/henxian.png; sourceTree = SOURCE_ROOT; };
+		EF29824F171836660084C10D /* icon_setting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_setting.png; path = flashapp/image/icon_setting.png; sourceTree = SOURCE_ROOT; };
+		EF29825217183C600084C10D /* openvpn_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = openvpn_1.jpg; path = flashapp/image/openvpn_1.jpg; sourceTree = SOURCE_ROOT; };
+		EF29825317183C600084C10D /* openvpn_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = openvpn_2.jpg; path = flashapp/image/openvpn_2.jpg; sourceTree = SOURCE_ROOT; };
+		EF29825417183C600084C10D /* openvpn_3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = openvpn_3.jpg; path = flashapp/image/openvpn_3.jpg; sourceTree = SOURCE_ROOT; };
+		EF29825517183C600084C10D /* openvpn_4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = openvpn_4.jpg; path = flashapp/image/openvpn_4.jpg; sourceTree = SOURCE_ROOT; };
+		EF29825617183C600084C10D /* openvpn_5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = openvpn_5.jpg; path = flashapp/image/openvpn_5.jpg; sourceTree = SOURCE_ROOT; };
+		EF29825C171900190084C10D /* icon_setting@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon_setting@2x.png"; path = "flashapp/image/icon_setting@2x.png"; sourceTree = SOURCE_ROOT; };
+		EF29825E171901FD0084C10D /* CloseVPNViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloseVPNViewController.h; sourceTree = "<group>"; };
+		EF29825F171901FE0084C10D /* CloseVPNViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CloseVPNViewController.m; sourceTree = "<group>"; };
+		EF298260171901FE0084C10D /* CloseVPNViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CloseVPNViewController.xib; sourceTree = "<group>"; };
 		EF367D1417158D9100104C2F /* CorePlot-CocoaTouch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CorePlot-CocoaTouch.h"; sourceTree = "<group>"; };
 		EF367D1517158D9100104C2F /* CPTAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTAnimation.h; sourceTree = "<group>"; };
 		EF367D1617158D9100104C2F /* CPTAnimationOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTAnimationOperation.h; sourceTree = "<group>"; };
@@ -1361,6 +1387,14 @@
 		B3B3A41816F838E600D8DE95 /* image */ = {
 			isa = PBXGroup;
 			children = (
+				EF29825C171900190084C10D /* icon_setting@2x.png */,
+				EF29825217183C600084C10D /* openvpn_1.jpg */,
+				EF29825317183C600084C10D /* openvpn_2.jpg */,
+				EF29825417183C600084C10D /* openvpn_3.jpg */,
+				EF29825517183C600084C10D /* openvpn_4.jpg */,
+				EF29825617183C600084C10D /* openvpn_5.jpg */,
+				EF29824E171836660084C10D /* henxian.png */,
+				EF29824F171836660084C10D /* icon_setting.png */,
 				EF2982441717FF8E0084C10D /* grayButton.png */,
 				EFEBB3A71712D7C000734A7F /* Default-568h@2x.jpg */,
 				B3B3A41916F838E600D8DE95 /* appdetail_resume.png */,
@@ -2107,6 +2141,9 @@
 		EF63A30716758C67009F1950 /* profile */ = {
 			isa = PBXGroup;
 			children = (
+				EF29825E171901FD0084C10D /* CloseVPNViewController.h */,
+				EF29825F171901FE0084C10D /* CloseVPNViewController.m */,
+				EF298260171901FE0084C10D /* CloseVPNViewController.xib */,
 				EF63A30816758C67009F1950 /* InstallProfileViewController.h */,
 				EF63A30916758C67009F1950 /* InstallProfileViewController.m */,
 				EF63A30A16758C67009F1950 /* InstallProfileViewController.xib */,
@@ -2116,6 +2153,9 @@
 				EF63A30E16758C67009F1950 /* RegisterViewController.h */,
 				EF63A30F16758C67009F1950 /* RegisterViewController.m */,
 				EF63A31016758C67009F1950 /* RegisterViewController.xib */,
+				EF298249171833F60084C10D /* OpenVPNViewController.h */,
+				EF29824A171833F60084C10D /* OpenVPNViewController.m */,
+				EF29824B171833F60084C10D /* OpenVPNViewController.xib */,
 			);
 			path = profile;
 			sourceTree = "<group>";
@@ -2879,6 +2919,16 @@
 				EF286956170199B30090CDE7 /* vpn in Resources */,
 				EFEBB3A81712D7C000734A7F /* Default-568h@2x.jpg in Resources */,
 				EF2982451717FF8E0084C10D /* grayButton.png in Resources */,
+				EF29824D171833F70084C10D /* OpenVPNViewController.xib in Resources */,
+				EF298250171836660084C10D /* henxian.png in Resources */,
+				EF298251171836660084C10D /* icon_setting.png in Resources */,
+				EF29825717183C600084C10D /* openvpn_1.jpg in Resources */,
+				EF29825817183C600084C10D /* openvpn_2.jpg in Resources */,
+				EF29825917183C600084C10D /* openvpn_3.jpg in Resources */,
+				EF29825A17183C600084C10D /* openvpn_4.jpg in Resources */,
+				EF29825B17183C600084C10D /* openvpn_5.jpg in Resources */,
+				EF29825D171900190084C10D /* icon_setting@2x.png in Resources */,
+				EF298262171901FE0084C10D /* CloseVPNViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3031,6 +3081,8 @@
 				EF63A7B71678383B009F1950 /* JSONKit.m in Sources */,
 				EFECD2E01679D3EB00BB1E41 /* SystemVariablesDAO.m in Sources */,
 				EF2869541701675D0090CDE7 /* GetAddress.m in Sources */,
+				EF29824C171833F70084C10D /* OpenVPNViewController.m in Sources */,
+				EF298261171901FE0084C10D /* CloseVPNViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

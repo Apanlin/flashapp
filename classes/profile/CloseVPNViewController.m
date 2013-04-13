@@ -46,12 +46,6 @@
 }
 
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    scrollView.contentSize = CGSizeMake( 320, 550 );
-}
-
 - (void) viewDidUnload
 {
     [super viewDidUnload];

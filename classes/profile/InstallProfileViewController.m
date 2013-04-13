@@ -108,8 +108,9 @@
     [userDefaults setObject:version forKey:@"systemVersion"];
     [userDefaults synchronize]; //强制写入
     
-    //如果是非appstore渠道，则不显示“手动开启”
-    if ( ![@"appstore" isEqualToString:CHANNEL] ) {
+    //如果是非appstore渠道或者serviceType＝apn，则不显示“手动开启”
+    NSString* stype = [[NSUserDefaults standardUserDefaults] objectForKey:@"stype"];
+    if ( ![@"appstore" isEqualToString:CHANNEL] || [@"apn" isEqualToString:stype] ) {
         installVPNButton.hidden = YES;
         CGRect rect = installAPNButton.frame;
         rect = CGRectMake( installAPNButton.frame.origin.x, installAPNButton.frame.origin.y + 20,

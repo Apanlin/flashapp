@@ -18,7 +18,7 @@
 		EF29824D171833F70084C10D /* OpenVPNViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF29824B171833F60084C10D /* OpenVPNViewController.xib */; };
 		EF298261171901FE0084C10D /* CloseVPNViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF29825F171901FE0084C10D /* CloseVPNViewController.m */; };
 		EF298262171901FE0084C10D /* CloseVPNViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF298260171901FE0084C10D /* CloseVPNViewController.xib */; };
-		EF3DBD18171C554E000E785C /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EF3DBD17171C554E000E785C /* libCorePlot-CocoaTouch.a */; };
+		EF3DBD23171D6068000E785C /* libCorePlot-CocoaTouch_armv6_armv7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EF3DBD22171D6068000E785C /* libCorePlot-CocoaTouch_armv6_armv7.a */; };
 		EF63A26016758C3A009F1950 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A25F16758C3A009F1950 /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EF63A26216758C3A009F1950 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A26116758C3A009F1950 /* Foundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EF63A26416758C3A009F1950 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A26316758C3A009F1950 /* CoreGraphics.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -648,7 +648,7 @@
 		EF367D5E17158D9100104C2F /* NSCoderExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCoderExtensions.h; sourceTree = "<group>"; };
 		EF367D5F17158D9100104C2F /* NSDecimalNumberExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDecimalNumberExtensions.h; sourceTree = "<group>"; };
 		EF367D6017158D9100104C2F /* NSNumberExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSNumberExtensions.h; sourceTree = "<group>"; };
-		EF3DBD17171C554E000E785C /* libCorePlot-CocoaTouch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libCorePlot-CocoaTouch.a"; path = "external/libCorePlot-CocoaTouch.a"; sourceTree = "<group>"; };
+		EF3DBD22171D6068000E785C /* libCorePlot-CocoaTouch_armv6_armv7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libCorePlot-CocoaTouch_armv6_armv7.a"; path = "external/libCorePlot-CocoaTouch_armv6_armv7.a"; sourceTree = "<group>"; };
 		EF63A25B16758C3A009F1950 /* flashapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = flashapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF63A25F16758C3A009F1950 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		EF63A26116758C3A009F1950 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1343,7 +1343,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EF3DBD18171C554E000E785C /* libCorePlot-CocoaTouch.a in Frameworks */,
+				EF3DBD23171D6068000E785C /* libCorePlot-CocoaTouch_armv6_armv7.a in Frameworks */,
 				EF862E2D171C235B00F16693 /* libWeChatSDK.a in Frameworks */,
 				EF63A75E16759432009F1950 /* SystemConfiguration.framework in Frameworks */,
 				EF63A75D16759432009F1950 /* QuartzCore.framework in Frameworks */,
@@ -1479,7 +1479,7 @@
 		EF63A25016758C3A009F1950 = {
 			isa = PBXGroup;
 			children = (
-				EF3DBD17171C554E000E785C /* libCorePlot-CocoaTouch.a */,
+				EF3DBD22171D6068000E785C /* libCorePlot-CocoaTouch_armv6_armv7.a */,
 				EF63A27616758C67009F1950 /* classes */,
 				EF63A3B616758C68009F1950 /* db-1.0.sqlite */,
 				EF63A3B716758C68009F1950 /* external */,

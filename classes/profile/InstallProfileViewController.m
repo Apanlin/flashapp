@@ -24,6 +24,9 @@
 @synthesize label8;
 @synthesize imageView;
 @synthesize linkButton;
+@synthesize vpnHelpLabel;
+@synthesize apnHelpLabel;
+
 
 #pragma mark - init & destroy
 
@@ -60,6 +63,8 @@
     [label8 release];
     [linkButton release];
     [imageView release];
+    [vpnHelpLabel release];
+    [apnHelpLabel release];
     [super dealloc];
 }
 
@@ -112,11 +117,18 @@
     NSString* stype = [[NSUserDefaults standardUserDefaults] objectForKey:@"stype"];
     if ( ![@"appstore" isEqualToString:CHANNEL] || [@"apn" isEqualToString:stype] ) {
         installVPNButton.hidden = YES;
+        vpnHelpLabel.hidden = YES;
+        apnHelpLabel.hidden = YES;
+        
         CGRect rect = installAPNButton.frame;
         rect = CGRectMake( installAPNButton.frame.origin.x, installAPNButton.frame.origin.y + 20,
                           installAPNButton.frame.size.width, installAPNButton.frame.size.height);
         installAPNButton.frame = rect;
         [installAPNButton setTitle:@"立即开启" forState:UIControlStateNormal];
+        
+        rect = bgView.frame;
+        rect.size.height = rect.size.height - 40;
+        bgView.frame = rect;
     }
 } 
 
@@ -128,6 +140,18 @@
     self.installAPNButton = nil;
     self.installVPNButton = nil;
     self.bgView = nil;
+    self.label1 = nil;
+    self.label2 = nil;
+    self.label3 = nil;
+    self.label4 = nil;
+    self.label5 = nil;
+    self.label6 = nil;
+    self.label7 = nil;
+    self.label8 = nil;
+    self.imageView = nil;
+    self.linkButton = nil;
+    self.vpnHelpLabel = nil;
+    self.apnHelpLabel = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -141,14 +165,14 @@
 
 - (IBAction) installAPNProfile:(id)sender
 {
-    [UserSettings saveServiceType:@"apn"];
+//    [UserSettings saveServiceType:@"apn"];
     [AppDelegate installProfileForServiceType:@"apn" nextPage:nil apn:nil idc:nil];
 }
 
 
 - (IBAction) installVPNProfile:(id)sender
 {
-    [UserSettings saveServiceType:@"vpn"];
+//    [UserSettings saveServiceType:@"vpn"];
     [AppDelegate installProfileForServiceType:@"vpn" nextPage:nil apn:nil idc:nil];
 }
 

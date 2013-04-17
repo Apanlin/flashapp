@@ -25,6 +25,8 @@
     UIButton* linkButton;
     UIImageView* imageView;
     
+    UILabel* vpnHelpLabel;
+    UILabel* apnHelpLabel;
 }
 
 @property (nonatomic, retain) IBOutlet UIView* bgView;
@@ -40,6 +42,8 @@
 @property (nonatomic, retain) IBOutlet UILabel* label8;
 @property (nonatomic, retain) IBOutlet UIImageView* imageView;
 @property (nonatomic, retain) IBOutlet UIButton* linkButton;
+@property (nonatomic, retain) IBOutlet UILabel* vpnHelpLabel;
+@property (nonatomic, retain) IBOutlet UILabel* apnHelpLabel;
 
 - (IBAction) installAPNProfile:(id)sender;
 - (IBAction) installVPNProfile:(id)sender;

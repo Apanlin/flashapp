@@ -65,11 +65,9 @@
 #define RefreshAppLockedNotification @"refreshAppLockedNotification"
 
 //#define CHANNEL @"appstore"
-
-#define CHANNEL @"weifeng_market"
-
+//#define CHANNEL @"weifeng_market"
 //#define CHANNEL @"91_market"
-//#define CHANNEL @"flashapp_market"
+#define CHANNEL @"flashapp_market"
 //#define CHANNEL @"flashapp_91_market"
 
 #define DES_KEY @"flashapp12345678ppahsalf"

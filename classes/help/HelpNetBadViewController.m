@@ -42,6 +42,7 @@
 {
     UIView* myView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 416)] autorelease];
     myView.backgroundColor = [UIColor colorWithRed:40.0/255.0 green:40.0/255.0 blue:40.0/255.0 alpha:1.0];
+    myView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     
     self.navigationItem.title = @"诊断与帮助";
     UIImageView* imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 25, 12, 12)];
@@ -112,6 +113,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
+
 	// Do any additional setup after loading the view.
 }
 
@@ -303,25 +307,35 @@
     [theView addSubview:button];
 
     label = [[UILabel alloc] initWithFrame:CGRectMake(10, 186, 190, 45)];
+    if (iPhone5) {
+        label.frame = CGRectMake(25, 442, 190, 45);
+        [self.view addSubview:label];
+    }else{
+        [theView addSubview:label];
+    }
     label.backgroundColor = [UIColor clearColor];
     label.textColor = [UIColor whiteColor];
     label.font = [UIFont systemFontOfSize:13];
     label.lineBreakMode = UILineBreakModeCharacterWrap;
     label.numberOfLines = 10;
     label.text = @"如果应用依然无法上网，请提交应用名称，我们会尽快处理。";
-    [theView addSubview:label];
     [label release];
     
     button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.frame = CGRectMake( 200, 195, 80, 30);
     image = [[UIImage imageNamed:@"blueButton2.png"] stretchableImageWithLeftCapWidth:7 topCapHeight:8];
     [button setBackgroundImage:image forState:UIControlStateNormal];
     [button setTitle:@"意见反馈" forState:UIControlStateNormal];
     button.titleLabel.textColor = [UIColor whiteColor];
     button.titleLabel.font = [UIFont systemFontOfSize:13];
     [button addTarget:self action:@selector(feedback) forControlEvents:UIControlEventTouchUpInside];
-    [theView addSubview:button];
-    
+    if (iPhone5) {
+        button.frame = CGRectMake(213, 450, 85, 33);
+        [self.view addSubview:button];
+    }else{
+        button.frame = CGRectMake(200, 194, 85, 33);
+        [theView addSubview:button];
+    }
+
     UIView* v = [self.view viewWithTag:TAG_RESULT_VIEW];
     if ( v ) [v removeFromSuperview];
     [self.view addSubview:theView];

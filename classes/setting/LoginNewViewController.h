@@ -34,20 +34,6 @@
 @property (nonatomic, retain) IBOutlet UIButton* renrenButton;
 @property (nonatomic, retain) IBOutlet UIButton* qqButton;
 @property (nonatomic, retain) IBOutlet UIButton* baiduButton;
-@property (nonatomic, retain) IBOutlet AttributedButton* registerButton;
-@property (nonatomic, retain) IBOutlet AttributedButton* forgotPasswdButton;
-@property (nonatomic, retain) IBOutlet UIButton* loginButton;
-@property (nonatomic, retain) IBOutlet UITextField* phoneTextField;
-@property (nonatomic, retain) IBOutlet UITextField* passwordTextField;
 
-
-- (IBAction) doRegister;
-- (IBAction) forgotPassword;
-- (IBAction) login:(id)sender;
-- (IBAction) loginBySina;
-- (IBAction) loginByRenren;
-- (IBAction) loginByQQ;
-- (IBAction) loginByBaidu;
-- (IBAction) loginByWangyiweibo;
 
 @end

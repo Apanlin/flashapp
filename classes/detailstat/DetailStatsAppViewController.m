@@ -108,6 +108,14 @@
     
     button = (UIButton*) [graphView viewWithTag:TAG_DISABLE_NETWORK_BUTTON];
     [button addTarget:self action:@selector(clickUserAgentNetworkButton) forControlEvents:UIControlEventTouchUpInside];
+    if ([self.userAgent isEqualToString:@"网页"]) {
+        
+        button.hidden = YES;
+    }else
+    {
+        button.hidden = NO;
+    }
+    
     
     chartHostingView = [[UIView alloc] initWithFrame:CGRectMake(3, 130, 294, 200)];
     chartHostingView.backgroundColor = [UIColor clearColor];
@@ -188,7 +196,7 @@
 
 - (void) close
 {
-    [[[AppDelegate getAppDelegate] currentNavigationController] dismissModalViewControllerAnimated:YES];
+    [self.navigationController dismissModalViewControllerAnimated:YES];
 }
 
 
@@ -500,10 +508,13 @@
 
 #pragma mark - disable/enable network connect
 
-
+//?
 - (void) clickUserAgentNetworkButton
 {
     UserAgentLockStatus status = [agentLock lockStatus];
+    
+//    CustomTabBarViewController *tabBarController = [CustomTabBarViewController CustomTabBar:NO];
+    
     if ( status == LOCK_STATUS_YES ) {
         //解锁
         [self disableUserAgentNetwork:0 lockMinutes:0];
@@ -511,7 +522,7 @@
     else {
         //加锁
         UIActionSheet* sheet = [[UIActionSheet alloc] initWithTitle:@"选择暂停网络连接的时间" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"2小时",@"8小时",@"当月",@"永久(手动开启)", nil];
-        [sheet showInView:[AppDelegate getAppDelegate].tabBarController.view];
+        [sheet showInView:[AppDelegate getAppDelegate].leveyTabBarController.view ];
         [sheet release];
     }
 }

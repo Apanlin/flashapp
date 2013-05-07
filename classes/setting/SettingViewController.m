@@ -8,7 +8,6 @@
 
 #import <CoreLocation/CoreLocation.h>
 #import "SettingViewController.h"
-//#import "LoginViewController.h"
 #import "LoginNewViewController.h"
 #import "AboutViewController.h"
 #import "FeedbackViewController.h"
@@ -25,6 +24,9 @@
 #import "UsedLogViewController.h"
 #import "IFDataLogViewController.h"
 #import "UserAgentLockDAO.h"
+#import "AppDelegate.h"
+#import "LeveyTabBarController.h"
+#import "RecommendViewController.h"
 
 #define TAG_PROFILE_SWITCH 200
 #define TAG_LOCATION_SWITCH 201
@@ -57,6 +59,18 @@
     [super dealloc];
 }
 
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+    if ( client ) {
+        [client cancel];
+        [client release];
+        client = nil;
+    }
+}
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -77,7 +91,28 @@
     self.tableView.backgroundView = nil;
 
     self.navigationItem.title = NSLocalizedString(@"setName", nil);
+    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     
+    UIButton* leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    leftButton.frame = CGRectMake(0, 0, 40, 32);
+    [leftButton setBackgroundImage:[UIImage imageNamed:@"barButton_bg.png"] forState:UIControlStateNormal];
+    [leftButton setImage:[UIImage imageNamed:@"newApp.png"] forState:UIControlStateNormal];
+    [leftButton addTarget:self action:@selector(showNewsAppBtn) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *leftBar = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+    self.navigationItem.leftBarButtonItem = leftBar;
+    [leftBar release];
+    
+    UIImageView *newAppShow = [[UIImageView alloc] initWithFrame:CGRectMake(28, 10, 12, 12)];
+    newAppShow.tag = 12345;
+    newAppShow.image = [UIImage imageNamed:@"redDot.png"];
+    newAppShow.hidden = YES;
+    [self.navigationController.navigationBar addSubview:newAppShow];
+    
+//    //有新应用的时候的通知，通知显示小红点
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAppDian) name:ShowAppRedDianNotification object:nil];
+//    //当点击按钮的时候 ， 取消显示的小红点
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hiddenAppDian) name:HiddenAppRedDianNotification object:nil];
+        
     self.tableView.separatorColor = [UIColor colorWithRed:79.0/255.0 green:79.0/255.0 blue:79.0/255.0 alpha:1.0f];
 
     // Uncomment the following line to preserve selection between presentations.
@@ -90,45 +125,48 @@
 }
 
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-    if ( client ) {
-        [client cancel];
-        [client release];
-        client = nil;
-    }
-}
-
-
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
 - (void)viewWillDisappear:(BOOL)animated
 {
     [client cancel];
     [super viewWillDisappear:animated];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+-(void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
+    [super viewDidAppear:animated];
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:NO];
+    
+    BOOL xsmf = [[NSUserDefaults standardUserDefaults] boolForKey:XSMF_APP];
+    BOOL rmyx = [[NSUserDefaults standardUserDefaults] boolForKey:RMYX_APP];
+    
+    if ( xsmf||rmyx) {
+        [self showAppDian];
+    }else{
+        [self hiddenAppDian];
+    }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+#pragma mark --------- left Btn or notification method
+-(void)showAppDian
 {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    UIImageView *imgView = (UIImageView *)[self.navigationController.navigationBar viewWithTag:12345];
+    imgView.hidden = NO;
+}
+
+-(void)hiddenAppDian
+{
+    UIImageView *imgView = (UIImageView *)[self.navigationController.navigationBar viewWithTag:12345];
+    imgView.hidden = YES;
+}
+
+-(void)showNewsAppBtn
+{
+    RecommendViewController *controller = [RecommendViewController getRecommendViewController];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    nav.navigationBar.tintColor =  RGB(48,48,50);
+    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
+    [nav release];
 }
 
 #pragma mark - Table view data source
@@ -587,17 +625,24 @@
     UIDevice* device = [UIDevice currentDevice];
     float version = [device.systemVersion floatValue];
     UserSettings* user = [AppDelegate getAppDelegate].user;
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     switch (section) {
         case 0: {
             //帐号设置
             if ( user.username && user.username.length > 0 ) {
                 AccountViewController* controller = [[AccountViewController alloc] init];
+                [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+                controller.hidesBottomBarWhenPushed = YES;
                 [self.navigationController pushViewController:controller animated:YES];
                 [controller release];
             }
             else {
                 LoginNewViewController* controller = [[LoginNewViewController alloc] init];
+                [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+                controller.hidesBottomBarWhenPushed = YES;
                 [self.navigationController pushViewController:controller animated:YES];
                 [controller release];
             }
@@ -607,11 +652,15 @@
             if ( row == 0 ) {
                 HelpViewController* controller = [[HelpViewController alloc] init];
                 controller.showCloseButton = NO;
+                [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+                controller.hidesBottomBarWhenPushed = YES;
                 [self.navigationController pushViewController:controller animated:YES];
                 [controller release];
             }
             else {
                 SetupViewController* controller = [[SetupViewController alloc] init];
+                [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+                controller.hidesBottomBarWhenPushed = YES;
                 controller.isSetup = NO;
                 [self.navigationController pushViewController:controller animated:YES];
                 [controller release];
@@ -628,6 +677,8 @@
                 else if ( row == 1 ) {
                     //图片质量
                     ImageCompressRadioViewController* controller = [[ImageCompressRadioViewController alloc] init];
+                    [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+                    controller.hidesBottomBarWhenPushed = YES;
                     [self.navigationController pushViewController:controller animated:YES];
                     [controller release];
                 }
@@ -646,6 +697,8 @@
                         if ( row == 4 ) {
                             //APN校对
                             APNViewController* controller = [[APNViewController alloc] init];
+                            [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+                            controller.hidesBottomBarWhenPushed = YES;
                             [self.navigationController pushViewController:controller animated:YES];
                             [controller release];
                         }
@@ -659,6 +712,8 @@
                             else {
                                 controller.page = @"profile/YDD";
                             }
+                            [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+                            controller.hidesBottomBarWhenPushed = YES;
                             [self.navigationController pushViewController:controller animated:YES];
                             [controller release];
                         }
@@ -674,6 +729,8 @@
                 else if ( row == 1 ) {
                     //图片质量
                     ImageCompressRadioViewController* controller = [[ImageCompressRadioViewController alloc] init];
+                    [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+                    controller.hidesBottomBarWhenPushed = YES;
                     [self.navigationController pushViewController:controller animated:YES];
                     [controller release];
                 }
@@ -688,6 +745,8 @@
                         HelpViewController* controller = [[HelpViewController alloc] init];
                         controller.showCloseButton = NO;
                         controller.page = @"profile/YDD";
+                        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+                        controller.hidesBottomBarWhenPushed = YES;
                         [self.navigationController pushViewController:controller animated:YES];
                         [controller release];
                     }
@@ -698,6 +757,8 @@
         case 3: {
             //官方微博
             WeiboViewController* controller = [[WeiboViewController alloc] init];
+            [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+            controller.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:controller animated:YES];
             [controller release];
             break;
@@ -709,12 +770,16 @@
             else if ( row == 1 ) {
                 //建议反馈
                 FeedbackViewController* controller = [[FeedbackViewController alloc] init];
+                [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+                controller.hidesBottomBarWhenPushed = YES;
                 [self.navigationController pushViewController:controller animated:YES];
                 [controller release];
             }
             else if ( row == 2 ) {
                 //关于飞速
                 AboutViewController* controller = [[AboutViewController alloc] init];
+                [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+                controller.hidesBottomBarWhenPushed = YES;
                 [self.navigationController pushViewController:controller animated:YES];
                 [controller release];
             }
@@ -817,6 +882,7 @@
 
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     if(alertView.tag == TAG_ALERT_PROFILE){
         if ( buttonIndex == 1 ) {
             [self removeProfile];
@@ -829,6 +895,8 @@
     }
     else if(alertView.tag == TAG_ALERT_IDC && buttonIndex == 1){
         IDCPickerViewController* controller = [[IDCPickerViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+        controller.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:controller animated:YES];
         [controller release];
     }
@@ -945,5 +1013,12 @@
     NSDictionary* dic = [UserAgentLockDAO getAllLockedApps];
     lockedAppCount = [dic count];
 }
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
 
 @end

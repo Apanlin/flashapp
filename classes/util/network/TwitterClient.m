@@ -5,7 +5,9 @@
 //  Created by kaz on 7/13/08.
 //  Copyright naan studio 2008. All rights reserved.
 //
-
+#import <CoreTelephony/CTCall.h>
+#import <CoreTelephony/CTCallCenter.h>
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import "TwitterClient.h"
 #import "StatsDayService.h"
 #import "StatsDayDAO.h"
@@ -731,7 +733,13 @@
 
 - (void) getIDCList
 {
-    NSString* url = [NSString stringWithFormat:@"%@/%@.json", API_BASE, API_IDC_ZLIST];
+    CTTelephonyNetworkInfo* tni = [[CTTelephonyNetworkInfo alloc] init];
+    CTCarrier* carrier = tni.subscriberCellularProvider;
+    DeviceInfo *device = [DeviceInfo deviceInfoWithLocalDevice];
+    [tni release];
+    NSString* url = [NSString stringWithFormat:@"%@/%@.json?&desc=%@&mnc=%@&mcc=%@&appid=%d&deviceId=%@", API_BASE, API_IDC_ZLIST,@"0",
+                     carrier ? carrier.mobileNetworkCode : @"",
+                     carrier ? carrier.mobileCountryCode : @"",APP_ID,device.deviceId];
     url = [TwitterClient composeURLVerifyCode:url];
     [self get:url];
 }

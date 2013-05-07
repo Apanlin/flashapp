@@ -63,6 +63,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
     
     // Do any additional setup after loading the view from its nib.
     self.navigationItem.title = NSLocalizedString(@"set.forgetPasswordView.navItem.title", nil);

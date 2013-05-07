@@ -64,6 +64,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
     
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
 
@@ -202,7 +204,7 @@
 
 - (void) close
 {
-    [[[AppDelegate getAppDelegate] currentNavigationController] dismissModalViewControllerAnimated:YES];
+    [self.navigationController dismissModalViewControllerAnimated:YES];
 }
 
 @end

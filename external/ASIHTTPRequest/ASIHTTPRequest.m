@@ -4434,7 +4434,7 @@ static NSOperationQueue *sharedQueue = nil;
 			#endif
 
 			// Takes the form "My Application 1.0 (Macintosh; Mac OS X 10.5.7; en_GB)"
-			[self setDefaultUserAgentString:[NSString stringWithFormat:@"%@ %@ (%@; %@ %@; %@)", appName, appVersion, deviceName, OSName, OSVersion, locale]];	
+			[self setDefaultUserAgentString:[NSString stringWithFormat:@"%@ %@ (%@; %@ %@; %@)", @"flashapp/", appVersion, deviceName, OSName, OSVersion, locale]];
 		}
 		return [[defaultUserAgent retain] autorelease];
 	}

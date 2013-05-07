@@ -35,6 +35,9 @@
 #import "TitleView.h"
 #import "GetAddress.h"
 
+//add guangtao
+#import "RecommendViewController.h"
+
 #define MESSAGE_HEIGHT 28
 #define NICKNAME_FONT [UIFont systemFontOfSize:12]
 #define TAOCAN_AXIS_FONT [UIFont systemFontOfSize:11]
@@ -46,6 +49,7 @@
 
 #define TAG_ALERT_INVITE 100
 #define TAG_ALERT_TAOCAN 101
+
 
 typedef enum {
     MT_REFRESH,
@@ -78,7 +82,6 @@ typedef enum {
 @synthesize regButton;
 @synthesize caView;
 @synthesize taocanLabel;
-@synthesize taocanLabel2;
 @synthesize taocanButton;
 @synthesize taocanAdjectButton;
 @synthesize taocanLeftLabel;
@@ -93,6 +96,10 @@ typedef enum {
 @synthesize inviteUpButton;
 @synthesize inviteDownButton;
 
+//addGuangtao
+@synthesize iPFshuxianImg;
+@synthesize yiyongbaifenbi;
+
 
 #pragma mark - init & destroy methods
 
@@ -101,8 +108,6 @@ typedef enum {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        self.tabBarItem.title = NSLocalizedString(@"service.tabBarItem.title",nil);
-        self.tabBarItem.image = [UIImage imageNamed:@"icon_service.png"];
         self.installingProfile = NO;
     }
     return self;
@@ -143,7 +148,6 @@ typedef enum {
     [taocanButton release];
     [taocanAdjectButton release];
     [taocanLabel release];
-    [taocanLabel2 release];
     [taocanLeftLabel release];
     [taocanUnitLabel release];
     [taocanUsedLabel release];
@@ -154,6 +158,8 @@ typedef enum {
     [taocanBarTriangleImageView release];
     [inviteDownButton release];
     [inviteUpButton release];
+    [yiyongbaifenbi release];
+    [iPFshuxianImg release];
     [super dealloc];
 }
 
@@ -186,77 +192,38 @@ typedef enum {
     UIButton* leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
     leftButton.frame = CGRectMake(0, 0, 40, 32);
     [leftButton setBackgroundImage:[UIImage imageNamed:@"barButton_bg.png"] forState:UIControlStateNormal];
-    [leftButton setImage:[UIImage imageNamed:@"diagnose.png"] forState:UIControlStateNormal];
-    [leftButton addTarget:self action:@selector(showDiagnose) forControlEvents:UIControlEventTouchUpInside];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
-    
+    [leftButton setImage:[UIImage imageNamed:@"newApp.png"] forState:UIControlStateNormal];
+    [leftButton addTarget:self action:@selector(showNewsAppBtn) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *leftBar = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+    self.navigationItem.leftBarButtonItem = leftBar;
+    [leftBar release];
+//
     UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [rightButton setBackgroundImage:[UIImage imageNamed:@"barButton_bg.png"] forState:UIControlStateNormal];
     rightButton.frame = CGRectMake(0, 0, 40, 32);
-    [rightButton setImage:[UIImage imageNamed:@"settings.png"] forState:UIControlStateNormal];
-    [rightButton addTarget:self action:@selector(showSetting) forControlEvents:UIControlEventTouchUpInside];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    [rightButton setImage:[UIImage imageNamed:@"refresh.png"] forState:UIControlStateNormal];
+    [rightButton addTarget:self action:@selector(showRefreshAppBtn) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightBar = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    self.navigationItem.rightBarButtonItem =  rightBar;
+    [rightBar release];
     
+    UIImageView *newAppShow = [[UIImageView alloc] initWithFrame:CGRectMake(28, 10, 12, 12)];
+    newAppShow.tag = 12345;
+    newAppShow.image = [UIImage imageNamed:@"redDot.png"];
+    newAppShow.hidden = YES;
+    [self.navigationController.navigationBar addSubview:newAppShow];
+        
     UIColor* color = [UIColor colorWithRed:80.0f/255.0f green:80.0f/255.0f blue:80.0f/255.0f alpha:1.0f];
     self.view.backgroundColor = color;
     scrollView.backgroundColor = color;
     contentView.backgroundColor = color;
     
-    dataBgView.image = [[UIImage imageNamed:@"black_bg_b.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:10];
-    inviteBgView.image = [[UIImage imageNamed:@"black_bg_b.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:10];
+    dataBgView.image = [[UIImage imageNamed:@"black_bg_b.png"] stretchableImageWithLeftCapWidth:8 topCapHeight:10];
+    inviteBgView.image = [[UIImage imageNamed:@"black_bg_b.png"] stretchableImageWithLeftCapWidth:8 topCapHeight:10];
     
     if ( iPhone5 ) {
-        taocanBgView.image = [[UIImage imageNamed:@"ds_tc_bg.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:37];
+        taocanBgView.image = [[UIImage imageNamed:@"ds_tc_bg.png"] stretchableImageWithLeftCapWidth:8 topCapHeight:37];
         taocanBarBgImageView.image = [[UIImage imageNamed:@"ds_tc_bar_bg.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:5];
-        
-        taocanAxisLabel1 = [[UILabel alloc] initWithFrame:CGRectMake(18, 285, 25, 20)];
-        taocanAxisLabel1.backgroundColor = [UIColor clearColor];
-        taocanAxisLabel1.textColor = [UIColor whiteColor];
-        taocanAxisLabel1.font = TAOCAN_AXIS_FONT;
-        taocanAxisLabel1.textAlignment = UITextAlignmentCenter;
-        taocanAxisLabel1.text = @"0M";
-        [contentView addSubview:taocanAxisLabel1];
-        [taocanAxisLabel1 release];
-
-        taocanAxisLabel2 = [[UILabel alloc] initWithFrame:CGRectZero];
-        taocanAxisLabel2.backgroundColor = [UIColor clearColor];
-        taocanAxisLabel2.textColor = [UIColor whiteColor];
-        taocanAxisLabel2.font = TAOCAN_AXIS_FONT;
-        taocanAxisLabel2.textAlignment = UITextAlignmentCenter;
-        [contentView addSubview:taocanAxisLabel2];
-        [taocanAxisLabel2 release];
-
-        taocanAxisLabel3 = [[UILabel alloc] initWithFrame:CGRectZero];
-        taocanAxisLabel3.backgroundColor = [UIColor clearColor];
-        taocanAxisLabel3.textColor = [UIColor whiteColor];
-        taocanAxisLabel3.font = TAOCAN_AXIS_FONT;
-        taocanAxisLabel3.textAlignment = UITextAlignmentCenter;
-        [contentView addSubview:taocanAxisLabel3];
-        [taocanAxisLabel3 release];
-        
-        taocanAxisLabel4 = [[UILabel alloc] initWithFrame:CGRectZero];
-        taocanAxisLabel4.backgroundColor = [UIColor clearColor];
-        taocanAxisLabel4.textColor = [UIColor whiteColor];
-        taocanAxisLabel4.font = TAOCAN_AXIS_FONT;
-        taocanAxisLabel4.textAlignment = UITextAlignmentCenter;
-        [contentView addSubview:taocanAxisLabel4];
-        [taocanAxisLabel4 release];
-        
-        taocanAxisLabel5 = [[UILabel alloc] initWithFrame:CGRectZero];
-        taocanAxisLabel5.backgroundColor = [UIColor clearColor];
-        taocanAxisLabel5.textColor = [UIColor whiteColor];
-        taocanAxisLabel5.font = TAOCAN_AXIS_FONT;
-        taocanAxisLabel5.textAlignment = UITextAlignmentCenter;
-        [contentView addSubview:taocanAxisLabel5];
-        [taocanAxisLabel5 release];
-        
-        taocanAxisUsedLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        taocanAxisUsedLabel.backgroundColor = [UIColor clearColor];
-        taocanAxisUsedLabel.textColor = [UIColor whiteColor];
-        taocanAxisUsedLabel.font = TAOCAN_AXIS_FONT;
-        taocanAxisUsedLabel.textAlignment = UITextAlignmentCenter;
-        [contentView addSubview:taocanAxisUsedLabel];
-        [taocanAxisUsedLabel release];
     }
     else {
         taocanBgView.image = [[UIImage imageNamed:@"black_bg_b.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:10];
@@ -339,6 +306,10 @@ typedef enum {
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:NO];
+    
     if ( justLoaded ) {  //如果就是刚刚开启
         [self performSelector:@selector(getAccessData) withObject:nil afterDelay:0.5];
 
@@ -348,6 +319,8 @@ typedef enum {
             [timer invalidate];
             timer = nil;
         }
+        
+        //创建一个定时器定时器每隔0.02秒执行方法 画呢个仪表盘上的图
         timer = [NSTimer scheduledTimerWithTimeInterval:0.02 target:self selector:@selector(progressShowDial) userInfo:nil repeats:YES];
         
         justLoaded = NO;
@@ -384,6 +357,15 @@ typedef enum {
     }
     else {
         [self checkAPN];
+    }
+    
+    BOOL xsmf = [[NSUserDefaults standardUserDefaults] boolForKey:XSMF_APP];
+    BOOL rmyx = [[NSUserDefaults standardUserDefaults] boolForKey:RMYX_APP];
+    
+    if ( xsmf||rmyx) {
+        [self showAppDian];
+    }else{
+        [self hiddenAppDian];
     }
 }
 
@@ -424,11 +406,19 @@ typedef enum {
 - (void) progressShowDial
 {
     float quantity = [AppDelegate getAppDelegate].user.capacity;
-    float unit = quantity * 1024.0f * 1024.0f / 300;
+    
+    NSLog(@"quantity = %f",quantity);
+    
+    float unit = quantity * 1024.0f * 1024.0f / 300; //每次除以 300 是 应为角度为300
     
     long compressed = monthStats.bytesBefore - monthStats.bytesAfter;
     
+    NSLog(@"monthStats.before is %ld , monthStats.after is %ld",monthStats.bytesBefore , monthStats.bytesAfter);
+    
     stepStats.bytesBefore += unit;
+    
+    NSLog(@"stepStats.bytesBefore is %ld",stepStats.bytesBefore);
+    
     if ( stepStats.bytesBefore < compressed ) {
         dialView.monthStats = stepStats;
         [dialView setNeedsDisplay];
@@ -443,6 +433,8 @@ typedef enum {
 
 - (void)viewDidUnload
 {
+    [self setYiyongbaifenbi:nil];
+    [self setIPFshuxianImg:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -469,7 +461,6 @@ typedef enum {
     self.taocanButton = nil;
     self.taocanAdjectButton = nil;
     self.taocanLabel = nil;
-    self.taocanLabel2 = nil;
     self.taocanUnitLabel = nil;
     self.taocanLeftLabel = nil;
     self.taocanUsedLabel = nil;
@@ -812,7 +803,7 @@ typedef enum {
 {
     OpenVPNViewController* controller = [[OpenVPNViewController alloc] init];
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self.navigationController presentModalViewController:nav animated:YES];
+    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
     [controller release];
     [nav release];
 //    [[AppDelegate getAppDelegate] showProfileHelp];
@@ -827,16 +818,6 @@ typedef enum {
     [controller release];
     [nav release];
 }
-
-
-- (void) showDiagnose
-{
-    HelpListViewController* controller = [[HelpListViewController alloc] init];
-    controller.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:controller animated:YES];
-    [controller release];
-}
-
 
 - (void) showUninstallAPNProfile
 {
@@ -855,7 +836,7 @@ typedef enum {
 
 - (void) renderDB
 {
-    [self loadDataFromDB];
+    [self loadDataFromDB]; //查询这个月的流量总数
     
     StageStats* oldStats = [self.monthStats retain];
     [self displayAfterLoad:oldStats];
@@ -1024,9 +1005,11 @@ typedef enum {
         }
         
         stepStats.bytesBefore = 0;
+        
+        //创建一个定时器定时器每隔0.02秒执行方法 画呢个仪表盘上的图
         timer = [NSTimer scheduledTimerWithTimeInterval:0.02 target:self selector:@selector(progressShowDial) userInfo:nil repeats:YES];
     }
-    
+
     dialView.monthStats = monthStats;
     [dialView setNeedsDisplay];
 }
@@ -1090,7 +1073,6 @@ typedef enum {
     }
     levelLabel.text = levelName;
     
-    //刷新刻度盘
     [dialView refreshCapacity];
     dialView.totalStats = totalStats;
     
@@ -1128,7 +1110,7 @@ typedef enum {
 {
     TCAdjustViewController* controller = [[TCAdjustViewController alloc] init];
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self.navigationController presentModalViewController:nav animated:YES];
+    [self.leveyTabBarController presentModalViewController:nav animated:YES];
     [controller release];
     [nav release];
 }
@@ -1213,7 +1195,6 @@ typedef enum {
     
     if ( !tcTotal || tcTotal.length==0 || !tcDay || tcDay.length==0 ) {
         taocanLabel.hidden = YES;
-        taocanLabel2.hidden = YES;
         taocanLeftLabel.hidden = YES;
         taocanUnitLabel.hidden = YES;
         taocanUsedLabel.hidden = YES;
@@ -1223,17 +1204,12 @@ typedef enum {
         taocanBarTriangleImageView.hidden = YES;
         taocanUsedBarImageView.hidden = YES;
         taocanExceedBarImageView.hidden = YES;
-        taocanAxisLabel1.hidden = YES;
-        taocanAxisLabel2.hidden = YES;
-        taocanAxisLabel3.hidden = YES;
-        taocanAxisLabel4.hidden = YES;
-        taocanAxisLabel5.hidden = YES;
-        taocanAxisUsedLabel.hidden = YES;
+        iPFshuxianImg.hidden = YES;
+        yiyongbaifenbi.hidden = YES;
         taocanButton.hidden = NO;
     }
     else {
         taocanLabel.hidden = NO;
-        taocanLabel2.hidden = NO;
         taocanLeftLabel.hidden = NO;
         taocanUnitLabel.hidden = NO;
         taocanUsedLabel.hidden = NO;
@@ -1243,25 +1219,20 @@ typedef enum {
         
         taocanBarBgImageView.hidden = NO;
         taocanUsedBarImageView.hidden = NO;
-        taocanAxisLabel1.hidden = NO;
-        taocanAxisLabel2.hidden = NO;
-        taocanAxisLabel3.hidden = NO;
-        taocanAxisLabel4.hidden = NO;
-        taocanAxisLabel5.hidden = NO;
-        taocanAxisUsedLabel.hidden = NO;
+        iPFshuxianImg.hidden = NO;
+        yiyongbaifenbi.hidden = NO;
         
-        float used = [user getTcUsed] / 1024.0f / 1024.0f;
-        float total = [tcTotal floatValue];
-        float left = total - used;
+        float used = [user getTcUsed] / 1024.0f / 1024.0f; //ctUsed 用户已用流量
+        float total = [tcTotal floatValue]; //用户设置的每月能用多少流量
+//        float left = total - used; //剩余的 流量
         
-        UIFont* font = [UIFont boldSystemFontOfSize:17];
+        UIFont* font = [UIFont boldSystemFontOfSize:13];
         NSString* usedstr = [NSString stringWithFloatTrim:used decimal:2];
-        NSString* leftstr = [NSString stringWithFloatTrim:left decimal:2];
+//        NSString* leftstr = [NSString stringWithFloatTrim:left decimal:2];
         CGFloat usedWidth = [usedstr sizeWithFont:font].width;
-        CGFloat leftWidth = [leftstr sizeWithFont:font].width;
         
         taocanUsedLabel.text = usedstr;
-        taocanLeftLabel.text = leftstr;
+//        taocanLeftLabel.text = leftstr;
         
         CGRect frame = taocanUsedLabel.frame;
         frame.size.width = usedWidth;
@@ -1270,37 +1241,31 @@ typedef enum {
         frame = taocanUsedUnitLabel.frame;
         frame.origin.x = taocanUsedLabel.frame.origin.x + taocanUsedLabel.frame.size.width + 1;
         taocanUsedUnitLabel.frame = frame;
+                        
+//        frame = taocanUnitLabel.frame;
+//        frame.origin.x = taocanLeftLabel.frame.origin.x + taocanLeftLabel.frame.size.width + 1;
+//        taocanUnitLabel.frame = frame;
         
-        frame = taocanLabel2.frame;
-        frame.origin.x = taocanUsedUnitLabel.frame.origin.x + taocanUnitLabel.frame.size.width + 5;
-        taocanLabel2.frame = frame;
-        
-        frame = taocanLeftLabel.frame;
-        frame.origin.x = taocanLabel2.frame.origin.x + taocanLabel2.frame.size.width;
-        frame.size.width = leftWidth;
-        taocanLeftLabel.frame = frame;
-        
-        frame = taocanUnitLabel.frame;
-        frame.origin.x = taocanLeftLabel.frame.origin.x + taocanLeftLabel.frame.size.width + 1;
-        taocanUnitLabel.frame = frame;
-        
-        float totalWidth = 278;
+        float totalWidth = 155;
         
         if ( used < total ) {
             taocanBarTriangleImageView.hidden = YES;
             taocanExceedBarImageView.hidden = YES;
             
             float percent = used / total;
+            
+            yiyongbaifenbi.text = [NSString stringWithFormat:@"已用%.0f%@",percent*100,@"%"];
+            
             if ( percent >= 0.9 ) {
-                taocanLeftLabel.textColor = [UIColor redColor];
+                taocanUsedLabel.textColor = [UIColor redColor];
                 taocanUsedBarImageView.image = [[UIImage imageNamed:@"ds_tc_bar_red.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:4];
             }
             else if ( percent >= 0.8 ) {
-                taocanLeftLabel.textColor = [UIColor yellowColor];
+                taocanUsedLabel.textColor = [UIColor yellowColor];
                 taocanUsedBarImageView.image = [[UIImage imageNamed:@"ds_tc_bar_oringe.png"] stretchableImageWithLeftCapWidth:6 topCapHeight:4];
             }
             else {
-                taocanLeftLabel.textColor = [UIColor greenColor];
+                taocanUsedLabel.textColor = [UIColor greenColor];
                 taocanUsedBarImageView.image = [[UIImage imageNamed:@"ds_tc_bar_green.png"] stretchableImageWithLeftCapWidth:6 topCapHeight:4];
             }
             
@@ -1311,53 +1276,57 @@ typedef enum {
             frame.size.width = totalWidth * percent;
             taocanUsedBarImageView.frame = frame;
             
-            taocanAxisUsedLabel.text = [NSString stringWithFormat:@"%@M", [NSString stringWithFloatTrim:used decimal:2]];
+//            taocanAxisUsedLabel.text = [NSString stringWithFormat:@"%@M", [NSString stringWithFloatTrim:used decimal:2]];
         }
-        else {
-            taocanBarTriangleImageView.hidden = NO;
-            taocanExceedBarImageView.hidden = NO;
+        else
+        {
+//            taocanBarTriangleImageView.hidden = NO;
+//            taocanExceedBarImageView.hidden = YES;
             
             float limit = total;
             total = used;
-            float percent = limit / total;
+            float percent = total / limit;
             
-            taocanUsedBarImageView.image = [[UIImage imageNamed:@"ds_tc_bar_green2.png"] stretchableImageWithLeftCapWidth:5 topCapHeight:4];
+            NSLog(@"%f,%f,%f",limit,total,percent);
+            
+            taocanUsedBarImageView.image = [[UIImage imageNamed:@"ds_tc_bar_red.png"] stretchableImageWithLeftCapWidth:5 topCapHeight:4];
+            taocanUsedLabel.textColor = [UIColor redColor];
             frame = taocanBarBgImageView.frame;
             frame.origin.x++;
             frame.origin.y++;
             frame.size.height = frame.size.height - 2;
             frame.size.width = totalWidth * percent;
-            if ( frame.size.width > 270 ) frame.size.width = 270;
+            if ( frame.size.width > 155 )
+            {
+                frame.size.width = 155;
+
+            }
             taocanUsedBarImageView.frame = frame;
-            
-            taocanExceedBarImageView.image = [[UIImage imageNamed:@"ds_tc_bar_red2.png"] stretchableImageWithLeftCapWidth:4 topCapHeight:4];
-            frame.origin.x = frame.origin.x + frame.size.width;
-            frame.size.width = totalWidth - frame.size.width;
-            taocanExceedBarImageView.frame = frame;
-            
             frame.origin.x = frame.origin.x - 2;
             frame.origin.y = frame.origin.y - 3;
             frame.size.width = 5;
             frame.size.height = 4;
             taocanBarTriangleImageView.frame = frame;
+            
+            yiyongbaifenbi.text = [NSString stringWithFormat:@"已用%.0f%@",percent*100,@"%"];
 
-            taocanAxisUsedLabel.text = [NSString stringWithFormat:@"%@M", [NSString stringWithFloatTrim:limit decimal:2]];
         }
         
-        CGSize size = [taocanAxisUsedLabel.text sizeWithFont:TAOCAN_AXIS_FONT];
-        frame = taocanAxisLabel1.frame;
-        frame.size.width = size.width;
-        frame.origin.x = taocanUsedBarImageView.frame.origin.x + taocanUsedBarImageView.frame.size.width - size.width / 2;
-        taocanAxisUsedLabel.frame = frame;
+//        CGSize size = [taocanAxisUsedLabel.text sizeWithFont:TAOCAN_AXIS_FONT];
+////        frame = taocanAxisLabel1.frame;
+//        frame.size.width = size.width;
+//        frame.origin.x = taocanUsedBarImageView.frame.origin.x + taocanUsedBarImageView.frame.size.width - size.width / 2;
+//        taocanAxisUsedLabel.frame = frame;
 
-        for ( int i=0; i<5; i++ ) {
-            [self layoutTaocanAxisLabel:i total:total];
-        }
+//        for ( int i=0; i<5; i++ ) {
+//            [self layoutTaocanAxisLabel:i total:total];
+//        }
     }
     
 }
 
 
+/*
 - (void) layoutTaocanAxisLabel:(int)count total:(float)total
 {
     NSString* s = nil;
@@ -1416,6 +1385,7 @@ typedef enum {
         label.hidden = NO;
     }
 }
+ */
 
 
 - (BOOL) overlayXRect:(CGRect)rect1 with:(CGRect)rect2
@@ -1427,6 +1397,132 @@ typedef enum {
     BOOL b = (e2 >= s1) && (s2 < e1);
     return b;
 }
+#pragma mark --------- left Btn or right btn or notification method
+-(void)showAppDian
+{
+    UIImageView *imgView = (UIImageView *)[self.navigationController.navigationBar viewWithTag:12345];
+    imgView.hidden = NO;
+}
+
+-(void)hiddenAppDian
+{
+    UIImageView *imgView = (UIImageView *)[self.navigationController.navigationBar viewWithTag:12345];
+    imgView.hidden = YES;
+}
+
+-(void)showNewsAppBtn
+{
+    RecommendViewController *controller = [RecommendViewController getRecommendViewController];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    nav.navigationBar.tintColor =  RGB(48,48,50);
+    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
+    [nav release];
+}
+
+- (void) showRefreshAppBtn
+{
+    [_refreshHeaderView setState:EGOOPullRefreshLoading];
+    [scrollView setContentOffset:CGPointMake(0, -75) animated:YES];
+    [self performSelector:@selector(btnEGORef) withObject:self afterDelay:0.4];
+}
+
+-(void)btnEGORef
+{
+    [_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    [_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+}
+
+#pragma mark -------------------------注册按钮
+- (IBAction) registerPhone
+{
+    LoginNewViewController* controller = [[LoginNewViewController alloc] init];
+    NSString* title =  NSLocalizedString(@"cancleName",nil);
+    controller.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleBordered target:controller action:@selector(close)] autorelease];
+    
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    nav.navigationBar.tintColor = [UIColor blackColor];
+    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
+    [controller release];
+    [nav release];
+}
+
+
+
+
+- (void) showDatastats1
+{
+    DatastatsScrollViewController* controller = [[DatastatsScrollViewController alloc] init];
+    
+    time_t now;
+    time( &now );
+    
+    time_t peroid[2];
+    [TCUtils getPeriodOfTcMonth:peroid time:now];
+    
+    controller.startTime = peroid[0];
+    controller.endTime = peroid[1];
+    
+    [self.navigationController pushViewController:controller animated:YES];
+}
+
+#pragma mark Data Source Loading / Reloading Methods
+
+- (void)reloadTableViewDataSource{
+	
+	//  should be calling your tableviews data source model to reload
+	//  put here just for demo
+    [self getAccessData:YES];
+    
+	_reloading = YES;
+	
+}
+
+- (void)doneLoadingTableViewData{
+	
+	//  model should call this when its done loading
+	_reloading = NO;
+	[_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.scrollView];
+	
+}
+
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)v{
+	
+	[_refreshHeaderView egoRefreshScrollViewDidScroll:v];
+    
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)v willDecelerate:(BOOL)decelerate{
+	
+	[_refreshHeaderView egoRefreshScrollViewDidEndDragging:v];
+	
+}
+
+
+#pragma mark -
+#pragma mark EGORefreshTableHeaderDelegate Methods
+
+- (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
+	
+	[self reloadTableViewDataSource];
+	
+}
+
+- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view{
+	return _reloading; // should return if data source model is reloading
+	
+}
+
+- (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view{
+	
+	return [NSDate date]; // should return date data source was last changed
+	
+}
+
+
 
 #pragma mark - operation methods
 
@@ -1435,7 +1531,7 @@ typedef enum {
     LevelViewController* controller = [[LevelViewController alloc] init];
     controller.showCloseButton = YES;
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self.navigationController presentModalViewController:nav animated:YES];
+    [self.leveyTabBarController presentModalViewController:nav animated:YES];
     [nav release];
     [controller release];
 }
@@ -1487,47 +1583,7 @@ typedef enum {
             otherButtonTitles:sendMailButtonTitle,sendSMSButtonTitle,sendWeiboButtonTitle,sendRenRenButtonTitle,
                 sendWeixinFriendButtonTitle, sendWeixinGroupButtonTitle, nil];
     actionSheet.tag = TAG_ALERT_INVITE;
-    [actionSheet showInView:self.tabBarController.view];
-}
-
-#pragma mark -------------------------注册按钮
-- (IBAction) registerPhone
-{
-    LoginNewViewController* controller = [[LoginNewViewController alloc] init];
-    NSString* title =  NSLocalizedString(@"cancleName",nil);
-    controller.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleBordered target:controller action:@selector(close)] autorelease];
-
-    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-    nav.navigationBar.tintColor = [UIColor blackColor];
-    [self.navigationController presentModalViewController:nav animated:YES];
-    [controller release];
-    [nav release];
-}
-
-
-- (void) showSetting
-{
-    SettingViewController* controller = [[SettingViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    controller.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:controller animated:YES];
-    [controller release];
-}
-
-
-- (void) showDatastats1
-{
-    DatastatsScrollViewController* controller = [[DatastatsScrollViewController alloc] init];
-
-    time_t now;
-    time( &now );
-    
-    time_t peroid[2];
-    [TCUtils getPeriodOfTcMonth:peroid time:now];
-
-    controller.startTime = peroid[0];
-    controller.endTime = peroid[1];
-    
-    [self.navigationController pushViewController:controller animated:YES];
+    [actionSheet showInView:self.leveyTabBarController.view];
 }
 
 
@@ -1634,15 +1690,14 @@ typedef enum {
 
 
 #pragma mark - touched view Delegate
-
 - (void) showDatastats
 {
-    UINavigationController* nav = [[AppDelegate getAppDelegate].tabBarController.viewControllers objectAtIndex:1];
+    UINavigationController* nav = [self.leveyTabBarController.viewControllers objectAtIndex:1];
     for ( UIViewController* c in nav.viewControllers ) {
         if ( [c isKindOfClass:[DatastatsScrollViewController class]] ) {
             DatastatsScrollViewController* controller = (DatastatsScrollViewController*)c;
-            [controller monthSliderNow]; 
-            [AppDelegate getAppDelegate].tabBarController.selectedIndex = 1;
+            [controller monthSliderNow];
+            [self.leveyTabBarController setSelectedIndex:1];
         }
     }
 }
@@ -1801,65 +1856,6 @@ typedef enum {
     NSData* imageData = UIImageJPEGRepresentation( aImage, 0.6 );
     return imageData;
     
-}
-
-
-#pragma mark -
-#pragma mark Data Source Loading / Reloading Methods
-
-- (void)reloadTableViewDataSource{
-	
-	//  should be calling your tableviews data source model to reload
-	//  put here just for demo
-    [self getAccessData:YES];
-    
-	_reloading = YES;
-	
-}
-
-- (void)doneLoadingTableViewData{
-	
-	//  model should call this when its done loading
-	_reloading = NO;
-	[_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.scrollView];
-	
-}
-
-
-#pragma mark -
-#pragma mark UIScrollViewDelegate Methods
-
-- (void)scrollViewDidScroll:(UIScrollView *)v{	
-	
-	[_refreshHeaderView egoRefreshScrollViewDidScroll:v];
-    
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)v willDecelerate:(BOOL)decelerate{
-	
-	[_refreshHeaderView egoRefreshScrollViewDidEndDragging:v];
-	
-}
-
-
-#pragma mark -
-#pragma mark EGORefreshTableHeaderDelegate Methods
-
-- (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
-	
-	[self reloadTableViewDataSource];
-	
-}
-
-- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view{
-	return _reloading; // should return if data source model is reloading
-	
-}
-
-- (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view{
-	
-	return [NSDate date]; // should return date data source was last changed
-	
 }
 
 

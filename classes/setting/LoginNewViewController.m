@@ -28,12 +28,6 @@
 @synthesize renrenButton;
 @synthesize qqButton;
 @synthesize baiduButton;
-@synthesize registerButton;
-@synthesize forgotPasswdButton;
-@synthesize loginButton;
-@synthesize phoneTextField;
-@synthesize passwordTextField;
-
 
 #pragma mark - init & destroy
 
@@ -68,6 +62,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
     
     self.navigationItem.title = @"注册/登录";
     
@@ -80,22 +76,27 @@
     UIImageView* imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 36, 310, 1)];
     imageView.image = [[UIImage imageNamed:@"line.png"] stretchableImageWithLeftCapWidth:50 topCapHeight:0];
     [scrollView addSubview:imageView];
+    [imageView release];
     
     imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 98, 310, 1)];
     imageView.image = [[UIImage imageNamed:@"line.png"] stretchableImageWithLeftCapWidth:50 topCapHeight:0];
     [scrollView addSubview:imageView];
+    [imageView release];
 
     imageView = [[UIImageView alloc] initWithFrame:CGRectMake(84, 43, 1, 47)];
     imageView.image = [[UIImage imageNamed:@"v_line.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:23];
     [scrollView addSubview:imageView];
+    [imageView release];
 
     imageView = [[UIImageView alloc] initWithFrame:CGRectMake(154, 43, 1, 47)];
     imageView.image = [[UIImage imageNamed:@"v_line.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:23];
     [scrollView addSubview:imageView];
+    [imageView release];
 
     imageView = [[UIImageView alloc] initWithFrame:CGRectMake(236, 43, 1, 47)];
     imageView.image = [[UIImage imageNamed:@"v_line.png"] stretchableImageWithLeftCapWidth:0 topCapHeight:23];
     [scrollView addSubview:imageView];
+    [imageView release];
     
     UIImage* image = [[UIImage imageNamed:@"blueButton1.png"] stretchableImageWithLeftCapWidth:13 topCapHeight:0];
     [loginButton setBackgroundImage:image forState:UIControlStateNormal];
@@ -114,6 +115,7 @@
 
 - (void)viewDidUnload
 {
+//    [self setBackView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -121,11 +123,6 @@
     self.renrenButton = nil;
     self.qqButton = nil;
     self.baiduButton = nil;
-    self.registerButton = nil;
-    self.loginButton = nil;
-    self.forgotPasswdButton = nil;
-    self.passwordTextField = nil;
-    self.phoneTextField = nil;
     
     if ( client ) {
         [client cancel];
@@ -140,44 +137,6 @@
 
 
 #pragma mark - opertion methods
-
-- (IBAction) login:(id)sender
-{
-    NSString* phone = [phoneTextField.text trim];
-    if ( phone.length == 0 ) {
-        [AppDelegate showAlert:@"请输入手机号"];
-        return;
-    }
-    
-    NSString* passwd = [passwordTextField.text trim];
-    if ( passwd.length == 0 ) {
-        [AppDelegate showAlert:@"请输入密码"];
-        return;
-    }
-    
-    if ( client ) return;
-    
-    UserSettings* user = [AppDelegate getAppDelegate].user;
-    
-    time_t now;
-    time( &now );
-    long long currTime = now * 1000LL;
-    
-    srand( time(0) );
-    int rd = ((double) rand() / RAND_MAX) * 10000;
-    
-    NSString* deviceId = [OpenUDID value];
-    NSString* code = [[NSString stringWithFormat:@"%@%@%@%d", deviceId, CHANNEL, API_KEY, rd] md5HexDigest];
-    
-    loadingView.hidden = NO;
-    NSString* url = [NSString stringWithFormat:@"%@/%@.json?deviceId=%@&username=%@&password=%@&startQuantity=%f&shareQuantity=%f&currTime=%lld&chl=%@&rd=%d&code=%@&ver=%@", 
-                     API_BASE, API_USER_LOGIN, deviceId, [phone encodeAsURIComponent], [passwd encodeAsURIComponent], 
-                     user.dayCapacityDelta, user.monthCapacityDelta, currTime,
-                     CHANNEL, rd, code, API_VER];
-    client = [[TwitterClient alloc] initWithTarget:self action:@selector(didLogin:obj:)];
-    [client get:url];
-}
-
 
 - (void) didLogin:(TwitterClient*)cli obj:(NSObject*)obj
 {
@@ -226,8 +185,11 @@
 - (void) showRegister:(NSString*)modalMode
 {
     UINavigationController* currNav = [[AppDelegate getAppDelegate] currentNavigationController];
+    AppDelegate *appDelegate = [AppDelegate getAppDelegate];
     if ( [@"false" compare:modalMode] == NSOrderedSame ) {
         RegisterNewViewController* controller = [[RegisterNewViewController alloc] init];
+        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+        controller.hidesBottomBarWhenPushed = YES;
         [currNav pushViewController:controller animated:YES];
         [controller release];
     }
@@ -235,6 +197,8 @@
         RegisterNewViewController* controller = [[RegisterNewViewController alloc] init];
         controller.showCloseButton = YES;
         UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
+//        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+//        controller.hidesBottomBarWhenPushed = YES;
         [self.navigationController presentModalViewController:nav animated:YES];
         [controller release];
         [nav release];
@@ -244,8 +208,11 @@
 
 - (void) forgotPassword
 {
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     ForgotPasswdViewController* controller = [[ForgotPasswdViewController alloc] init];
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+    controller.hidesBottomBarWhenPushed = YES;
     [self.navigationController presentModalViewController:nav animated:YES];
     [controller release];
     [nav release];
@@ -259,7 +226,7 @@
         [self.navigationController popViewControllerAnimated:YES];
     }
     else {
-        [nav dismissModalViewControllerAnimated:YES];
+        [self dismissModalViewControllerAnimated:YES];
     }
 }
 
@@ -270,35 +237,31 @@
 {
     SNSLoginViewController* controller = [[SNSLoginViewController alloc] init];
     controller.domain = domain;
+    AppDelegate *appDelegate = [AppDelegate getAppDelegate];
+    [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+    controller.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:controller animated:YES];
 }
 
 
-- (void) loginBySina
+- (IBAction) loginBySina
 {
     [self loginSNS:@"sinaWeibo"];
 }
 
 
-- (void) loginByRenren
+- (IBAction) loginByRenren
 {
     [self loginSNS:@"renren"];
 }
 
 
-- (void) loginByQQ
+- (IBAction) loginByQQ
 {
     [self loginSNS:@"QQ"];
 }
 
-
-- (void) loginByBaidu
-{
-    [self loginSNS:@"baidu"];
-}
-
-
-- (void) loginByWangyiweibo
+- (IBAction) loginByWangyiweibo
 {
     [self loginSNS:@"wangyiWeibo"];
 }

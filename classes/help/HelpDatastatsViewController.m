@@ -9,6 +9,7 @@
 #import "HelpDatastatsViewController.h"
 #import "HelpTextViewController.h"
 #import "HelpNoDataViewController.h"
+#import "AppDelegate.h"
 
 #define TAG_CELL_LABEL 101
 
@@ -32,6 +33,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -275,13 +279,18 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     int row = indexPath.row;
+     AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     if ( row == 0 ) {
         HelpNoDataViewController* controller = [[HelpNoDataViewController alloc] init];
+        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+        controller.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:controller animated:YES];
         [controller release];
     }
     else if ( row == 1 ) {
         HelpTextViewController* controller = [[HelpTextViewController alloc] init];
+        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+        controller.hidesBottomBarWhenPushed = YES;
         controller.titleText = @"节省统计数据为什么会有滞后？";
         controller.answerText = @"统计系统每隔5分钟汇总统计用户节省流量的情况。如果没有看到数据，请5分钟之后再刷新查看。";
         [self.navigationController pushViewController:controller animated:YES];
@@ -289,6 +298,8 @@
     }
     else if ( row == 2 ) {
         HelpTextViewController* controller = [[HelpTextViewController alloc] init];
+        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+        controller.hidesBottomBarWhenPushed = YES;
         controller.titleText = @"什么是节省流量？如何计算出来的？";
         controller.answerText = @"飞速流量压缩仪将您的访问请求结果压缩后再发送到手机上，压缩后节省的数据量就是节省量。";
         [self.navigationController pushViewController:controller animated:YES];
@@ -296,6 +307,8 @@
     }
     else if ( row == 3 ) {
         HelpTextViewController* controller = [[HelpTextViewController alloc] init];
+        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+        controller.hidesBottomBarWhenPushed = YES;
         controller.titleText = @"软件内的50MB流量限额或者注册赠送的30MB是赠送的套餐流量吗？";
         controller.answerText = @"流量限额是飞速流量压缩仪本月可以为您节省的量，并不是您套餐的流量。您可以通过邀请好友或者微博分享的方式增加流量限额，以便让飞速更好的为您工作。";
         [self.navigationController pushViewController:controller animated:YES];
@@ -304,6 +317,8 @@
     }
     else if ( row == 4 ) {
         HelpTextViewController* controller = [[HelpTextViewController alloc] init];
+        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+        controller.hidesBottomBarWhenPushed = YES;
         controller.titleText = @"压缩后流量是什么含义？为什么和移动运营商计费数据不同？";
         controller.answerText = @"压缩后流量是指通过飞速软件处理后，实际发生的网络流量。但是由于飞速软件不压缩上行数据，或由于用户部分时间未使用飞速软件，导致计费数据和压缩后流量不一致。 为了保证用户上传内容的完整性，且不影响上传用途，本软件不压缩上传的内容，这部分流量也不会计算着压缩后的流量中。";
         [self.navigationController pushViewController:controller animated:YES];

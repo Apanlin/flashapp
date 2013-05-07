@@ -20,6 +20,7 @@
 @property (nonatomic, retain) IBOutlet UIButton* sinaButton;
 @property (nonatomic, retain) IBOutlet UIButton* qqButton;
 @property (nonatomic, retain) IBOutlet UILabel* weiboLabel;
+@property (retain, nonatomic) IBOutlet UIView *bgView;
 
 
 - (IBAction) openSinaweibo:(id)sender;

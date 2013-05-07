@@ -27,6 +27,7 @@
 @property (nonatomic, retain) IBOutlet UIButton* feedbackButton;
 @property (nonatomic, retain) IBOutlet UIImageView* checkBgImageView;
 @property (nonatomic, retain) IBOutlet UIImageView* resultBgImageView;
+@property (retain, nonatomic) IBOutlet UILabel *lianxiLabel;
 
 - (void) check;
 

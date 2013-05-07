@@ -7,6 +7,7 @@
 //
 
 #import "HelpNoDataViewController.h"
+#import "AppDelegate.h"
 
 @interface HelpNoDataViewController ()
 
@@ -37,6 +38,9 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
+    
     self.navigationItem.title = @"诊断与帮助";
     bgImageView.image = [[UIImage imageNamed:@"help_triangle_bg.png"] stretchableImageWithLeftCapWidth:50 topCapHeight:20];
 }

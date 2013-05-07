@@ -284,8 +284,8 @@
             float quantity = [AppDelegate getAppDelegate].user.capacity;
             float total = quantity * 1024.0f * 1024.0f;
             
-            float angle = (bytes / total) * 300;
-            angle = angle / 360 * 2 * PIE;
+            float angle = (bytes / total) * 300;  //
+            angle = angle / 360 * 2 * PIE;  //
             float endAngle = startAngle + angle;
             
             CGFloat centerX = 6 + 75;

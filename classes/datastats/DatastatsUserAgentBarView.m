@@ -54,14 +54,14 @@
         afterLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:afterLabel];
         
-        compressLabel = [[UILabel alloc] initWithFrame:CGRectMake(247, 30, 58, 24)];
+        compressLabel = [[UILabel alloc] initWithFrame:CGRectMake(237, 30, 58, 24)];
         compressLabel.textColor = [UIColor colorWithRed:46.0f/255.0f green:218.0f/255.0f blue:56.0f/255.0f alpha:1.0f];
         compressLabel.font = [UIFont systemFontOfSize:14];
         compressLabel.textAlignment = UITextAlignmentLeft;
         compressLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:compressLabel];
 
-        barView = [[DatastatsBarView alloc] initWithFrame:CGRectMake( 67, 28, 180, 26)];
+        barView = [[DatastatsBarView alloc] initWithFrame:CGRectMake( 67, 28, 170, 26)];
         [self addSubview:barView];
         
         UIImageView* line = [[UIImageView alloc] initWithFrame:CGRectMake(2, 62, 302, 4)];
@@ -104,7 +104,7 @@
     
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
     nav.navigationBar.tintColor = [UIColor blackColor];
-    [[[AppDelegate getAppDelegate] currentNavigationController] presentModalViewController:nav animated:YES];
+    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
     [controller release];
     [nav release];
 }

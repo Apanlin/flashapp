@@ -38,6 +38,11 @@
 #import "AppInfo.h"
 #import "OpenUDID.h"
 #import "JSON.h"
+#import "HelpListViewController.h"
+#import "MyNetWorkClass.h"
+#import "CategoryClass.h"
+#import "AppClasses.h"
+#import "AppRecommedDao.h"
 
 #ifdef DFTraffic
 #import "AiDfTraffic.h"
@@ -49,7 +54,7 @@
 @implementation AppDelegate
 
 @synthesize window = _window;
-@synthesize tabBarController = _tabBarController;
+@synthesize leveyTabBarController;
 @synthesize dbWriteLock;
 @synthesize user;
 @synthesize carrier;
@@ -59,6 +64,7 @@
 @synthesize networkReachablity;
 @synthesize adjustSMSSend;
 @synthesize refreshingLock;
+@synthesize rootNav;
 
 
 #pragma mark - init & destroy
@@ -66,7 +72,7 @@
 - (void)dealloc
 {
     [_window release];
-    [_tabBarController release];
+    [leveyTabBarController release];
     [dbWriteLock release];
     [timerTaskLock release];
     [user release];
@@ -75,6 +81,7 @@
     [refreshThread release];
     [operationQueue release];
     [locationManager release];
+    [rootNav release];
     [super dealloc];
 }
 
@@ -305,7 +312,7 @@
 
 - (UINavigationController*) currentNavigationController
 {
-    return (UINavigationController*) _tabBarController.selectedViewController;
+    return (UINavigationController*) self.leveyTabBarController.selectedViewController;
 }
 
 
@@ -315,23 +322,32 @@
     return [nav topViewController];
 }
 
+- (void) setNavigationBar:(UINavigationBar *)_navigationBar {
+    if ([_navigationBar respondsToSelector:@selector(setBackgroundImage:forBarMetrics:)]) {
+        [_navigationBar setBackgroundImage:[[UIImage imageNamed:@"nav_bg.png"]
+                                            stretchableImageWithLeftCapWidth:1 topCapHeight:0] forBarMetrics:UIBarMetricsDefault];
+    }
+}
 
 #pragma mark - application delegate
 
 - (void) showDatasaveView:(BOOL)justInstallProfile
 {
     DatasaveViewController *dataserviceViewController = nil;
+    
     if ( iPhone5 ) {
         dataserviceViewController = [[[DatasaveViewController alloc] initWithNibName:@"DatasaveViewController-5" bundle:nil] autorelease];
     }
-    else {
+    else if (!iPhone5) {
         dataserviceViewController = [[[DatasaveViewController alloc] initWithNibName:@"DatasaveViewController" bundle:nil] autorelease];
     }
     
     dataserviceViewController.installingProfile = justInstallProfile;
     UINavigationController* firstNav = [[UINavigationController alloc] initWithRootViewController:dataserviceViewController];
-      
-//    功 能: 获取当前的系统时间，返回的结果是一个time_t类型（即int64类型），其实就是一个大整数，其值表示从CUT（Coordinated Universal Time）时间1970年1月1日00:00:00（称为UNIX系统的Epoch时间）到当前时刻的秒数。
+    firstNav.delegate = self;
+    [self setNavigationBar:firstNav.navigationBar];
+    
+    //    功 能: 获取当前的系统时间，返回的结果是一个time_t类型（即int64类型），其实就是一个大整数，其值表示从CUT（Coordinated Universal Time）时间1970年1月1日00:00:00（称为UNIX系统的Epoch时间）到当前时刻的秒数。
     time_t now;
     time(&now);
     time_t peroid[2];
@@ -339,15 +355,47 @@
     DatastatsScrollViewController* monthStatsController = [[[DatastatsScrollViewController alloc] init] autorelease];
     monthStatsController.startTime = peroid[0];
     monthStatsController.endTime = peroid[1];
-    
     UINavigationController* secondNav = [[UINavigationController alloc] initWithRootViewController:monthStatsController];
+    secondNav.delegate = self;
+    [self setNavigationBar:secondNav.navigationBar];
     
-    self.tabBarController = [[[UITabBarController alloc] init] autorelease];
-    self.tabBarController.viewControllers = [NSArray arrayWithObjects:firstNav, secondNav, nil];
-    //self.window.rootViewController = self.tabBarController;
-    [self.window addSubview:self.tabBarController.view];
-    [firstNav release];
-    [secondNav release];
+    
+    HelpListViewController* helpController = [[[HelpListViewController alloc] init] autorelease];
+    UINavigationController* thirdNav = [[UINavigationController alloc] initWithRootViewController:helpController];
+    thirdNav.delegate = self;
+    [self setNavigationBar:thirdNav.navigationBar];
+    
+    SettingViewController* settingcontroller = [[[SettingViewController alloc]initWithStyle:UITableViewStyleGrouped] autorelease];
+    UINavigationController* forthNav = [[UINavigationController alloc] initWithRootViewController:settingcontroller];
+    forthNav.delegate = self;
+    [self setNavigationBar:forthNav.navigationBar];
+    
+    NSArray *controllerArray = [NSArray arrayWithObjects:firstNav,secondNav,thirdNav,forthNav, nil];
+    
+    NSMutableDictionary *imgDic = [NSMutableDictionary dictionaryWithCapacity:3];
+	[imgDic setObject:[UIImage imageNamed:@"tab_service.png"] forKey:@"Default"];
+	[imgDic setObject:[UIImage imageNamed:@"tab_service.png"] forKey:@"Highlighted"];
+	[imgDic setObject:[UIImage imageNamed:@"tab_service_select.png"] forKey:@"Seleted"];
+	NSMutableDictionary *imgDic2 = [NSMutableDictionary dictionaryWithCapacity:3];
+	[imgDic2 setObject:[UIImage imageNamed:@"tab_report.png"] forKey:@"Default"];
+	[imgDic2 setObject:[UIImage imageNamed:@"tab_report.png"] forKey:@"Highlighted"];
+	[imgDic2 setObject:[UIImage imageNamed:@"tab_report_select.png"] forKey:@"Seleted"];
+	NSMutableDictionary *imgDic3 = [NSMutableDictionary dictionaryWithCapacity:3];
+	[imgDic3 setObject:[UIImage imageNamed:@"tab_help.png"] forKey:@"Default"];
+	[imgDic3 setObject:[UIImage imageNamed:@"tab_help.png"] forKey:@"Highlighted"];
+	[imgDic3 setObject:[UIImage imageNamed:@"tab_help_select.png"] forKey:@"Seleted"];
+	NSMutableDictionary *imgDic4 = [NSMutableDictionary dictionaryWithCapacity:3];
+	[imgDic4 setObject:[UIImage imageNamed:@"tab_set.png"] forKey:@"Default"];
+	[imgDic4 setObject:[UIImage imageNamed:@"tab_set.png"] forKey:@"Highlighted"];
+	[imgDic4 setObject:[UIImage imageNamed:@"tab_set_select.png"] forKey:@"Seleted"];
+    
+    NSArray *imgBtnArray = [NSArray arrayWithObjects:imgDic,imgDic2,imgDic3,imgDic4, nil];
+    leveyTabBarController = [[LeveyTabBarController alloc] initWithViewControllers:controllerArray imageArray:imgBtnArray];
+    
+    //请求应用推荐首页分类，用来看是否有更新
+    
+	self.window.rootViewController = leveyTabBarController;
+
 }
 
 
@@ -462,9 +510,82 @@
     }
 }
 
+-(void)ifNewsApp
+{
+    //查询是否有新的应用
+    MyNetWorkClass *myNetWork = [MyNetWorkClass getMyNetWork];
+    [myNetWork startAppFenLei:^(NSDictionary *result) {
+        
+        NSMutableArray *categoryArray = [NSMutableArray arrayWithCapacity:3];
+        [categoryArray addObjectsFromArray:[result objectForKey:@"catsu"]];
+        
+        NSDictionary *databaseDic = [AppRecommedDao fondAllAppRecommed];
+        
+        if ([databaseDic count] == 0) {
+            [DBConnection beginTransaction];
+            
+            [AppRecommedDao insertAllAppRecommend:categoryArray];
+            
+            [DBConnection commitTransaction];
+        }else{
+            for (NSString *str in [databaseDic allKeys]) {
+                if ([str isEqualToString:@"精品推荐"]) {
+                    AppClasses *appClasses = [databaseDic objectForKey:@"精品推荐"];
+                    
+                    long long new_tim = [[[categoryArray objectAtIndex:0] objectForKey:@"tim"] longLongValue];
+                    
+                    long long old_tim = appClasses.appClasses_tim;
+                    
+                    if (new_tim >old_tim) {
+                        appClasses.appClasses_tim = new_tim;
+                        [AppRecommedDao updateAppRecommend:appClasses];
+                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:NEWS_APP];
+                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:JPTJ_APP];
+                    }
+                    
+                    NSLog(@"%@ 's NEW_TIM IS %lld , OLD_TIM IS %lld",appClasses.appClasses_name,new_tim , old_tim);
+                    
+                }
+                if ([str isEqualToString:@"限时免费"]) {
+                    AppClasses *appClasses = [databaseDic objectForKey:@"限时免费"];
+                    
+                    long long new_tim = [[[categoryArray objectAtIndex:1] objectForKey:@"tim"] longLongValue];
+                    
+                    long long old_tim = appClasses.appClasses_tim;
+                    
+                    if (new_tim >old_tim) {
+                        appClasses.appClasses_tim = new_tim;
+                        [AppRecommedDao updateAppRecommend:appClasses];
+                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:NEWS_APP];
+                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:XSMF_APP];
+                    }
+                    
+                    NSLog(@"%@ 'sNEW_TIM IS %lld , OLD_TIM IS %lld",appClasses.appClasses_name,new_tim , old_tim);
+                    
+                }
+                if ([str isEqualToString:@"热门游戏"]) {
+                    AppClasses *appClasses = [databaseDic objectForKey:@"热门游戏"];
+                    
+                    long long new_tim = [[[categoryArray objectAtIndex:2] objectForKey:@"tim"] longLongValue];
+                    
+                    long long old_tim = appClasses.appClasses_tim;
+                    
+                    if (new_tim >old_tim) {
+                        appClasses.appClasses_tim = new_tim;
+                        [AppRecommedDao updateAppRecommend:appClasses];
+                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:NEWS_APP];
+                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:RMYX_APP];
+                    }
+                    
+                    NSLog(@"%@ 'sNEW_TIM IS %lld , OLD_TIM IS %lld",appClasses.appClasses_name,new_tim , old_tim);
+                }
+            }
+        }
+        
+    }];
+}
 
 #pragma mark - UIApplication Delegate
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions  
 {
@@ -473,9 +594,16 @@
     //向微信注册
     [WXApi registerApp:@"wxd1be1f55db841585"];
     
+    //创建应用分类的数据库表
+    [AppRecommedDao createAppClassestable];
+    
+    //查看是否有新的应用推荐
+    [self ifNewsApp];
+    
+    
+    
     timerTaskLock = [[NSObject alloc] init];
     timerTaskDoing = false;
-    
     refreshingLock = [[NSLock alloc] init];
     
     NSString* version = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleVersionKey];
@@ -594,10 +722,8 @@
 //    [Parse setApplicationId:@"Kon5U86c1l2Huj4CIsoq9EnGtE4hHLgwPVnCCBhA"
 //                  clientKey:@"RAw1BSXR9VG1th7HrkoeDG2Smn0sdJIJwhITKagc"];
     
-    //推送通知
-    if ( connType == CELL_2G || connType == CELL_3G || connType == CELL_4G || connType == WIFI || connType == ETHERNET ) {
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeSound];
-    }
+    //注册推送通知
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|UIRemoteNotificationTypeSound|UIRemoteNotificationTypeAlert];
     
     //判断程序是不是由推送服务完成的
     if (launchOptions) {
@@ -612,6 +738,7 @@
             //                                                 otherButtonTitles:nil, nil];
             //            [alert show];
             //            [alert release];
+            [self performSelector:@selector(processRemoteNotification:) withObject:pushNotificationKey afterDelay:0.5f];
         }
     }
 
@@ -703,7 +830,6 @@
 {
 }
 */
-
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url 
 {
     NSString* urlString = [url absoluteString];
@@ -845,6 +971,7 @@
 //}
 
 
+#pragma mark -- APNS Notification 
 - (void) application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
     NSString* s = [deviceToken description];
@@ -859,6 +986,14 @@
 //    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
 //    [currentInstallation setDeviceTokenFromData:deviceToken];
 //    [currentInstallation saveInBackground];
+}
+- (void) application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    //自身服务器的方法
+    [self performSelectorOnMainThread:@selector(processRemoteNotification:) withObject:userInfo waitUntilDone:NO];
+    
+    //parse 服务器的方法
+    //    [PFPush handlePush:userInfo];
 }
 
 
@@ -875,19 +1010,28 @@
             NSLog( @"++++++++++++++++3Faild to get token:%@", [error localizedRecoverySuggestion] );
         }
     }
-    NSLog( @"++++++++++++++++4Faild to get token:%@", [error description] );
+    NSLog( @"++++++++++++++++4Faild to get token:%@", [error description]);
 }
 
 
-- (void) application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+
+#pragma mark ----- UINavigation Delegate
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-    //自身服务器的方法
-    [self performSelectorOnMainThread:@selector(processRemoteNotification:) withObject:userInfo waitUntilDone:NO];
+    //	if ([viewController isKindOfClass:[SecondViewController class]])
+    //	{
+    //        [leveyTabBarController hidesTabBar:NO animated:YES];
+    //	}
     
-    //parse 服务器的方法
-//    [PFPush handlePush:userInfo];
+    if (viewController.hidesBottomBarWhenPushed)
+    {
+        [leveyTabBarController hidesTabBar:YES animated:YES];
+    }
+    else
+    {
+        [leveyTabBarController hidesTabBar:NO animated:YES];
+    }
 }
-
 
 #pragma mark - install profile
 
@@ -1175,6 +1319,5 @@
     }
     
 }
-
 
 @end

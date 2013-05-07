@@ -19,6 +19,7 @@
 #import "JSON.h"
 #import "OpenUDID.h"
 #import "TCUtils.h"
+#import "RecommendViewController.h"
 
 #define BG_COLOR [UIColor colorWithRed:80.0f/255.0f green:80.0f/255.0f blue:80.0f/255.0f alpha:1.0f]
 
@@ -41,14 +42,8 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if ( self ) {
-        //self.tabBarItem.title = @"流量统计";
-        //self.tabBarItem.image = [UIImage imageNamed:@"icon_report.png"];
-        
-        NSString* title = NSLocalizedString(@"stats.tabBarItem.title", nil);
-        NSString* imageName = NSLocalizedString(@"stats.tabBarItem.iamge", nil);
-        UITabBarItem *item = [[UITabBarItem alloc] initWithTitle:title image:[UIImage imageNamed:imageName] tag:0];
-        self.tabBarItem = item;
-        [item release];
+
+
     }
     return self;
 }
@@ -80,21 +75,30 @@
     self.navigationItem.title = NSLocalizedString(@"stats.navItem.title", nil);
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     
-    //self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"setName", nil) style:UIBarButtonItemStylePlain target:self action:@selector(showSetting)] autorelease];
-    UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [rightButton setBackgroundImage:[UIImage imageNamed:@"barButton_bg.png"] forState:UIControlStateNormal];
-    rightButton.frame = CGRectMake(0, 0, 40, 32);
-    [rightButton setImage:[UIImage imageNamed:@"settings.png"] forState:UIControlStateNormal];
-    [rightButton addTarget:self action:@selector(showSetting) forControlEvents:UIControlEventTouchUpInside];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
-    
     UIButton* leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
     leftButton.frame = CGRectMake(0, 0, 40, 32);
     [leftButton setBackgroundImage:[UIImage imageNamed:@"barButton_bg.png"] forState:UIControlStateNormal];
-    [leftButton setImage:[UIImage imageNamed:@"diagnose.png"] forState:UIControlStateNormal];
-    [leftButton addTarget:self action:@selector(showDiagnose) forControlEvents:UIControlEventTouchUpInside];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+    [leftButton setImage:[UIImage imageNamed:@"newApp.png"] forState:UIControlStateNormal];
+    [leftButton addTarget:self action:@selector(showNewsAppBtn) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *leftBar = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+    self.navigationItem.leftBarButtonItem = leftBar;
+    [leftBar release];
 
+    UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [rightButton setBackgroundImage:[UIImage imageNamed:@"barButton_bg.png"] forState:UIControlStateNormal];
+    rightButton.frame = CGRectMake(0, 0, 40, 32);
+    [rightButton setImage:[UIImage imageNamed:@"refresh.png"] forState:UIControlStateNormal];
+    [rightButton addTarget:self action:@selector(showRefreshAppBtn) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightBar = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    self.navigationItem.rightBarButtonItem =  rightBar;
+    [rightBar release];
+    
+    UIImageView *newAppShow = [[UIImageView alloc] initWithFrame:CGRectMake(28, 10, 12, 12)];
+    newAppShow.tag = 12345;
+    newAppShow.image = [UIImage imageNamed:@"redDot.png"];
+    newAppShow.hidden = YES;
+    [self.navigationController.navigationBar addSubview:newAppShow];
+    
     self.view.backgroundColor = BG_COLOR;
     scrollView.backgroundColor = BG_COLOR;
     
@@ -131,6 +135,7 @@
     
     //接收锁网通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshAppLockedStatus) name:RefreshAppLockedNotification object:nil];
+    
 }
 
 - (void)viewDidUnload
@@ -153,11 +158,61 @@
     userAgentStats = nil;
 }
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:NO];
+    
+    BOOL xsmf = [[NSUserDefaults standardUserDefaults] boolForKey:XSMF_APP];
+    BOOL rmyx = [[NSUserDefaults standardUserDefaults] boolForKey:RMYX_APP];
+    
+    if ( xsmf||rmyx) {
+        [self showAppDian];
+    }else{
+        [self hiddenAppDian];
+    }
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+#pragma mark --------- left Btn or notification method
+-(void)showAppDian
+{
+    UIImageView *imgView = (UIImageView *)[self.navigationController.navigationBar viewWithTag:12345];
+    imgView.hidden = NO;
+}
+
+-(void)hiddenAppDian
+{
+    UIImageView *imgView = (UIImageView *)[self.navigationController.navigationBar viewWithTag:12345];
+    imgView.hidden = YES;
+}
+
+-(void)showNewsAppBtn
+{
+    RecommendViewController *controller = [RecommendViewController getRecommendViewController];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    nav.navigationBar.tintColor =  RGB(48,48,50);
+    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
+    [nav release];
+}
+
+
+- (void) showRefreshAppBtn
+{
+    [_refreshHeaderView setState:EGOOPullRefreshLoading]; //私有方法强制调用，出的警告，不要去管
+    [scrollView setContentOffset:CGPointMake(0, -75) animated:YES];
+    [self performSelector:@selector(btnEGORef) withObject:self afterDelay:0.4];
+}
+
+-(void)btnEGORef
+{
+    [_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    [_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+}
 
 #pragma mark - load data
 
@@ -316,24 +371,6 @@
 }
 
 
-- (void) showSetting
-{
-    SettingViewController* controller = [[SettingViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    controller.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:controller animated:YES];
-    [controller release];
-}
-
-
-- (void) showDiagnose
-{
-    HelpListViewController* controller = [[HelpListViewController alloc] init];
-    controller.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:controller animated:YES];
-    [controller release];
-}
-
-
 - (void) refreshAppLockedStatus
 {
     [contentView refreshAppLockedStatus];
@@ -381,7 +418,7 @@
     controller.image = image;
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
 //    [[[AppDelegate getAppDelegate] currentNavigationController] presentModalViewController:nav animated:YES];
-    [self.navigationController presentModalViewController:nav animated:YES];
+    [[[AppDelegate getAppDelegate] leveyTabBarController] presentModalViewController:nav animated:YES];
     [controller release];
     [nav release];
 }

@@ -33,6 +33,9 @@
 
 - (void) loadView
 {
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
+    
     UIView* view;
     if ( isSetup ) {
         if ( iPhone5 ) {

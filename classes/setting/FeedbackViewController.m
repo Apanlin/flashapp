@@ -64,6 +64,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
+        
     // Do any additional setup after loading the view from its nib.
     self.navigationItem.title = @"意见反馈";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"发送" style:UIBarButtonItemStylePlain target:self action:@selector(save)];
@@ -75,12 +79,12 @@
     textView.layer.masksToBounds = YES;
     textView.layer.borderWidth = 1.0;
     textView.layer.cornerRadius = 7.0;
-    
-    [submitButton setBackgroundImage:[[UIImage imageNamed:@"blueButton1.png"] stretchableImageWithLeftCapWidth:13 topCapHeight:0] forState:UIControlStateNormal];
-    [submitButton setTitle:@"发   送" forState:UIControlStateNormal];
-    [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    submitButton.titleLabel.font = [UIFont systemFontOfSize:15];
+//    
+//    [submitButton setBackgroundImage:[[UIImage imageNamed:@"blueButton1.png"] stretchableImageWithLeftCapWidth:13 topCapHeight:0] forState:UIControlStateNormal];
+//    [submitButton setTitle:@"发   送" forState:UIControlStateNormal];
+//    [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    [submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+//    submitButton.titleLabel.font = [UIFont systemFontOfSize:15];
     
     scrollView.contentSize = CGSizeMake(320, 256);
 }

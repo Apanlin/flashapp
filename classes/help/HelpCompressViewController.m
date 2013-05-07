@@ -51,6 +51,7 @@
     [feedbackButton release];
     [checkBgImageView release];
     [resultBgImageView release];
+    [_lianxiLabel release];
     [super dealloc];
 }
 
@@ -61,6 +62,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
     
     self.navigationItem.title = @"诊断与帮助";
     
@@ -76,12 +79,18 @@
     [feedbackButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [feedbackButton addTarget:self action:@selector(feedback) forControlEvents:UIControlEventTouchUpInside];
     
+    if (iPhone5) {
+        feedbackButton.frame = CGRectMake(213, 450, 85, 33);
+        self.lianxiLabel.frame = CGRectMake(30, 450, 144, 34);
+    }
+    
     indicatorView.hidden = YES;
     openServiceButton.hidden = YES;
 }
 
 - (void)viewDidUnload
 {
+    [self setLianxiLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;

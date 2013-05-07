@@ -76,6 +76,7 @@
         }
     }
     
+    //增加应用
     if ( [userAgentStats count] > 0 ) {
         NSDictionary* lockDic = [UserAgentLockDAO getAllLockedApps];
         

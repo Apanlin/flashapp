@@ -16,6 +16,7 @@
 #import "HelpLockAppViewController.h"
 #import "UIDevice-Reachability.h"
 #import "AppDelegate.h"
+#import "RecommendViewController.h"
 
 
 #define TAG_CELL_LABEL 101
@@ -47,14 +48,46 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.navigationItem.title = @"诊断与帮助";
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:nil];
     
+    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+    
+    UIButton* leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    leftButton.frame = CGRectMake(0, 0, 40, 32);
+    [leftButton setBackgroundImage:[UIImage imageNamed:@"barButton_bg.png"] forState:UIControlStateNormal];
+    [leftButton setImage:[UIImage imageNamed:@"newApp.png"] forState:UIControlStateNormal];
+    [leftButton addTarget:self action:@selector(showNewsAppBtn) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *leftBar = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+    self.navigationItem.leftBarButtonItem = leftBar;
+    [leftBar release];
+    
+    UIImageView *newAppShow = [[UIImageView alloc] initWithFrame:CGRectMake(28, 10, 12, 12)];
+    newAppShow.tag = 12345;
+    newAppShow.image = [UIImage imageNamed:@"redDot.png"];
+    newAppShow.hidden = YES;
+    [self.navigationController.navigationBar addSubview:newAppShow];
+        
     //去掉表中的分割线
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     
     self.tableView.backgroundColor = [UIColor colorWithRed:40.0/255.0 green:40.0/255.0 blue:40.0/255.0 alpha:1.0];
 }
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:NO];
+    
+    BOOL xsmf = [[NSUserDefaults standardUserDefaults] boolForKey:XSMF_APP];
+    BOOL rmyx = [[NSUserDefaults standardUserDefaults] boolForKey:RMYX_APP];
+    
+    if ( xsmf||rmyx) {
+        [self showAppDian];
+    }else{
+        [self hiddenAppDian];
+    }
+
+}
 
 - (void)viewDidUnload
 {
@@ -63,11 +96,27 @@
     // e.g. self.myOutlet = nil;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+#pragma mark --------- left Btn or notification method
+-(void)showAppDian
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    UIImageView *imgView = (UIImageView *)[self.navigationController.navigationBar viewWithTag:12345];
+    imgView.hidden = NO;
 }
 
+-(void)hiddenAppDian
+{
+    UIImageView *imgView = (UIImageView *)[self.navigationController.navigationBar viewWithTag:12345];
+    imgView.hidden = YES;
+}
+
+-(void)showNewsAppBtn
+{
+    RecommendViewController *controller = [RecommendViewController getRecommendViewController];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:controller];
+    nav.navigationBar.tintColor =  RGB(48,48,50);
+    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
+    [nav release];
+}
 
 #pragma mark - Table view data source
 
@@ -293,6 +342,7 @@
     int row = indexPath.row;
     ConnectionType type = [UIDevice connectionType];
     
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     NSString* stype = [AppDelegate getAppDelegate].user.stype;
     if ( row >= 3 && [@"vpn" isEqualToString:stype] ) row++;
     
@@ -303,6 +353,8 @@
         else {
             HelpNetBadViewController* controller = [[HelpNetBadViewController alloc] init];
             controller.checkType = CONN_CHECK_BAD;
+            [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+            controller.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:controller animated:YES];
             [controller release];
         }
@@ -314,6 +366,8 @@
         else {
             HelpNetBadViewController* controller = [[HelpNetBadViewController alloc] init];
             controller.checkType = CONN_CHECK_SLOW;
+            [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+            controller.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:controller animated:YES];
             [controller release];
         }
@@ -325,6 +379,8 @@
         }
         else {
             HelpCompressViewController* controller = [[HelpCompressViewController alloc] init];
+            [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+            controller.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:controller animated:YES];
             [controller release];
         }
@@ -332,23 +388,31 @@
     else if ( row == 3 ) {
         //无法发送彩信
         HelpMMSViewController* controller = [[HelpMMSViewController alloc] init];
+        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+        controller.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:controller animated:YES];
         [controller release];
     }
     else if ( row == 4 ) {
         //数据统计有问题？
         HelpDatastatsViewController* controller = [[HelpDatastatsViewController alloc] init];
+        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+        controller.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:controller animated:YES];
         [controller release];
     }
     else if ( row == 5 ) {
         HelpLockAppViewController* controller = [[HelpLockAppViewController alloc] init];
+        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+        controller.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:controller animated:YES];
         [controller release];
     }
     else if ( row == 6 ) {
         //如何增加节省额度
         LevelViewController* controller = [[LevelViewController alloc] init];
+        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+        controller.hidesBottomBarWhenPushed = YES;
         controller.showCloseButton = NO;
         controller.title = @"诊断与帮助";
         [self.navigationController pushViewController:controller animated:YES];
@@ -357,6 +421,8 @@
     else if ( row == 7 ) {
         //其他帮助
         HelpViewController* controller = [[HelpViewController alloc] init];
+        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
+        controller.hidesBottomBarWhenPushed = YES;
         controller.showCloseButton = NO;
         [self.navigationController pushViewController:controller animated:YES];
         [controller release];
@@ -369,6 +435,12 @@
 - (void) alertWIFIConnection
 {
     [AppDelegate showAlert:@"无法上网怎么办?" message:@"请关闭WIFI来获取最佳的诊断效果。"];
+}
+
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 

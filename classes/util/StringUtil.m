@@ -13,6 +13,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 static const NSString* charactersToLeaveUnescaped = @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
 @implementation NSString (NSStringUtils)
+
+//对URL 进行编码， url中不能有空格， 不能有斜杠， 那么就要用这个方法对URL或者参数进行编码，将空格或者斜杠都转换成        “%%%02X” 这样子一个 十六进止的数。
 - (NSString*)encodeAsURIComponent
 {
 	const char* p = [self UTF8String];

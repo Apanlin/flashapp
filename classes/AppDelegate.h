@@ -14,7 +14,7 @@
 #import "UserSettings.h"
 #import "TwitterClient.h"
 #import "WXApi.h"
-
+#import "LeveyTabBarController.h"
 
 //#define NETMETER_DEBUG
 //#define MJOY_91_APPID 6631
@@ -57,17 +57,29 @@
 
 #define URL_SHARE @"/loginsns/share/device.jsp"
 
+#define APP_ID 1
 #define API_KEY @"30efb1a621c4bd711652ecafb7cbd3673a062b3f"
 #define API_VER @"1.5.4"
+
 
 #define RefreshNotification @"refreshNotification"
 #define TCChangedNotification @"TCChangedNotification"
 #define RefreshAppLockedNotification @"refreshAppLockedNotification"
+#define ShowAppRedDianNotification @"showNewsAppDian"
+#define HiddenAppRedDianNotification @"hiddenNewsAppDian"
 
-//#define CHANNEL @"appstore"
+//add guangtao
+#define NEWS_APP @"shownewapp"
+#define JPTJ_APP @"jptjnewapp"
+#define XSMF_APP @"xsmfnewapp"
+#define RMYX_APP @"rmyxnewapp"
+
+
+#define CHANNEL @"appstore"
+//#define CHANNEL @"PP helper_market"
 //#define CHANNEL @"weifeng_market"
 //#define CHANNEL @"91_market"
-#define CHANNEL @"flashapp_market"
+//#define CHANNEL @"flashapp_market"
 //#define CHANNEL @"flashapp_91_market"
 
 #define DES_KEY @"flashapp12345678ppahsalf"
@@ -76,10 +88,13 @@
 
 #define UD_LOCATION_ENABLED @"locationEnabled"
 
+#define RGB(A,B,C) [UIColor colorWithRed:A/255.0 green:B/255.0 blue:C/255.0 alpha:1.0]
+
+
 //联通免流量
 //#define DFTraffic
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate, WXApiDelegate> {
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate, WXApiDelegate ,UINavigationControllerDelegate> {
     NSObject* dbWriteLock;
     NSObject* timerTaskLock;
     NSLock* refreshingLock;
@@ -113,7 +128,9 @@
 }
 
 @property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) UITabBarController *tabBarController;
+@property (strong, nonatomic) LeveyTabBarController *leveyTabBarController;
+@property (nonatomic ,retain) UINavigationController *rootNav;
+
 @property (nonatomic, retain) NSObject* dbWriteLock;
 @property (nonatomic, retain) UserSettings* user;
 @property (nonatomic, assign) BOOL refreshDatasave;

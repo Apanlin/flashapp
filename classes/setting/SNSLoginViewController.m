@@ -53,6 +53,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
+    
     if ( [@"sinaWeibo" compare:domain] == NSOrderedSame ) {
         self.navigationItem.title = @"微博账号登录";
     }
@@ -97,10 +100,15 @@
 
 - (void) loadPage
 {
+    
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
+    
     UserSettings* user = [AppDelegate getAppDelegate].user;
-    NSString* url = [NSString stringWithFormat:@"http://%@/loginsns/login?_method=loginSNS&domain=%@&type=2&startQuantity=%f&shareQuantity=%f&uniqueId=%@", 
-                     P_HOST, domain, user.dayCapacityDelta, user.monthCapacityDelta, [OpenUDID value]];
-
+    NSString* url = [NSString stringWithFormat:@"http://%@/loginsns/login?_method=loginSNS&domain=%@&type=2&startQuantity=%f&shareQuantity=%f&uniqueId=%@&appid=%d", 
+                     P_HOST, domain, user.dayCapacityDelta, user.monthCapacityDelta, [OpenUDID value],APP_ID];
+    NSMutableURLRequest*request=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    [request setValue:@"flashapp/1.0 speedit CFNetwork/548.1.4 Darwin/11.0.0" forHTTPHeaderField:@"User-Agent"];
     [webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
 }
 
@@ -118,8 +126,9 @@
     NSString* url = request.URL.absoluteString;
     url = [url decodeFromPercentEscapeString];
     NSString* scheme = request.URL.scheme;
+    NSLog(@"request scheme is %@",scheme);
     NSDictionary* params = [TwitterClient urlParameters:url];
-    NSLog(@"login url = %@",url);
+    NSLog(@"login url = %@",params);
     if ( [@"regist" compare:scheme] == NSOrderedSame ) {
         NSMutableDictionary* dic = [NSMutableDictionary dictionary];
         NSString* userId = [params objectForKey:@"id"];
@@ -139,6 +148,9 @@
         NSLog(@"params dic = %@",params);
         NSLog(@"dic = %@",dic);
         return NO;
+    }else if ([@"fail" isEqualToString:scheme]){
+        [self performSelector:@selector(afterLogin) withObject:nil afterDelay:0.2f];
+        return NO;
     }
     else {
         return YES;
@@ -153,7 +165,7 @@
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
     else {
-        [nav dismissModalViewControllerAnimated:YES];
+        [self.navigationController dismissModalViewControllerAnimated:YES];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:RefreshNotification object:self];
 }

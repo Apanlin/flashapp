@@ -830,16 +830,6 @@
     [nav release];
 }
 
-
-- (void) showSetting
-{
-    SettingViewController* controller = [[SettingViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    controller.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:controller animated:YES];
-    [controller release];
-}
-
-
 #pragma mark -  methods for share
 
 - (NSData*) captureScreen

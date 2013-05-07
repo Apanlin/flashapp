@@ -7,6 +7,7 @@
 //
 
 #import "WeiboViewController.h"
+#import "AppDelegate.h"
 
 @implementation WeiboViewController
 
@@ -40,6 +41,7 @@
     [sinaButton release];
     [qqButton release];
     [weiboLabel release];
+    [_bgView release];
     [super dealloc];
 }
 
@@ -48,6 +50,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
     
     // Do any additional setup after loading the view from its nib.
     self.navigationItem.title = NSLocalizedString(@"set.weiboView.navItem.title", nil);
@@ -73,6 +78,7 @@
 
 - (void)viewDidUnload
 {
+    [self setBgView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;

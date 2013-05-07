@@ -40,12 +40,12 @@
         sliderView = [[DatastatsMonthSliderView alloc] initWithFrame:CGRectMake(0, 0, 320, 38)];
         [self addSubview:sliderView];
 
-        //
+        //总的压缩的view
         totalView = [[DatastatsTotalView alloc] initWithFrame:CGRectMake(0, 38, 320, 149)];
         [totalView.shareButton addTarget:viewcontroller action:@selector(showShare) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:totalView];
         
-        //应用流量统计
+        //label。text = 应用流量统计
         UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(0, 187, 320, 30)];
         label.backgroundColor = [UIColor colorWithRed:80.0f/255.0f green:80.0f/255.0f blue:80.0f/255.0f alpha:1.0f];
         label.text = NSLocalizedString(@"stats.application.static", nil);
@@ -54,6 +54,7 @@
         [self addSubview:label];
         [label release];
         
+        //初始化每一个应用流量使用详情
         userAgentsView = [[DatastatsUserAgentsView alloc] initWithFrame:CGRectZero];
         userAgentsView.userAgentColors = userAgentColors;
         [self addSubview:userAgentsView];
@@ -69,7 +70,6 @@
         pieView = [[DatastatsPieView alloc] initWithFrame:CGRectZero];
         [self addSubview:pieView];
 
-        
         //增加未处理流量的提示
         underProxyButton = [UIButton buttonWithType:UIButtonTypeCustom];
         underProxyButton.frame = CGRectMake(177, 165, 130, 20);
@@ -154,9 +154,11 @@
     //NSString* end = [DateUtils stringWithDateFormat:endTime format:@"yyyy/MM/dd"];
     //sliderView.text = [NSString stringWithFormat:@"%@ - %@", start, end];
     
+    //时间的view
     sliderView.text = [TCUtils monthDescForStartTime:startTime endTime:endTime];
     sliderView.delegate = viewcontroller;
 
+    //设置总比咧图的分享 按钮是否显示
     totalView.stats = currentStats;
     if ( currentStats && userAgentStats && [userAgentStats count] > 0 ) {
         totalView.shareButton.hidden = NO;
@@ -165,15 +167,17 @@
         totalView.shareButton.hidden = YES;
     }
  
+    //设置流量统计详情的呢些view
     CGFloat height = [userAgentsView getHeight];
     CGFloat y = 38 + 149 + 30;
     userAgentsView.frame = CGRectMake( 5, y, 310, height );
-//    [userAgentsView setNeedsDisplay];
     [userAgentsView setNeedsLayout];
     
+    //设置 text ="流量使用比列图"  的位置
     y += height;
     pieLabel.frame = CGRectMake(0, y, 320, 38);
     
+    //设置 比列图 图片的位置
     y += 38;
     pieView.userAgents = userAgentStats;
     pieView.frame = CGRectMake(5, y, 310, 160);
@@ -187,6 +191,7 @@
         pieView.hidden = YES;
     }
     
+    //未处理流量！
     UserSettings* user = [AppDelegate getAppDelegate].user;
     long used = [user getTcUsed];
     long underBytes = used - currentStats.bytesAfter;
@@ -238,6 +243,21 @@
 }
 
 
+- (void) showUnderProxyView
+{
+    UIScrollView* scrollview = (UIScrollView*) self.superview;
+    CGPoint point = scrollview.contentOffset;
+    disableLayerView.frame = CGRectMake(0, point.y, 320, 416);
+    underProxyView.frame = CGRectMake(30, point.y + 20, 260, 316);
+    
+    disableLayerView.hidden = NO;
+    underProxyView.hidden = NO;
+    
+    sliderView.userInteractionEnabled = NO;
+    totalView.userInteractionEnabled = NO;
+    scrollview.scrollEnabled = NO;
+}
+
 - (void) hiddenUnderProxyView
 {
     disableLayerView.hidden = YES;
@@ -248,22 +268,6 @@
 
     UIScrollView* scrollview = (UIScrollView*) self.superview;
     scrollview.scrollEnabled = YES;
-}
-
-
-- (void) showUnderProxyView
-{
-    UIScrollView* scrollview = (UIScrollView*) self.superview;
-    CGPoint point = scrollview.contentOffset;
-    disableLayerView.frame = CGRectMake(0, point.y, 320, 416);
-    underProxyView.frame = CGRectMake(30, point.y + 20, 260, 316);
-
-    disableLayerView.hidden = NO;
-    underProxyView.hidden = NO;
-    
-    sliderView.userInteractionEnabled = NO;
-    totalView.userInteractionEnabled = NO;
-    scrollview.scrollEnabled = NO;
 }
 
 

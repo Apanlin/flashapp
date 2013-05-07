@@ -40,7 +40,6 @@
     CapacityAnimateView* caView;
     
     UILabel* taocanLabel;
-    UILabel* taocanLabel2;
     UILabel* taocanLeftLabel;
     UILabel* taocanUnitLabel;
     UILabel* taocanUsedLabel;
@@ -51,12 +50,6 @@
     UIImageView* taocanUsedBarImageView;
     UIImageView* taocanExceedBarImageView;
     UIImageView* taocanBarTriangleImageView;
-    UILabel* taocanAxisLabel1;
-    UILabel* taocanAxisLabel2;
-    UILabel* taocanAxisLabel3;
-    UILabel* taocanAxisLabel4;
-    UILabel* taocanAxisLabel5;
-    UILabel* taocanAxisUsedLabel;
     
     NSInteger currentStatsViewIndex;
     NSInteger currentUserAgentIndex;
@@ -107,11 +100,12 @@
 @property (nonatomic, retain) IBOutlet UILabel* taocanUsedLabel;
 @property (nonatomic, retain) IBOutlet UILabel* taocanUsedUnitLabel;
 @property (nonatomic, retain) IBOutlet UIButton* taocanAdjectButton;
-@property (nonatomic, retain) IBOutlet UILabel* taocanLabel2;
 @property (nonatomic, retain) IBOutlet UIImageView* taocanBarBgImageView;
 @property (nonatomic, retain) IBOutlet UIImageView* taocanUsedBarImageView;
 @property (nonatomic, retain) IBOutlet UIImageView* taocanExceedBarImageView;
 @property (nonatomic, retain) IBOutlet UIImageView* taocanBarTriangleImageView;
+@property (retain, nonatomic) IBOutlet UILabel *yiyongbaifenbi;
+@property (retain, nonatomic) IBOutlet UIImageView *iPFshuxianImg;
 
 @property (nonatomic, retain) DatasaveDialView* dialView;
 

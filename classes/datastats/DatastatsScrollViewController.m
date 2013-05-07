@@ -81,7 +81,7 @@
     [leftButton setImage:[UIImage imageNamed:@"newApp.png"] forState:UIControlStateNormal];
     [leftButton addTarget:self action:@selector(showNewsAppBtn) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *leftBar = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
-    self.navigationItem.leftBarButtonItem = leftBar;
+//    self.navigationItem.leftBarButtonItem = leftBar;
     [leftBar release];
 
     UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -97,7 +97,7 @@
     newAppShow.tag = 12345;
     newAppShow.image = [UIImage imageNamed:@"redDot.png"];
     newAppShow.hidden = YES;
-    [self.navigationController.navigationBar addSubview:newAppShow];
+//    [self.navigationController.navigationBar addSubview:newAppShow];
     
     self.view.backgroundColor = BG_COLOR;
     scrollView.backgroundColor = BG_COLOR;

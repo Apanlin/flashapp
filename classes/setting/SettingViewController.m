@@ -99,14 +99,14 @@
     [leftButton setImage:[UIImage imageNamed:@"newApp.png"] forState:UIControlStateNormal];
     [leftButton addTarget:self action:@selector(showNewsAppBtn) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *leftBar = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
-    self.navigationItem.leftBarButtonItem = leftBar;
+//    self.navigationItem.leftBarButtonItem = leftBar;
     [leftBar release];
     
     UIImageView *newAppShow = [[UIImageView alloc] initWithFrame:CGRectMake(28, 10, 12, 12)];
     newAppShow.tag = 12345;
     newAppShow.image = [UIImage imageNamed:@"redDot.png"];
     newAppShow.hidden = YES;
-    [self.navigationController.navigationBar addSubview:newAppShow];
+//    [self.navigationController.navigationBar addSubview:newAppShow];
     
 //    //有新应用的时候的通知，通知显示小红点
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAppDian) name:ShowAppRedDianNotification object:nil];

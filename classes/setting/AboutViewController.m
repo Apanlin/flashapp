@@ -79,7 +79,7 @@
     }
 
     //for 91
-    versionLabel.text = [NSString stringWithFormat:@"%@: V1.93",NSLocalizedString(@"set.aboutview.version.text", nil)];
+//    versionLabel.text = [NSString stringWithFormat:@"%@: V1.93",NSLocalizedString(@"set.aboutview.version.text", nil)];
     
     client = nil;
 }

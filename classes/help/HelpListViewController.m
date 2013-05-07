@@ -57,14 +57,14 @@
     [leftButton setImage:[UIImage imageNamed:@"newApp.png"] forState:UIControlStateNormal];
     [leftButton addTarget:self action:@selector(showNewsAppBtn) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *leftBar = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
-    self.navigationItem.leftBarButtonItem = leftBar;
+//    self.navigationItem.leftBarButtonItem = leftBar;
     [leftBar release];
     
     UIImageView *newAppShow = [[UIImageView alloc] initWithFrame:CGRectMake(28, 10, 12, 12)];
     newAppShow.tag = 12345;
     newAppShow.image = [UIImage imageNamed:@"redDot.png"];
     newAppShow.hidden = YES;
-    [self.navigationController.navigationBar addSubview:newAppShow];
+//    [self.navigationController.navigationBar addSubview:newAppShow];
         
     //去掉表中的分割线
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];

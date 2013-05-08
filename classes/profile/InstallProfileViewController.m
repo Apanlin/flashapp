@@ -113,23 +113,20 @@
     [userDefaults setObject:version forKey:@"systemVersion"];
     [userDefaults synchronize]; //强制写入
     
-    //如果是非appstore渠道或者serviceType＝apn，则不显示“手动开启”
-    NSString* stype = [[NSUserDefaults standardUserDefaults] objectForKey:@"stype"];
-    if ( ![@"appstore" isEqualToString:CHANNEL] || [@"apn" isEqualToString:stype] ) {
-        installVPNButton.hidden = YES;
-        vpnHelpLabel.hidden = YES;
-        apnHelpLabel.hidden = YES;
-        
-        CGRect rect = installAPNButton.frame;
-        rect = CGRectMake( installAPNButton.frame.origin.x, installAPNButton.frame.origin.y + 20,
-                          installAPNButton.frame.size.width, installAPNButton.frame.size.height);
-        installAPNButton.frame = rect;
-        [installAPNButton setTitle:@"立即开启" forState:UIControlStateNormal];
-        
-        rect = bgView.frame;
-        rect.size.height = rect.size.height - 40;
-        bgView.frame = rect;
-    }
+    //隐藏她们 ，1.5.5改的
+    installVPNButton.hidden = YES;
+    vpnHelpLabel.hidden = YES;
+    apnHelpLabel.hidden = YES;
+    CGRect rect = installAPNButton.frame;
+    rect = CGRectMake( installAPNButton.frame.origin.x, installAPNButton.frame.origin.y + 20,
+                      installAPNButton.frame.size.width, installAPNButton.frame.size.height);
+    installAPNButton.frame = rect;
+    [installAPNButton setTitle:@"立即开启" forState:UIControlStateNormal];
+    
+    rect = bgView.frame;
+    rect.size.height = rect.size.height - 40;
+    bgView.frame = rect;
+    
 } 
 
 - (void)viewDidUnload
@@ -166,14 +163,18 @@
 - (IBAction) installAPNProfile:(id)sender
 {
 //    [UserSettings saveServiceType:@"apn"];
-    [AppDelegate installProfileForServiceType:@"apn" nextPage:nil apn:nil idc:nil];
+    if ([CHANNEL isEqualToString:@"appstore"]) {
+        [AppDelegate installProfileForServiceType:@"apn" nextPage:nil apn:nil idc:nil interfable:@"1"];
+    }else{
+        [AppDelegate installProfileForServiceType:@"apn" nextPage:nil apn:nil idc:nil interfable:@"0"];
+    }
 }
 
 
 - (IBAction) installVPNProfile:(id)sender
 {
 //    [UserSettings saveServiceType:@"vpn"];
-    [AppDelegate installProfileForServiceType:@"vpn" nextPage:nil apn:nil idc:nil];
+    [AppDelegate installProfileForServiceType:@"vpn" nextPage:nil apn:nil idc:nil interfable:@"1"];
 }
 
 

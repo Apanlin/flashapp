@@ -595,10 +595,10 @@
     [WXApi registerApp:@"wxd1be1f55db841585"];
     
     //创建应用分类的数据库表
-    [AppRecommedDao createAppClassestable];
+//    [AppRecommedDao createAppClassestable];
     
     //查看是否有新的应用推荐
-    [self ifNewsApp];
+//    [self ifNewsApp];
     
     
     
@@ -859,6 +859,9 @@
                 user.capacity = [capacity floatValue];
                 user.status = [status intValue];
                 
+                //判断是否在审核， 1.在审核  ; 2.没在审核
+                [UserSettings saveInchk:[params objectForKey:@"inchk"]];
+                
                 NSString* idcCode = [params objectForKey:@"code"];
                 if ( idcCode && idcCode.length > 0 ) {
                     user.idcCode = idcCode;
@@ -1035,7 +1038,7 @@
 
 #pragma mark - install profile
 
-+ (NSString*) getInstallURLForServiceType:(NSString*)serviceType nextPage:(NSString*)nextPage install:(BOOL)isInstall apn:(NSString*)apn idc:(NSString*)idcCode
++ (NSString*) getInstallURLForServiceType:(NSString*)serviceType nextPage:(NSString*)nextPage install:(BOOL)isInstall apn:(NSString*)apn idc:(NSString*)idcCode interfable:(NSString *)inter
 {
     DeviceInfo* device = [DeviceInfo deviceInfoWithLocalDevice];
     NSString* type = [UIDevice connectionTypeString];
@@ -1051,7 +1054,7 @@
     if ( !currentLanguage || currentLanguage.length == 0 ) currentLanguage = @"en";
     
     NSString* action = @"vpnn";
-    NSMutableString* url = [NSMutableString stringWithFormat:@"http://%@/%@?_method=profile&servicetype=%@&name=%@&platform=%@&osversion=%@&connType=%@&carrier=%@&mcc=%@&mnc=%@&install=%d&apn=%@%@&lang=%@",
+    NSMutableString* url = [NSMutableString stringWithFormat:@"http://%@/%@?_method=profile&servicetype=%@&name=%@&platform=%@&osversion=%@&connType=%@&carrier=%@&mcc=%@&mnc=%@&install=%d&apn=%@%@&lang=%@&interfable=%@",
                             P_HOST, action, serviceType,
                             [device.hardware encodeAsURIComponent], [device.platform encodeAsURIComponent],
                             [device.version encodeAsURIComponent], type,
@@ -1061,7 +1064,7 @@
                             isInstall ? 1 : 0,
                             apn && [apn length] > 0 ? [apn encodeAsURIComponent] : @"",
                             idcCode ? [NSString stringWithFormat:@"&area=%@", idcCode] : @"",
-                            currentLanguage];
+                            currentLanguage,inter];
     if ( nextPage && [nextPage length] > 0 ) {
         [url appendFormat:@"&nextPage=%@", [nextPage encodeAsURIComponent]];
     }
@@ -1078,7 +1081,7 @@
     NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
     NSString* apn = [userDefault objectForKey:@"apnName"];
     NSString* stype = [AppDelegate getAppDelegate].user.stype;
-    [self installProfileForServiceType:stype nextPage:nextPage apn:apn idc:idcCode];
+    [self installProfileForServiceType:stype nextPage:nextPage apn:apn idc:idcCode interfable:@"0"];
 }
 
 
@@ -1095,7 +1098,7 @@
     
     
     NSString* stype = [AppDelegate getAppDelegate].user.stype;
-    [self installProfileForServiceType:stype nextPage:nextPage apn:apn idc:nil];
+    [self installProfileForServiceType:stype nextPage:nextPage apn:apn idc:nil interfable:@"0"];
 }
 
 
@@ -1103,13 +1106,14 @@
 {
     NSString* stype = [AppDelegate getAppDelegate].user.stype;
     NSString* apn = [[NSUserDefaults standardUserDefaults] objectForKey:@"apnName"];
-    [self installProfileForServiceType:stype nextPage:nextPage apn:apn idc:nil];
+    [self installProfileForServiceType:stype nextPage:nextPage apn:apn idc:nil interfable:@"0"];
 }
 
-
-+ (void) installProfileForServiceType:(NSString*)serviceType nextPage:(NSString*)nextPage apn:(NSString*)apn idc:(NSString*)idcCode
+// 1.程序第一次启动的时候 serviceType = @"apn" , interfable = @"1"
+// 2.vpn帮助页面提示开启服务按钮 ， serviceType = @"apn" nextPage = @"datasave" interfable = inchk?1:0
++ (void) installProfileForServiceType:(NSString*)serviceType nextPage:(NSString*)nextPage apn:(NSString*)apn idc:(NSString*)idcCode interfable:(NSString *)inter
 {
-    NSString* url = [AppDelegate getInstallURLForServiceType:serviceType nextPage:nextPage install:YES apn:apn idc:idcCode];
+    NSString* url = [AppDelegate getInstallURLForServiceType:serviceType nextPage:nextPage install:YES apn:apn idc:idcCode interfable:inter];
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
 }
 

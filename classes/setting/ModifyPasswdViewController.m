@@ -15,10 +15,10 @@
 
 @synthesize bgImageView;
 @synthesize oldPasswordField;
-@synthesize newPasswordField;
+//@synthesize newPasswordField;
 @synthesize saveButton;
 @synthesize oldPasswordLabel;
-@synthesize newPasswordLabel;
+
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil

@@ -167,7 +167,7 @@ PictureQsLevel;
 + (void) saveCarrier:(NSString*)code carrierType:(NSString*)type area:(NSString*)area snsnum:(NSString*)snsnum snstext:(NSString*)snstext;
 + (void) savePictureQsLevel:(PictureQsLevel)level;
 + (void) saveServiceType:(NSString*)stype;
-
++ (void) saveInchk:(NSString *)inchk;
 - (float) getTcTotal;
 - (float) getTcUsed;
 - (int) getTcDay;

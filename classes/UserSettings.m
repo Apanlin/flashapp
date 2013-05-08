@@ -338,6 +338,14 @@
 }
 
 
++ (void) saveInchk:(NSString *)inchk
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:inchk forKey:@"inchk"];
+    [userDefaults synchronize];
+}
+
+
 - (int) proxyFlag
 {
     if ( [@"vpn" isEqualToString:stype] && [UIDevice isVPNEnabled] && (proxyFlag==INSTALL_FLAG_NO || proxyFlag==INSTALL_FLAG_UNKNOWN) ) {

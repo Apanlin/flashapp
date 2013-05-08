@@ -961,7 +961,7 @@ typedef enum {
     //显示网速测试结果
     [self checkProxySpeed];
     
-    //处理下拉刷新
+    //处理下拉刷新 时间
     [_refreshHeaderView refreshLastUpdatedDate];
     if ( ddRefresh ) [self doneLoadingTableViewData];
 }

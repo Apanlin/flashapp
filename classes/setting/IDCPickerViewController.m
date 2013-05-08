@@ -623,7 +623,17 @@
             [TwitterClient getStatsData];
             
             //开始安装profile
-            [AppDelegate installProfileForServiceType:@"apn" nextPage:@"datasave" apn:nil idc:selectedIDC.code];
+            NSString *inchk = [[NSUserDefaults standardUserDefaults] objectForKey:@"inchk"];
+            
+            UserSettings *user = [UserSettings currentUserSettings];
+            
+            if ([inchk isEqualToString:@"1"] &&[CHANNEL isEqualToString:@"appstore"]&&[user.stype isEqualToString:@"vpn"]) {
+                [AppDelegate installProfileForServiceType:@"apn" nextPage:@"datasave" apn:nil idc:selectedIDC.code interfable:@"1" ];
+            }
+            else{
+                [AppDelegate installProfileForServiceType:@"apn" nextPage:@"datasave" apn:nil idc:selectedIDC.code interfable:@"0" ];
+            }
+            
         }
     }
 }

@@ -860,7 +860,7 @@
     
     if ( switcher.on ) {
         if ( [@"vpn" isEqualToString:stype] ) {
-            [AppDelegate installProfileForServiceType:@"apn" nextPage:@"current" apn:nil idc:nil];
+            [AppDelegate installProfileForServiceType:@"apn" nextPage:@"current" apn:nil idc:nil interfable:@"0"];
         }
         else {
             [self installAPNProfile];

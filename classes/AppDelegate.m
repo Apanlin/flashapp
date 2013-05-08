@@ -980,6 +980,14 @@
     NSString* s = [deviceToken description];
     s = [s stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     s = [s stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+#ifdef DEBUG_My
+    if (DEBUG_My)
+    {
+        s=[NSString stringWithFormat:@":%@",s];
+        NSLog(@"debug deviceToken=%@", s);
+    }
+#endif
     NSLog(@"deviceToken=%@", s);
     NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];
     [userDefault setObject:s forKey:@"deviceToken"];

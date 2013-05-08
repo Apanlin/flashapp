@@ -56,6 +56,8 @@
 		B34D1BCE16E448480029B19B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B34D1BC816E448480029B19B /* InfoPlist.strings */; };
 		B34D1BCF16E448480029B19B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B34D1BCA16E448480029B19B /* Localizable.strings */; };
 		B373923516EEE622005A9D4A /* HelpLockAppViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B373923416EEE622005A9D4A /* HelpLockAppViewController.xib */; };
+		B375D257173A706E002F054F /* libWeChatSDK_armv7_armv7s.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B375D256173A706E002F054F /* libWeChatSDK_armv7_armv7s.a */; };
+		B375D259173A7089002F054F /* libCorePlot-CocoaTouch_armv7_armv7s.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B375D258173A7089002F054F /* libCorePlot-CocoaTouch_armv7_armv7s.a */; };
 		B37F0B971728B8FC00BBC1C8 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B37F0B951728B8FC00BBC1C8 /* DetailViewController.m */; };
 		B37F0B981728B8FC00BBC1C8 /* DetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B37F0B961728B8FC00BBC1C8 /* DetailViewController.xib */; };
 		B37F0BA61728D2E100BBC1C8 /* app_left_sel.png in Resources */ = {isa = PBXBuildFile; fileRef = B37F0B9A1728D2E100BBC1C8 /* app_left_sel.png */; };
@@ -108,7 +110,6 @@
 		EF29824D171833F70084C10D /* OpenVPNViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF29824B171833F60084C10D /* OpenVPNViewController.xib */; };
 		EF298261171901FE0084C10D /* CloseVPNViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EF29825F171901FE0084C10D /* CloseVPNViewController.m */; };
 		EF298262171901FE0084C10D /* CloseVPNViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EF298260171901FE0084C10D /* CloseVPNViewController.xib */; };
-		EF3DBD23171D6068000E785C /* libCorePlot-CocoaTouch_armv6_armv7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EF3DBD22171D6068000E785C /* libCorePlot-CocoaTouch_armv6_armv7.a */; };
 		EF63A26016758C3A009F1950 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A25F16758C3A009F1950 /* UIKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EF63A26216758C3A009F1950 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A26116758C3A009F1950 /* Foundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EF63A26416758C3A009F1950 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A26316758C3A009F1950 /* CoreGraphics.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -302,7 +303,6 @@
 		EF63A75E16759432009F1950 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A75416759432009F1950 /* SystemConfiguration.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EF63A7601675B63F009F1950 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A75F1675B63F009F1950 /* MobileCoreServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EF63A7B71678383B009F1950 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = EF63A7B51678383B009F1950 /* JSONKit.m */; };
-		EF862E2D171C235B00F16693 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EF63A7BE16783DBD009F1950 /* libWeChatSDK.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		EFC23E4017192C3B0006A986 /* appdetail_resume.png in Resources */ = {isa = PBXBuildFile; fileRef = EFC23CEA17192C390006A986 /* appdetail_resume.png */; };
 		EFC23E4117192C3B0006A986 /* appdetail_resume@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EFC23CEB17192C390006A986 /* appdetail_resume@2x.png */; };
 		EFC23E4217192C3B0006A986 /* appdetail_stop.png in Resources */ = {isa = PBXBuildFile; fileRef = EFC23CEC17192C390006A986 /* appdetail_stop.png */; };
@@ -659,6 +659,8 @@
 		B34D1BC916E448480029B19B /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = InfoPlist.strings; sourceTree = "<group>"; };
 		B34D1BCB16E448480029B19B /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = Localizable.strings; sourceTree = "<group>"; };
 		B373923416EEE622005A9D4A /* HelpLockAppViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HelpLockAppViewController.xib; sourceTree = "<group>"; };
+		B375D256173A706E002F054F /* libWeChatSDK_armv7_armv7s.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK_armv7_armv7s.a; sourceTree = "<group>"; };
+		B375D258173A7089002F054F /* libCorePlot-CocoaTouch_armv7_armv7s.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libCorePlot-CocoaTouch_armv7_armv7s.a"; path = "external/libCorePlot-CocoaTouch_armv7_armv7s.a"; sourceTree = "<group>"; };
 		B37F0B941728B8FB00BBC1C8 /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		B37F0B951728B8FC00BBC1C8 /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		B37F0B961728B8FC00BBC1C8 /* DetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailViewController.xib; sourceTree = "<group>"; };
@@ -801,7 +803,6 @@
 		EF367D5E17158D9100104C2F /* NSCoderExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCoderExtensions.h; sourceTree = "<group>"; };
 		EF367D5F17158D9100104C2F /* NSDecimalNumberExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDecimalNumberExtensions.h; sourceTree = "<group>"; };
 		EF367D6017158D9100104C2F /* NSNumberExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSNumberExtensions.h; sourceTree = "<group>"; };
-		EF3DBD22171D6068000E785C /* libCorePlot-CocoaTouch_armv6_armv7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libCorePlot-CocoaTouch_armv6_armv7.a"; path = "external/libCorePlot-CocoaTouch_armv6_armv7.a"; sourceTree = "<group>"; };
 		EF63A25B16758C3A009F1950 /* flashapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = flashapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF63A25F16758C3A009F1950 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		EF63A26116758C3A009F1950 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1146,7 +1147,6 @@
 		EF63A7B41678383B009F1950 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		EF63A7B51678383B009F1950 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		EF63A7B816783880009F1950 /* libDFTraffic.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libDFTraffic.a; sourceTree = "<group>"; };
-		EF63A7BE16783DBD009F1950 /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
 		EFC23CEA17192C390006A986 /* appdetail_resume.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = appdetail_resume.png; sourceTree = "<group>"; };
 		EFC23CEB17192C390006A986 /* appdetail_resume@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "appdetail_resume@2x.png"; sourceTree = "<group>"; };
 		EFC23CEC17192C390006A986 /* appdetail_stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = appdetail_stop.png; sourceTree = "<group>"; };
@@ -1457,8 +1457,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EF3DBD23171D6068000E785C /* libCorePlot-CocoaTouch_armv6_armv7.a in Frameworks */,
-				EF862E2D171C235B00F16693 /* libWeChatSDK.a in Frameworks */,
 				EF63A75E16759432009F1950 /* SystemConfiguration.framework in Frameworks */,
 				EF63A75D16759432009F1950 /* QuartzCore.framework in Frameworks */,
 				EF63A7601675B63F009F1950 /* MobileCoreServices.framework in Frameworks */,
@@ -1473,6 +1471,8 @@
 				EF63A75C16759432009F1950 /* MessageUI.framework in Frameworks */,
 				EF63A26216758C3A009F1950 /* Foundation.framework in Frameworks */,
 				EF63A26016758C3A009F1950 /* UIKit.framework in Frameworks */,
+				B375D257173A706E002F054F /* libWeChatSDK_armv7_armv7s.a in Frameworks */,
+				B375D259173A7089002F054F /* libCorePlot-CocoaTouch_armv7_armv7s.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1663,7 +1663,7 @@
 		EF63A25016758C3A009F1950 = {
 			isa = PBXGroup;
 			children = (
-				EF3DBD22171D6068000E785C /* libCorePlot-CocoaTouch_armv6_armv7.a */,
+				B375D258173A7089002F054F /* libCorePlot-CocoaTouch_armv7_armv7s.a */,
 				EF63A27616758C67009F1950 /* classes */,
 				EF63A3B616758C68009F1950 /* db-1.0.sqlite */,
 				EF63A3B716758C68009F1950 /* external */,
@@ -2261,7 +2261,7 @@
 		EF63A3CD16758C68009F1950 /* wxsdk */ = {
 			isa = PBXGroup;
 			children = (
-				EF63A7BE16783DBD009F1950 /* libWeChatSDK.a */,
+				B375D256173A706E002F054F /* libWeChatSDK_armv7_armv7s.a */,
 				EF63A3D016758C68009F1950 /* WXApi.h */,
 				EF63A3D116758C68009F1950 /* WXApiObject.h */,
 			);
@@ -3377,12 +3377,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					armv7,
-				);
-				CODE_SIGN_IDENTITY = "iPhone Developer: guazi me (VWA796PTYP)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: guazi me (VWA796PTYP)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: ZHAO QI";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: ZHAO QI";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3396,15 +3393,15 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
 				);
-				PROVISIONING_PROFILE = "A799F72E-7AC7-468E-B602-784898F39B76";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A799F72E-7AC7-468E-B602-784898F39B76";
+				PROVISIONING_PROFILE = "38823DE4-BC0A-4E6C-822A-4334465EB012";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "38823DE4-BC0A-4E6C-822A-4334465EB012";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv6";
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -3412,29 +3409,26 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					armv7,
-				);
-				CODE_SIGN_IDENTITY = "iPhone Developer: guazi me (VWA796PTYP)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: guazi me (VWA796PTYP)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: ZHAO QI";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: ZHAO QI";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
 				);
-				PROVISIONING_PROFILE = "A799F72E-7AC7-468E-B602-784898F39B76";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A799F72E-7AC7-468E-B602-784898F39B76";
+				PROVISIONING_PROFILE = "38823DE4-BC0A-4E6C-822A-4334465EB012";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "38823DE4-BC0A-4E6C-822A-4334465EB012";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7 armv6";
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Release;
 		};
@@ -3442,11 +3436,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					armv6,
+					armv7s,
 					armv7,
 				);
-				CODE_SIGN_IDENTITY = "iPhone Developer: guazi me (VWA796PTYP)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: guazi me (VWA796PTYP)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: ZHAO QI";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: ZHAO QI";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -3455,7 +3449,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "flashapp/flashapp-Prefix.pch";
 				INFOPLIST_FILE = "flashapp/flashapp-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/external/wxsdk\"",
@@ -3465,9 +3459,9 @@
 					"\"$(SRCROOT)/../djw-core-plot-348bfcc/build/Release-iphoneos\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A799F72E-7AC7-468E-B602-784898F39B76";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A799F72E-7AC7-468E-B602-784898F39B76";
-				VALID_ARCHS = "armv7 armv6";
+				PROVISIONING_PROFILE = "38823DE4-BC0A-4E6C-822A-4334465EB012";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "38823DE4-BC0A-4E6C-822A-4334465EB012";
+				VALID_ARCHS = "armv7 armv7s ";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -3476,11 +3470,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					armv6,
+					armv7s,
 					armv7,
 				);
-				CODE_SIGN_IDENTITY = "iPhone Developer: guazi me (VWA796PTYP)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: guazi me (VWA796PTYP)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: ZHAO QI";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: ZHAO QI";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -3489,7 +3483,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "flashapp/flashapp-Prefix.pch";
 				INFOPLIST_FILE = "flashapp/flashapp-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/external/wxsdk\"",
@@ -3499,9 +3493,9 @@
 					"\"$(SRCROOT)/../djw-core-plot-348bfcc/build/Release-iphoneos\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A799F72E-7AC7-468E-B602-784898F39B76";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A799F72E-7AC7-468E-B602-784898F39B76";
-				VALID_ARCHS = "armv7 armv6";
+				PROVISIONING_PROFILE = "38823DE4-BC0A-4E6C-822A-4334465EB012";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "38823DE4-BC0A-4E6C-822A-4334465EB012";
+				VALID_ARCHS = "armv7 armv7s ";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

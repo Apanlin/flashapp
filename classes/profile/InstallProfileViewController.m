@@ -174,14 +174,15 @@
 - (IBAction) installVPNProfile:(id)sender
 {
 //    [UserSettings saveServiceType:@"vpn"];
-    [AppDelegate installProfileForServiceType:@"vpn" nextPage:nil apn:nil idc:nil interfable:@"1"];
+    [AppDelegate installProfileForServiceType:@"vpn" nextPage:nil apn:nil idc:nil interfable:@"0"];
 }
 
 
 - (IBAction) copyInstallURL:(id)sender
 {
     NSString *url ;
-    if ([CHANNEL isEqualToString:@"appstore"]) {
+    NSString* inchk = [[NSUserDefaults standardUserDefaults] objectForKey:@"inchk"];
+    if ( [CHANNEL isEqualToString:@"appstore"] && [@"1" isEqualToString:inchk] ) {
         url = [AppDelegate getInstallURLForServiceType:@"apn" nextPage:nil install:YES apn:nil idc:nil interfable:@"1"];
     }else{
         url = [AppDelegate getInstallURLForServiceType:@"apn" nextPage:nil install:YES apn:nil idc:nil interfable:@"0"];

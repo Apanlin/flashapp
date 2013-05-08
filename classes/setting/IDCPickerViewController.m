@@ -627,7 +627,7 @@
             
             UserSettings *user = [UserSettings currentUserSettings];
             
-            if ([inchk isEqualToString:@"1"] &&[CHANNEL isEqualToString:@"appstore"]&&[user.stype isEqualToString:@"vpn"]) {
+            if ([@"1" isEqualToString:inchk] &&[CHANNEL isEqualToString:@"appstore"]&&[@"vpn" isEqualToString:user.stype]) {
                 [AppDelegate installProfileForServiceType:@"apn" nextPage:@"datasave" apn:nil idc:selectedIDC.code interfable:@"1" ];
             }
             else{

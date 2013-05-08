@@ -76,10 +76,7 @@
 
 
 #define CHANNEL @"appstore"
-<<<<<<< HEAD
 //#define CHANNEL @"PP helper_market"
-=======
->>>>>>> 2014-4-17
 //#define CHANNEL @"weifeng_market"
 //#define CHANNEL @"91_market"
 //#define CHANNEL @"flashapp_market"

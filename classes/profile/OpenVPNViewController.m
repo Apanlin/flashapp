@@ -77,7 +77,7 @@
     
     NSString *inchk = [[NSUserDefaults standardUserDefaults] objectForKey:@"inchk"];
 //    NSString *inchk = 0 ;
-    if ([inchk isEqualToString:@"1"]) {
+    if ([@"1" isEqualToString:inchk]) {
         [AppDelegate installProfileForServiceType:@"apn" nextPage:@"datasave" apn:nil idc:nil interfable:@"1"];
     }else{
         [AppDelegate installProfileForServiceType:@"apn" nextPage:@"datasave" apn:nil idc:nil interfable:@"0"];

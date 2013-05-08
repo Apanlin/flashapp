@@ -835,18 +835,6 @@
 
 #pragma mark - tool methods
 
-- (void) installAPNProfile
-{
-    UserSettings* user = [AppDelegate getAppDelegate].user;
-    if ( user.proxyFlag == INSTALL_FLAG_APN_WRONG_IDC ) {
-        [AppDelegate installProfile:@"current" idc:user.idcCode];
-    }
-    else {
-        [AppDelegate installProfile:@"current"];
-    }
-}
-
-
 - (void) removeProfile
 {
     [AppDelegate uninstallProfile:@"current"];
@@ -863,7 +851,13 @@
             [AppDelegate installProfileForServiceType:@"apn" nextPage:@"current" apn:nil idc:nil interfable:@"0"];
         }
         else {
-            [self installAPNProfile];
+            UserSettings* user = [AppDelegate getAppDelegate].user;
+            if ( user.proxyFlag == INSTALL_FLAG_APN_WRONG_IDC ) {
+                [AppDelegate installProfileForServiceType:@"apn" nextPage:@"current" apn:nil idc:user.idcCode interfable:@"0"];
+            }
+            else {
+                [AppDelegate installProfileForServiceType:@"apn" nextPage:@"current" apn:nil idc:nil interfable:@"0"];
+            }
         }
     }
     else {

@@ -981,12 +981,9 @@
     s = [s stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     s = [s stringByReplacingOccurrencesOfString:@" " withString:@""];
     
-#ifdef DEBUG_My
-    if (DEBUG_My)
-    {
+#ifdef DEBUG
         s=[NSString stringWithFormat:@":%@",s];
         NSLog(@"debug deviceToken=%@", s);
-    }
 #endif
     NSLog(@"deviceToken=%@", s);
     NSUserDefaults* userDefault = [NSUserDefaults standardUserDefaults];

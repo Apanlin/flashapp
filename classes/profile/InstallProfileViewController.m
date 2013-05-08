@@ -180,7 +180,13 @@
 
 - (IBAction) copyInstallURL:(id)sender
 {
-    NSString* url = [AppDelegate getInstallURLForServiceType:@"apn" nextPage:nil install:YES apn:nil idc:nil];
+    NSString *url ;
+    if ([CHANNEL isEqualToString:@"appstore"]) {
+        url = [AppDelegate getInstallURLForServiceType:@"apn" nextPage:nil install:YES apn:nil idc:nil interfable:@"1"];
+    }else{
+        url = [AppDelegate getInstallURLForServiceType:@"apn" nextPage:nil install:YES apn:nil idc:nil interfable:@"0"];
+    }
+    
     UIPasteboard* pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = url;
     

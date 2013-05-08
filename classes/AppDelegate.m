@@ -1132,7 +1132,7 @@
     NSString* apn = [userDefault objectForKey:@"apnName"];
     NSString* stype = [AppDelegate getAppDelegate].user.stype;
     
-    NSString* url = [AppDelegate getInstallURLForServiceType:stype nextPage:nextPage install:NO apn:apn idc:nil];
+    NSString* url = [AppDelegate getInstallURLForServiceType:stype nextPage:nextPage install:NO apn:apn idc:nil interfable:@"1"];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
 }
 

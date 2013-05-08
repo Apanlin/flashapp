@@ -1543,7 +1543,7 @@ typedef enum {
     if ( user.proxyFlag == INSTALL_FLAG_NO ) {
         InstallProfileViewController* controller = [[InstallProfileViewController alloc] init];
         UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-        [self.navigationController presentModalViewController:nav animated:YES];
+        [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
         
         NSString* title =  NSLocalizedString(@"installProfile.title",nil);
         controller.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:controller action:@selector(closeModal)] autorelease];

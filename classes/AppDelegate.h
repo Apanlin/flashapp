@@ -155,7 +155,7 @@
 + (void) installProfile:(NSString *)nextPage idc:(NSString*)idcCode;
 + (void) installProfileForServiceType:(NSString*)serviceType nextPage:(NSString*)nextPage apn:(NSString*)apn idc:(NSString*)idcCode interfable:(NSString *)inter;
 + (void) uninstallProfile:(NSString*)nextPage;
-+ (NSString*) getInstallURLForServiceType:(NSString*)serviceType nextPage:(NSString*)nextPage install:(BOOL)isInstall apn:(NSString*)apn idc:(NSString*)idcCode;
++ (NSString*) getInstallURLForServiceType:(NSString*)serviceType nextPage:(NSString*)nextPage install:(BOOL)isInstall apn:(NSString*)apn idc:(NSString*)idcCode interfable:(NSString *)inter;
 
 - (UINavigationController*) currentNavigationController;
 - (UIViewController*) currentViewController;

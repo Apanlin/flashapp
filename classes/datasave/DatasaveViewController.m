@@ -195,7 +195,7 @@ typedef enum {
     [leftButton setImage:[UIImage imageNamed:@"newApp.png"] forState:UIControlStateNormal];
     [leftButton addTarget:self action:@selector(showNewsAppBtn) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *leftBar = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
-//    self.navigationItem.leftBarButtonItem = leftBar;
+    self.navigationItem.leftBarButtonItem = leftBar;
     [leftBar release];
 //
     UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -211,8 +211,8 @@ typedef enum {
     newAppShow.tag = 12345;
     newAppShow.image = [UIImage imageNamed:@"redDot.png"];
     newAppShow.hidden = YES;
-//    [self.navigationController.navigationBar addSubview:newAppShow];
-        
+    [self.navigationController.navigationBar addSubview:newAppShow];
+    
     UIColor* color = [UIColor colorWithRed:80.0f/255.0f green:80.0f/255.0f blue:80.0f/255.0f alpha:1.0f];
     self.view.backgroundColor = color;
     scrollView.backgroundColor = color;

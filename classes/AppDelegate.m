@@ -595,10 +595,10 @@
     [WXApi registerApp:@"wxd1be1f55db841585"];
     
     //创建应用分类的数据库表
-//    [AppRecommedDao createAppClassestable];
+    [AppRecommedDao createAppClassestable];
     
     //查看是否有新的应用推荐
-//    [self ifNewsApp];
+    [self ifNewsApp];
     
     
     

@@ -879,13 +879,7 @@
     NSString* title = @"我正在用飞速流量压缩仪flashapp节省流量呢";
     
     NSString* date = [DateUtils stringWithDateFormat:startTime format:@"yyyy-MM"];
-    NSString* content = [NSString stringWithFormat:@"#%@用飞速省流量#我正在使用@飞速流量压缩仪，本月已经节省了%@，实际使用%@，压缩总比例为%.1f%%，其中%@压缩比例高达%.1f%%，飞速流量，省钱，快速。 下载地址：http://%@/social/%@.html", date,
-                         [NSString stringForByteNumber:(currentStats.bytesBefore - currentStats.bytesAfter)], 
-                         [NSString stringForByteNumber:currentStats.bytesAfter],
-                         ((float) (currentStats.bytesBefore - currentStats.bytesAfter)) / currentStats.bytesBefore * 100,
-                         [topStats.userAgent compare:@"未知"] == NSOrderedSame ? @"最高" : topStats.userAgent,
-                         ((float)(topStats.before - topStats.after)) / topStats.before * 100,
-                         P_HOST, deviceId];
+     NSString *content = [NSString stringWithFormat:@"%@_%@_%@_%@",date,[NSString stringWithFormat:@"%ld",(currentStats.bytesBefore - currentStats.bytesAfter)],[topStats.userAgent compare:@"未知"] == NSOrderedSame ? @"最高" : topStats.userAgent,[NSString stringWithFormat:@"%lld",(topStats.before - topStats.after)]];
     
     NSData* image = [self captureScreen];
     

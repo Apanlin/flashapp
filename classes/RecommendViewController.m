@@ -583,9 +583,9 @@
     detailClass.apname = appClass.appName;
     detailClass.apdesc = @"";
     detailClass.rkm = appClass.apprkm; 
-//    detailClass.rkm = @"我是推荐理由哦";
+//    detailClass.rkm = @"带你进入一个全新的音乐世界";
     detailClass.picslen = appClass.appPicSize;
-//    detailClass.picslen = @"(3.5MB)";
+//    detailClass.picslen = @"(1.5MB)";
     detailClass.star = appClass.appStar;
     detailClass.fsize = appClass.appSize;
     detailClass.icon = appClass.appIcon;

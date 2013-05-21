@@ -76,10 +76,27 @@
 
 
 #define CHANNEL @"appstore"
-//#define CHANNEL @"PP helper_market"
-//#define CHANNEL @"weifeng_market"
-//#define CHANNEL @"91_market"
+
 //#define CHANNEL @"flashapp_market"
+
+//#define CHANNEL @"PP helper_market"
+
+
+//#define CHANNEL @"91_market"
+//#define CHANNEL @"weifeng_market"
+//#define CHANNEL @"tongbutui_market"
+//#define CHANNEL @"163_market"
+//#define CHANNEL @"baidu_market"
+//#define CHANNEL @"tx_market"
+//#define CHANNEL @"souhu_market"
+//#define CHANNEL @"pp_market"
+//#define CHANNEL @"kuaiyong_market"
+//#define CHANNEL @"xianmian_market"
+//#define CHANNEL @"gaoqu_market"
+//#define CHANNEL @"liqu_market"
+
+
+
 //#define CHANNEL @"flashapp_91_market"
 
 #define DES_KEY @"flashapp12345678ppahsalf"

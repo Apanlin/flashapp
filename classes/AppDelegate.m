@@ -517,6 +517,10 @@
     [myNetWork startAppFenLei:^(NSDictionary *result) {
         
         NSMutableArray *categoryArray = [NSMutableArray arrayWithCapacity:3];
+        
+        //储存CP 下次请求数据的时候带上
+        [[NSUserDefaults standardUserDefaults] setObject:[result objectForKey:@"cp"] forKey:@"catsucp"] ;
+        
         [categoryArray addObjectsFromArray:[result objectForKey:@"catsu"]];
         
         NSDictionary *databaseDic = [AppRecommedDao fondAllAppRecommed];

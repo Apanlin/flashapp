@@ -113,9 +113,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
-
 	// Do any additional setup after loading the view.
 }
 
@@ -132,6 +129,11 @@
     [self performSelector:@selector(check) withObject:nil afterDelay:0.3f];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[AppDelegate getAppDelegate].customTabBar hiddenTabBar];
+}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {

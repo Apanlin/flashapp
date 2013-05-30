@@ -68,8 +68,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
     
     self.navigationItem.title = NSLocalizedString(@"set.APNView.navItem.title", nil);
     
@@ -107,6 +105,12 @@
     [submitButton setTitle:NSLocalizedString(@"defineName", nil) forState:UIControlStateNormal];
     
     scrollView.contentSize = CGSizeMake(320, 416);
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[AppDelegate getAppDelegate].customTabBar hiddenTabBar];
 }
 
 - (void)viewDidUnload

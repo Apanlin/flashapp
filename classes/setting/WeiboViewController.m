@@ -51,9 +51,6 @@
 {
     [super viewDidLoad];
     
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
-    
     // Do any additional setup after loading the view from its nib.
     self.navigationItem.title = NSLocalizedString(@"set.weiboView.navItem.title", nil);
     self.view.backgroundColor = [UIColor colorWithRed:46.0f/255.0f green:47.0f/255.0f blue:47.0f/255.0f alpha:1.0f];
@@ -74,6 +71,12 @@
     qqButton.titleLabel.font = [UIFont systemFontOfSize:17];
     [qqButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [qqButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[AppDelegate getAppDelegate].customTabBar hiddenTabBar];
 }
 
 - (void)viewDidUnload

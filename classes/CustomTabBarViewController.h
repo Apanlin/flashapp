@@ -9,16 +9,24 @@
 #import <UIKit/UIKit.h>
 
 
-@interface CustomTabBarViewController : UIViewController
+@interface CustomTabBarViewController : UITabBarController
+{
+    double _y;
+}
+
+@property (nonatomic ,assign)BOOL selfInstallProfile;
 
 @property (nonatomic ,assign) int currentSelectedIndex;
 
-@property (nonatomic , assign)BOOL btnHidden;
+//@property (nonatomic , assign)BOOL btnHidden;
 
-
-+(id)CustomTabBar:(BOOL)justinstallProfile;
+- (id)initWithInstallingProfile:(BOOL)installingProfile;
 
 -(void)selectJumeViewPage:(int)jumpViewPage;
+
+- (void)showTabBar;
+
+- (void)hiddenTabBar;
 
 
 @end

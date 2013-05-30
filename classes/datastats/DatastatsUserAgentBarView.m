@@ -104,7 +104,7 @@
     
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
     nav.navigationBar.tintColor = [UIColor blackColor];
-    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
+    [[AppDelegate getAppDelegate].customTabBar presentModalViewController:nav animated:YES];
     [controller release];
     [nav release];
 }

@@ -65,9 +65,6 @@
 {
     [super viewDidLoad];
     
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
-        
     // Do any additional setup after loading the view from its nib.
     self.navigationItem.title = @"意见反馈";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"发送" style:UIBarButtonItemStylePlain target:self action:@selector(save)];
@@ -89,6 +86,11 @@
     scrollView.contentSize = CGSizeMake(320, 256);
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[AppDelegate getAppDelegate].customTabBar hiddenTabBar];
+}
 
 - (void)viewDidUnload
 {

@@ -57,9 +57,6 @@
     self.navigationItem.title = @"注册";
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
-    
     UIImageView* imageView = (UIImageView*) [self.view viewWithTag:TAG_BG_IMAGEVIEW];
     imageView.image = [[UIImage imageNamed:@"help_ok_bg.png"] stretchableImageWithLeftCapWidth:20 topCapHeight:16];
     

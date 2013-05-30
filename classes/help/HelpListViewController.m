@@ -69,14 +69,14 @@
     //去掉表中的分割线
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     
+    self.tableView.frame = CGRectMake(0, 0, 320 , [[UIScreen mainScreen] applicationFrame].size.height-49-44);
+    
     self.tableView.backgroundColor = [UIColor colorWithRed:40.0/255.0 green:40.0/255.0 blue:40.0/255.0 alpha:1.0];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:NO];
     
     BOOL xsmf = [[NSUserDefaults standardUserDefaults] boolForKey:XSMF_APP];
     BOOL rmyx = [[NSUserDefaults standardUserDefaults] boolForKey:RMYX_APP];
@@ -86,7 +86,12 @@
     }else{
         [self hiddenAppDian];
     }
+}
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[AppDelegate getAppDelegate].customTabBar showTabBar];
 }
 
 - (void)viewDidUnload
@@ -114,7 +119,7 @@
     RecommendViewController *controller = [RecommendViewController getRecommendViewController];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:controller];
     nav.navigationBar.tintColor =  RGB(48,48,50);
-    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
+    [[AppDelegate getAppDelegate].customTabBar presentModalViewController:nav animated:YES];
     [nav release];
 }
 
@@ -342,7 +347,6 @@
     int row = indexPath.row;
     ConnectionType type = [UIDevice connectionType];
     
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     NSString* stype = [AppDelegate getAppDelegate].user.stype;
     if ( row >= 3 && [@"vpn" isEqualToString:stype] ) row++;
     
@@ -353,7 +357,6 @@
         else {
             HelpNetBadViewController* controller = [[HelpNetBadViewController alloc] init];
             controller.checkType = CONN_CHECK_BAD;
-            [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
             controller.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:controller animated:YES];
             [controller release];
@@ -366,7 +369,6 @@
         else {
             HelpNetBadViewController* controller = [[HelpNetBadViewController alloc] init];
             controller.checkType = CONN_CHECK_SLOW;
-            [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
             controller.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:controller animated:YES];
             [controller release];
@@ -379,7 +381,6 @@
         }
         else {
             HelpCompressViewController* controller = [[HelpCompressViewController alloc] init];
-            [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
             controller.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:controller animated:YES];
             [controller release];
@@ -388,7 +389,6 @@
     else if ( row == 3 ) {
         //无法发送彩信
         HelpMMSViewController* controller = [[HelpMMSViewController alloc] init];
-        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
         controller.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:controller animated:YES];
         [controller release];
@@ -396,14 +396,12 @@
     else if ( row == 4 ) {
         //数据统计有问题？
         HelpDatastatsViewController* controller = [[HelpDatastatsViewController alloc] init];
-        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
         controller.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:controller animated:YES];
         [controller release];
     }
     else if ( row == 5 ) {
         HelpLockAppViewController* controller = [[HelpLockAppViewController alloc] init];
-        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
         controller.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:controller animated:YES];
         [controller release];
@@ -411,7 +409,6 @@
     else if ( row == 6 ) {
         //如何增加节省额度
         LevelViewController* controller = [[LevelViewController alloc] init];
-        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
         controller.hidesBottomBarWhenPushed = YES;
         controller.showCloseButton = NO;
         controller.title = @"诊断与帮助";
@@ -421,7 +418,6 @@
     else if ( row == 7 ) {
         //其他帮助
         HelpViewController* controller = [[HelpViewController alloc] init];
-        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
         controller.hidesBottomBarWhenPushed = YES;
         controller.showCloseButton = NO;
         [self.navigationController pushViewController:controller animated:YES];

@@ -14,7 +14,7 @@
 #import "UserSettings.h"
 #import "TwitterClient.h"
 #import "WXApi.h"
-#import "LeveyTabBarController.h"
+#import "CustomTabBarViewController.h"
 
 //#define NETMETER_DEBUG
 //#define MJOY_91_APPID 6631
@@ -75,9 +75,9 @@
 #define RMYX_APP @"rmyxnewapp"
 
 
-#define CHANNEL @"appstore"
+//#define CHANNEL @"appstore"
 
-//#define CHANNEL @"flashapp_market"
+#define CHANNEL @"flashapp_market"
 
 //#define CHANNEL @"PP helper_market"
 
@@ -145,7 +145,7 @@
 }
 
 @property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) LeveyTabBarController *leveyTabBarController;
+@property (strong , nonatomic) CustomTabBarViewController *customTabBar;
 @property (nonatomic ,retain) UINavigationController *rootNav;
 
 @property (nonatomic, retain) NSObject* dbWriteLock;

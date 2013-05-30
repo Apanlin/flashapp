@@ -95,7 +95,7 @@
         underProxyButton.titleEdgeInsets = titleInsets;
         [self addSubview:underProxyButton];
         
-        
+        //初始化未处理流量的页面
         [self preparedUnderProxyView];
         
         self.backgroundColor = [UIColor colorWithRed:40.0f/255.0f green:40.0f/255.0f blue:40.0f/255.0f alpha:1.0f];

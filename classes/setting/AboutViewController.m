@@ -49,9 +49,6 @@
 {
     [super viewDidLoad];
     
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
-    
     // Do any additional setup after loading the view from its nib.
     self.navigationItem.title = NSLocalizedString(@"set.aboutView.navItem.title", nil);
     
@@ -101,6 +98,11 @@
 #endif
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[AppDelegate getAppDelegate].customTabBar hiddenTabBar];
+}
 
 - (void) didGetIDCList:(TwitterClient*)tc obj:(NSObject*)obj
 {

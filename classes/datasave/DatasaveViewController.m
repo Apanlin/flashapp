@@ -170,6 +170,8 @@ typedef enum {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    
+    
      NSString* regButtonimageName =  NSLocalizedString(@"regButton.iamge",nil);
     [regButton setImage: [UIImage imageNamed:regButtonimageName] forState:UIControlStateNormal];
 
@@ -197,7 +199,7 @@ typedef enum {
     UIBarButtonItem *leftBar = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
     self.navigationItem.leftBarButtonItem = leftBar;
     [leftBar release];
-//
+
     UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [rightButton setBackgroundImage:[UIImage imageNamed:@"barButton_bg.png"] forState:UIControlStateNormal];
     rightButton.frame = CGRectMake(0, 0, 40, 32);
@@ -291,6 +293,9 @@ typedef enum {
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    [[AppDelegate getAppDelegate].customTabBar showTabBar];
+    
     //[self checkConnection];
     [self setLastUpdateDate];
     
@@ -306,9 +311,6 @@ typedef enum {
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:NO];
     
     if ( justLoaded ) {  //如果就是刚刚开启
         [self performSelector:@selector(getAccessData) withObject:nil afterDelay:0.5];
@@ -803,7 +805,7 @@ typedef enum {
 {
     OpenVPNViewController* controller = [[OpenVPNViewController alloc] init];
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
+    [[AppDelegate getAppDelegate].customTabBar presentModalViewController:nav animated:YES];
     [controller release];
     [nav release];
 //    [[AppDelegate getAppDelegate] showProfileHelp];
@@ -1110,7 +1112,7 @@ typedef enum {
 {
     TCAdjustViewController* controller = [[TCAdjustViewController alloc] init];
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self.leveyTabBarController presentModalViewController:nav animated:YES];
+    [[AppDelegate getAppDelegate].customTabBar presentModalViewController:nav animated:YES];
     [controller release];
     [nav release];
 }
@@ -1415,7 +1417,7 @@ typedef enum {
     RecommendViewController *controller = [RecommendViewController getRecommendViewController];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:controller];
     nav.navigationBar.tintColor =  RGB(48,48,50);
-    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
+    [[AppDelegate getAppDelegate].customTabBar presentModalViewController:nav animated:YES];
     [nav release];
 }
 
@@ -1441,7 +1443,7 @@ typedef enum {
     
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
     nav.navigationBar.tintColor = [UIColor blackColor];
-    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
+    [[AppDelegate getAppDelegate].customTabBar presentModalViewController:nav animated:YES];
     [controller release];
     [nav release];
 }
@@ -1531,7 +1533,7 @@ typedef enum {
     LevelViewController* controller = [[LevelViewController alloc] init];
     controller.showCloseButton = YES;
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-    [self.leveyTabBarController presentModalViewController:nav animated:YES];
+    [[AppDelegate getAppDelegate].customTabBar presentModalViewController:nav animated:YES];
     [nav release];
     [controller release];
 }
@@ -1543,7 +1545,7 @@ typedef enum {
     if ( user.proxyFlag == INSTALL_FLAG_NO ) {
         InstallProfileViewController* controller = [[InstallProfileViewController alloc] init];
         UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-        [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
+        [[AppDelegate getAppDelegate].customTabBar presentModalViewController:nav animated:YES];
         
         NSString* title =  NSLocalizedString(@"installProfile.title",nil);
         controller.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:controller action:@selector(closeModal)] autorelease];
@@ -1583,7 +1585,7 @@ typedef enum {
             otherButtonTitles:sendMailButtonTitle,sendSMSButtonTitle,sendWeiboButtonTitle,sendRenRenButtonTitle,
                 sendWeixinFriendButtonTitle, sendWeixinGroupButtonTitle, nil];
     actionSheet.tag = TAG_ALERT_INVITE;
-    [actionSheet showInView:self.leveyTabBarController.view];
+    [actionSheet showInView:[AppDelegate getAppDelegate].customTabBar.view];
 }
 
 
@@ -1688,16 +1690,15 @@ typedef enum {
     }
 }
 
-
 #pragma mark - touched view Delegate
 - (void) showDatastats
 {
-    UINavigationController* nav = [self.leveyTabBarController.viewControllers objectAtIndex:1];
+    UINavigationController* nav = [self.tabBarController.viewControllers objectAtIndex:1];
     for ( UIViewController* c in nav.viewControllers ) {
         if ( [c isKindOfClass:[DatastatsScrollViewController class]] ) {
             DatastatsScrollViewController* controller = (DatastatsScrollViewController*)c;
             [controller monthSliderNow];
-            [self.leveyTabBarController setSelectedIndex:1];
+            [[AppDelegate getAppDelegate].customTabBar  selectJumeViewPage:1];
         }
     }
 }

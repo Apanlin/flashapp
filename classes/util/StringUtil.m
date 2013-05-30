@@ -322,7 +322,7 @@ static const NSString* charactersToLeaveUnescaped = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ
 
 + (NSString*) stringWithFloatTrim:(float)f decimal:(int)point
 {
-    if ( ceil(f) == f ) {
+    if ( ceil(f) == f ) { //ceil() 返回大于或者等于指定表达式的最小整数
         return [NSString stringWithFormat:@"%.0f", f];
     }
     else {

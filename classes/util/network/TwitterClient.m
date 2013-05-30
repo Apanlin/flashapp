@@ -280,14 +280,14 @@
     if ( value && value != [NSNull null] ) {
         int qs = [value intValue];
         if ( qs == 0 ) {
-            pictureQsLevel = PIC_QS_HIGH;
+            pictureQsLevel = PIC_ZL_HIGH;
         }
         else if ( qs == 1 ) {
-            pictureQsLevel = PIC_QS_MIDDLE;
+            pictureQsLevel = PIC_ZL_MIDDLE;
         }
         else if ( qs == 2 ) {
-            if ( pictureQsLevel!=PIC_QS_LOW && pictureQsLevel!=PIC_QS_NOCOMPRESS ) {
-                pictureQsLevel = PIC_QS_LOW;
+            if ( pictureQsLevel!=PIC_ZL_LOW && pictureQsLevel!=PIC_ZL_NOCOMPRESS ) {
+                pictureQsLevel = PIC_ZL_LOW;
             }
         }
         user.pictureQsLevel = pictureQsLevel;

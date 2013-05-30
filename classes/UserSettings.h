@@ -57,10 +57,10 @@ typedef enum {
 
 
 typedef enum {
-    PIC_QS_MIDDLE,
-    PIC_QS_HIGH,
-    PIC_QS_NOCOMPRESS,
-    PIC_QS_LOW
+    PIC_ZL_MIDDLE,
+    PIC_ZL_HIGH,
+    PIC_ZL_NOCOMPRESS,
+    PIC_ZL_LOW
 }
 PictureQsLevel;
 

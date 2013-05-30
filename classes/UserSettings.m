@@ -79,44 +79,40 @@
     return [userDefaults floatForKey:@"capacity"];
 }
 
-
+/*! @brief 创建单例UserSettings用户实例。
+ *
+ * 用于创建，并且获得单例UserSettings用户实例，实例中储存着用户信息。
+ * @param  nil
+ * @return 返回UserSettings 用户实例。
+ */
 + (UserSettings*) currentUserSettings
 {
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    
     UserSettings* settings = [[[UserSettings alloc] init] autorelease];
     settings.userId = [userDefaults integerForKey:@"userId"];
     settings.username = [userDefaults objectForKey:@"username"];
     settings.nickname = [userDefaults objectForKey:@"nickname"];
     settings.password = [userDefaults objectForKey:@"password"];
     settings.snsDomain = [userDefaults objectForKey:@"snsDomain"];
-
     settings.capacity = [userDefaults floatForKey:@"capacity"];
     if ( settings.capacity == 0 ) settings.capacity = QUANTITY_INIT;
-    
     settings.oldCapacity = [userDefaults floatForKey:@"oldCapacity"];
     if ( settings.oldCapacity == 0 ) settings.oldCapacity = settings.capacity;
-    
     settings.level = [userDefaults integerForKey:@"level"];
     if ( settings.level == 0 ) settings.level = LEVEL_1;
-    
     settings.status = [userDefaults integerForKey:@"status"];
     settings.proxyFlag = [userDefaults integerForKey:@"proxyFlag"];
     settings.proxyServer = [userDefaults objectForKey:@"proxyServer"];
     settings.proxyPort = [userDefaults integerForKey:@"proxyPort"];
-    
     settings.day = [userDefaults objectForKey:@"day"];
     settings.dayCapacity= [userDefaults floatForKey:@"dayCapacity"];
     settings.dayCapacityDelta = [userDefaults floatForKey:@"dayCapacityDelta"];
-
     settings.month = [userDefaults objectForKey:@"month"];
     settings.monthCapacity= [userDefaults floatForKey:@"monthCapacity"];
     settings.monthCapacityDelta = [userDefaults floatForKey:@"monthCapacityDelta"];
-    
     settings.ctDay = [userDefaults objectForKey:@"ctDay"];
     settings.ctTotal = [userDefaults objectForKey:@"ctTotal"];
     settings.ctUsed = [userDefaults objectForKey:@"ctUsed"];
-    
     NSString* s = [userDefaults objectForKey:@"ifLastTime"];
     if ( s && s.length > 0 ) {
         settings.ifLastTime = [s longLongValue];
@@ -124,7 +120,6 @@
     else {
         settings.ifLastTime = 0;
     }
-    
     s = [userDefaults objectForKey:@"ifLastBytesNum"];
     if ( s && s.length > 0 ) {
         settings.ifLastBytesNum = [s longLongValue];
@@ -132,14 +127,12 @@
     else {
         settings.ifLastBytesNum = 0;
     }
-    
     settings.carrierCode = [userDefaults objectForKey:@"carrierCode"];
     settings.carrierType = [userDefaults objectForKey:@"carrierType"];
     settings.areaCode = [userDefaults objectForKey:@"areaCode"];
     settings.carrierSmstext = [userDefaults objectForKey:@"carrierSmstext"];
     settings.carrierSmsnum = [userDefaults objectForKey:@"carrierSmsnum"];
     settings.phone = [userDefaults objectForKey:@"phone"];
-    
     s = [userDefaults objectForKey:@"idcServer"];
     if ( s && s.length > 0 ) {
         settings.idcServer = s;
@@ -147,7 +140,6 @@
     else {
         settings.idcServer = P_HOST;
     }
-    
     s = [userDefaults objectForKey:@"idcCode"];
     if ( s && s.length > 0 ) {
         settings.idcCode = s;
@@ -155,17 +147,13 @@
     else {
         settings.idcCode = P_IDC_CODE;
     }
-    
     settings.idcList = [userDefaults objectForKey:@"idcList"];
-    
     settings.pictureQsLevel = [userDefaults integerForKey:@"pictureQsLevel"];
-    
     settings.stype = [userDefaults objectForKey:@"stype"];
     if ( !settings.stype || settings.stype.length == 0 ) {
         if ( [@"appstore" isEqualToString:CHANNEL] ) settings.stype = @"vpn";
         else settings.stype = @"apn";
     }
-    
     return settings;
 }
 

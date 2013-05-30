@@ -42,8 +42,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
 
     self.navigationItem.title = @"锁网功能";
     
@@ -65,6 +63,11 @@
     [super viewDidUnload];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[AppDelegate getAppDelegate].customTabBar hiddenTabBar];
+}
 
 - (void) viewWillDisappear:(BOOL)animated
 {

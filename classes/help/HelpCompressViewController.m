@@ -62,8 +62,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
     
     self.navigationItem.title = @"诊断与帮助";
     
@@ -103,11 +101,16 @@
     self.resultBgImageView = nil;    
 }
 
-
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     [self performSelector:@selector(check) withObject:nil afterDelay:0.3];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[AppDelegate getAppDelegate].customTabBar hiddenTabBar];
 }
 
 

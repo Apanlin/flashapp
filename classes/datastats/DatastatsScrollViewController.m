@@ -160,9 +160,6 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:NO];
-    
     BOOL xsmf = [[NSUserDefaults standardUserDefaults] boolForKey:XSMF_APP];
     BOOL rmyx = [[NSUserDefaults standardUserDefaults] boolForKey:RMYX_APP];
     
@@ -171,6 +168,12 @@
     }else{
         [self hiddenAppDian];
     }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+//    [[AppDelegate getAppDelegate].customTabBar showTabBar];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -196,7 +199,7 @@
     RecommendViewController *controller = [RecommendViewController getRecommendViewController];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:controller];
     nav.navigationBar.tintColor =  RGB(48,48,50);
-    [[AppDelegate getAppDelegate].leveyTabBarController presentModalViewController:nav animated:YES];
+    [[AppDelegate getAppDelegate].customTabBar presentModalViewController:nav animated:YES];
     [nav release];
 }
 
@@ -395,20 +398,25 @@
 //微博 和人人分享
 - (void) shareToSNS:(NSString*)sns
 {
+    
     if ( !currentStats || !userAgentStats || [userAgentStats count] == 0 ) return;
     StatsDetail* topStats = [userAgentStats objectAtIndex:0];
     //StatsDetail* topStats = [[StatsDetail alloc] init];
     
     NSString* deviceId = [OpenUDID value];
-    NSString* date = [DateUtils stringWithDateFormat:startTime format:@"yyyy-MM"];
-    NSString* content = [NSString stringWithFormat:@"#%@用飞速省流量#我正在使用@飞速流量压缩仪，本月已经节省了%@，实际使用%@，压缩总比例为%.1f%%，其中%@压缩比例高达%.1f%%，飞速流量，省钱，快速。 下载地址：http://%@/social/%@.html", date,
-                         [NSString stringForByteNumber:(currentStats.bytesBefore - currentStats.bytesAfter)], 
-                         [NSString stringForByteNumber:currentStats.bytesAfter],
-                         ((float) (currentStats.bytesBefore - currentStats.bytesAfter)) / currentStats.bytesBefore * 100,
-                         [topStats.userAgent compare:@"未知"] == NSOrderedSame ? @"最高" : topStats.userAgent,
-                         ((float)(topStats.before - topStats.after)) / topStats.before * 100,
-                         P_HOST, deviceId];
+    NSString* date = [DateUtils stringWithDateFormat:startTime format:@"yyyy_MM"];
+//    NSString* content = [NSString stringWithFormat:@"#%@用飞速省流量#我正在使用@飞速流量压缩仪，本月已经节省了%@，实际使用%@，压缩总比例为%.1f%%，其中%@压缩比例高达%.1f%%，飞速流量，省钱，快速。 下载地址：http://%@/social/%@.html", date,
+//                         [NSString stringForByteNumber:(currentStats.bytesBefore - currentStats.bytesAfter)], 
+//                         [NSString stringForByteNumber:currentStats.bytesAfter],
+//                         ((float) (currentStats.bytesBefore - currentStats.bytesAfter)) / currentStats.bytesBefore * 100,
+//                         [topStats.userAgent compare:@"未知"] == NSOrderedSame ? @"最高" : topStats.userAgent,
+//                         ((float)(topStats.before - topStats.after)) / topStats.before * 100,
+//                         P_HOST, deviceId];
     //content = @"Very Good!";
+    
+    NSString *name = [topStats.userAgent stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+    
+    NSString *content = [NSString stringWithFormat:@"%@_%@_%@_%@",date,[NSString stringWithFormat:@"%ld",(currentStats.bytesBefore - currentStats.bytesAfter)],[name compare:@"未知"] == NSOrderedSame ? @"最高" : name,[NSString stringWithFormat:@"%lld",(topStats.before - topStats.after)]];
     
     NSData* image = [self captureScreen];
     
@@ -418,7 +426,7 @@
     controller.image = image;
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
 //    [[[AppDelegate getAppDelegate] currentNavigationController] presentModalViewController:nav animated:YES];
-    [[[AppDelegate getAppDelegate] leveyTabBarController] presentModalViewController:nav animated:YES];
+    [[AppDelegate getAppDelegate].customTabBar presentModalViewController:nav animated:YES];
     [controller release];
     [nav release];
 }

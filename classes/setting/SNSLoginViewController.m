@@ -53,9 +53,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
-    
     if ( [@"sinaWeibo" compare:domain] == NSOrderedSame ) {
         self.navigationItem.title = @"微博账号登录";
     }
@@ -100,10 +97,6 @@
 
 - (void) loadPage
 {
-    
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
-    
     UserSettings* user = [AppDelegate getAppDelegate].user;
     NSString* url = [NSString stringWithFormat:@"http://%@/loginsns/login?_method=loginSNS&domain=%@&type=2&startQuantity=%f&shareQuantity=%f&uniqueId=%@&appid=%d", 
                      P_HOST, domain, user.dayCapacityDelta, user.monthCapacityDelta, [OpenUDID value],APP_ID];

@@ -64,8 +64,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
     
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
 
@@ -116,6 +114,10 @@
 
 - (void) viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
+    [[AppDelegate getAppDelegate].customTabBar hiddenTabBar];
+    
     UserSettings* user = [AppDelegate getAppDelegate].user;
     float capacity = user.capacity;
     
@@ -192,7 +194,12 @@
     rect = currLabel.frame;
     currLabel.frame = CGRectMake( currUnitLabel.frame.origin.x - size2.width, rect.origin.y, size2.width, rect.size.height);
 
-    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [[AppDelegate getAppDelegate].customTabBar showTabBar];
 }
 
 

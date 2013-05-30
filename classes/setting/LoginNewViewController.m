@@ -62,8 +62,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
+//    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+//    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
     
     self.navigationItem.title = @"注册/登录";
     
@@ -130,11 +130,16 @@
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[AppDelegate getAppDelegate].customTabBar hiddenTabBar];
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
-
 
 #pragma mark - opertion methods
 
@@ -185,10 +190,8 @@
 - (void) showRegister:(NSString*)modalMode
 {
     UINavigationController* currNav = [[AppDelegate getAppDelegate] currentNavigationController];
-    AppDelegate *appDelegate = [AppDelegate getAppDelegate];
     if ( [@"false" compare:modalMode] == NSOrderedSame ) {
         RegisterNewViewController* controller = [[RegisterNewViewController alloc] init];
-        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
         controller.hidesBottomBarWhenPushed = YES;
         [currNav pushViewController:controller animated:YES];
         [controller release];
@@ -197,8 +200,6 @@
         RegisterNewViewController* controller = [[RegisterNewViewController alloc] init];
         controller.showCloseButton = YES;
         UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-//        [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
-//        controller.hidesBottomBarWhenPushed = YES;
         [self.navigationController presentModalViewController:nav animated:YES];
         [controller release];
         [nav release];
@@ -208,10 +209,8 @@
 
 - (void) forgotPassword
 {
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     ForgotPasswdViewController* controller = [[ForgotPasswdViewController alloc] init];
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
-    [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
     controller.hidesBottomBarWhenPushed = YES;
     [self.navigationController presentModalViewController:nav animated:YES];
     [controller release];
@@ -237,8 +236,6 @@
 {
     SNSLoginViewController* controller = [[SNSLoginViewController alloc] init];
     controller.domain = domain;
-    AppDelegate *appDelegate = [AppDelegate getAppDelegate];
-    [appDelegate.leveyTabBarController hidesTabBar:YES animated:YES];
     controller.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:controller animated:YES];
 }

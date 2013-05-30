@@ -33,9 +33,6 @@
 
 - (void) loadView
 {
-    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
-    
     UIView* view;
     if ( isSetup ) {
         if ( iPhone5 ) {
@@ -186,6 +183,13 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[AppDelegate getAppDelegate].customTabBar hiddenTabBar];
+}
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {

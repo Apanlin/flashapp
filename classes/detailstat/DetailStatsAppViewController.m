@@ -522,7 +522,7 @@
     else {
         //加锁
         UIActionSheet* sheet = [[UIActionSheet alloc] initWithTitle:@"选择暂停网络连接的时间" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"2小时",@"8小时",@"当月",@"永久(手动开启)", nil];
-        [sheet showInView:[AppDelegate getAppDelegate].leveyTabBarController.view ];
+        [sheet showInView:[AppDelegate getAppDelegate].customTabBar.view ];
         [sheet release];
     }
 }

@@ -4,16 +4,11 @@
 //
 //  Created by 李 电森 on 11-12-12.
 //  Copyright (c) 2011年 __MyCompanyName__. All rights reserved.
-//
-//
-//
-//
 
 #import <CoreTelephony/CTCall.h>
 #import <CoreTelephony/CTCallCenter.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import "AppDelegate.h"
-//#import <Parse/Parse.h>
 #import "DatasaveViewController.h"
 #import "DatastatsScrollViewController.h"
 #import "SettingViewController.h"
@@ -43,6 +38,7 @@
 #import "CategoryClass.h"
 #import "AppClasses.h"
 #import "AppRecommedDao.h"
+#import "CustomTabBarViewController.h"
 
 #ifdef DFTraffic
 #import "AiDfTraffic.h"
@@ -54,7 +50,6 @@
 @implementation AppDelegate
 
 @synthesize window = _window;
-@synthesize leveyTabBarController;
 @synthesize dbWriteLock;
 @synthesize user;
 @synthesize carrier;
@@ -72,7 +67,6 @@
 - (void)dealloc
 {
     [_window release];
-    [leveyTabBarController release];
     [dbWriteLock release];
     [timerTaskLock release];
     [user release];
@@ -82,12 +76,19 @@
     [operationQueue release];
     [locationManager release];
     [rootNav release];
+    [_customTabBar release];
     [super dealloc];
 }
 
 
 #pragma mark - bussiness methods
 
+/*! @brief 更新、创建数据库。
+ *
+ * 程序启动后去判断版本号，根据判断的版本号去更细数据库。
+ * @param versionUpgrade 判断是否是1.3版本之前 ，或者是1.9.1版本之后
+ * @return nil。
+ */
 - (void) initDatabase:(BOOL)versionUpgrade
 {
     BOOL forceCreate = NO;
@@ -97,10 +98,7 @@
     else {
         forceCreate = [[NSUserDefaults standardUserDefaults] boolForKey:@"dropDatabase"];
     }
-    //forceCreate = YES;
-    
     self.dbWriteLock = [[[NSObject alloc] init] autorelease];
-    
     [DBConnection createEditableCopyOfDatabaseIfNeeded:forceCreate];
     [DBConnection getDatabase];
 }
@@ -312,7 +310,7 @@
 
 - (UINavigationController*) currentNavigationController
 {
-    return (UINavigationController*) self.leveyTabBarController.selectedViewController;
+    return (UINavigationController*) self.customTabBar.selectedViewController;
 }
 
 
@@ -333,69 +331,8 @@
 
 - (void) showDatasaveView:(BOOL)justInstallProfile
 {
-    DatasaveViewController *dataserviceViewController = nil;
-    
-    if ( iPhone5 ) {
-        dataserviceViewController = [[[DatasaveViewController alloc] initWithNibName:@"DatasaveViewController-5" bundle:nil] autorelease];
-    }
-    else if (!iPhone5) {
-        dataserviceViewController = [[[DatasaveViewController alloc] initWithNibName:@"DatasaveViewController" bundle:nil] autorelease];
-    }
-    
-    dataserviceViewController.installingProfile = justInstallProfile;
-    UINavigationController* firstNav = [[UINavigationController alloc] initWithRootViewController:dataserviceViewController];
-    firstNav.delegate = self;
-    [self setNavigationBar:firstNav.navigationBar];
-    
-    //    功 能: 获取当前的系统时间，返回的结果是一个time_t类型（即int64类型），其实就是一个大整数，其值表示从CUT（Coordinated Universal Time）时间1970年1月1日00:00:00（称为UNIX系统的Epoch时间）到当前时刻的秒数。
-    time_t now;
-    time(&now);
-    time_t peroid[2];
-    [TCUtils getPeriodOfTcMonth:peroid time:now];
-    DatastatsScrollViewController* monthStatsController = [[[DatastatsScrollViewController alloc] init] autorelease];
-    monthStatsController.startTime = peroid[0];
-    monthStatsController.endTime = peroid[1];
-    UINavigationController* secondNav = [[UINavigationController alloc] initWithRootViewController:monthStatsController];
-    secondNav.delegate = self;
-    [self setNavigationBar:secondNav.navigationBar];
-    
-    
-    HelpListViewController* helpController = [[[HelpListViewController alloc] init] autorelease];
-    UINavigationController* thirdNav = [[UINavigationController alloc] initWithRootViewController:helpController];
-    thirdNav.delegate = self;
-    [self setNavigationBar:thirdNav.navigationBar];
-    
-    SettingViewController* settingcontroller = [[[SettingViewController alloc]initWithStyle:UITableViewStyleGrouped] autorelease];
-    UINavigationController* forthNav = [[UINavigationController alloc] initWithRootViewController:settingcontroller];
-    forthNav.delegate = self;
-    [self setNavigationBar:forthNav.navigationBar];
-    
-    NSArray *controllerArray = [NSArray arrayWithObjects:firstNav,secondNav,thirdNav,forthNav, nil];
-    
-    NSMutableDictionary *imgDic = [NSMutableDictionary dictionaryWithCapacity:3];
-	[imgDic setObject:[UIImage imageNamed:@"tab_service.png"] forKey:@"Default"];
-	[imgDic setObject:[UIImage imageNamed:@"tab_service.png"] forKey:@"Highlighted"];
-	[imgDic setObject:[UIImage imageNamed:@"tab_service_select.png"] forKey:@"Seleted"];
-	NSMutableDictionary *imgDic2 = [NSMutableDictionary dictionaryWithCapacity:3];
-	[imgDic2 setObject:[UIImage imageNamed:@"tab_report.png"] forKey:@"Default"];
-	[imgDic2 setObject:[UIImage imageNamed:@"tab_report.png"] forKey:@"Highlighted"];
-	[imgDic2 setObject:[UIImage imageNamed:@"tab_report_select.png"] forKey:@"Seleted"];
-	NSMutableDictionary *imgDic3 = [NSMutableDictionary dictionaryWithCapacity:3];
-	[imgDic3 setObject:[UIImage imageNamed:@"tab_help.png"] forKey:@"Default"];
-	[imgDic3 setObject:[UIImage imageNamed:@"tab_help.png"] forKey:@"Highlighted"];
-	[imgDic3 setObject:[UIImage imageNamed:@"tab_help_select.png"] forKey:@"Seleted"];
-	NSMutableDictionary *imgDic4 = [NSMutableDictionary dictionaryWithCapacity:3];
-	[imgDic4 setObject:[UIImage imageNamed:@"tab_set.png"] forKey:@"Default"];
-	[imgDic4 setObject:[UIImage imageNamed:@"tab_set.png"] forKey:@"Highlighted"];
-	[imgDic4 setObject:[UIImage imageNamed:@"tab_set_select.png"] forKey:@"Seleted"];
-    
-    NSArray *imgBtnArray = [NSArray arrayWithObjects:imgDic,imgDic2,imgDic3,imgDic4, nil];
-    leveyTabBarController = [[LeveyTabBarController alloc] initWithViewControllers:controllerArray imageArray:imgBtnArray];
-    
-    //请求应用推荐首页分类，用来看是否有更新
-    
-	self.window.rootViewController = leveyTabBarController;
-
+    self.customTabBar = [[CustomTabBarViewController alloc] initWithInstallingProfile:justInstallProfile];
+	self.window.rootViewController = self.customTabBar;
 }
 
 
@@ -510,86 +447,76 @@
     }
 }
 
+/*! @brief 查询是否有新的应用程序
+ *
+ * 从数据库中查询出应用推荐分类是否有新的应用，有新的应用设置页面显示新应用体检。
+ * @param nil
+ * @return nil
+ */
 -(void)ifNewsApp
 {
-    //查询是否有新的应用
     MyNetWorkClass *myNetWork = [MyNetWorkClass getMyNetWork];
     [myNetWork startAppFenLei:^(NSDictionary *result) {
-        
         NSMutableArray *categoryArray = [NSMutableArray arrayWithCapacity:3];
-        
         //储存CP 下次请求数据的时候带上
         [[NSUserDefaults standardUserDefaults] setObject:[result objectForKey:@"cp"] forKey:@"catsucp"] ;
-        
         [categoryArray addObjectsFromArray:[result objectForKey:@"catsu"]];
-        
         NSDictionary *databaseDic = [AppRecommedDao fondAllAppRecommed];
-        
         if ([databaseDic count] == 0) {
             [DBConnection beginTransaction];
-            
             [AppRecommedDao insertAllAppRecommend:categoryArray];
-            
             [DBConnection commitTransaction];
         }else{
             for (NSString *str in [databaseDic allKeys]) {
                 if ([str isEqualToString:@"精品推荐"]) {
                     AppClasses *appClasses = [databaseDic objectForKey:@"精品推荐"];
-                    
                     long long new_tim = [[[categoryArray objectAtIndex:0] objectForKey:@"tim"] longLongValue];
-                    
                     long long old_tim = appClasses.appClasses_tim;
-                    
                     if (new_tim >old_tim) {
                         appClasses.appClasses_tim = new_tim;
                         [AppRecommedDao updateAppRecommend:appClasses];
                         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:NEWS_APP];
                         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:JPTJ_APP];
                     }
-                    
                     NSLog(@"%@ 's NEW_TIM IS %lld , OLD_TIM IS %lld",appClasses.appClasses_name,new_tim , old_tim);
-                    
                 }
                 if ([str isEqualToString:@"限时免费"]) {
                     AppClasses *appClasses = [databaseDic objectForKey:@"限时免费"];
-                    
                     long long new_tim = [[[categoryArray objectAtIndex:1] objectForKey:@"tim"] longLongValue];
-                    
                     long long old_tim = appClasses.appClasses_tim;
-                    
                     if (new_tim >old_tim) {
                         appClasses.appClasses_tim = new_tim;
                         [AppRecommedDao updateAppRecommend:appClasses];
                         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:NEWS_APP];
                         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:XSMF_APP];
                     }
-                    
                     NSLog(@"%@ 'sNEW_TIM IS %lld , OLD_TIM IS %lld",appClasses.appClasses_name,new_tim , old_tim);
-                    
                 }
                 if ([str isEqualToString:@"热门游戏"]) {
                     AppClasses *appClasses = [databaseDic objectForKey:@"热门游戏"];
-                    
                     long long new_tim = [[[categoryArray objectAtIndex:2] objectForKey:@"tim"] longLongValue];
-                    
                     long long old_tim = appClasses.appClasses_tim;
-                    
                     if (new_tim >old_tim) {
                         appClasses.appClasses_tim = new_tim;
                         [AppRecommedDao updateAppRecommend:appClasses];
                         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:NEWS_APP];
                         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:RMYX_APP];
                     }
-                    
                     NSLog(@"%@ 'sNEW_TIM IS %lld , OLD_TIM IS %lld",appClasses.appClasses_name,new_tim , old_tim);
                 }
             }
         }
-        
     }];
 }
 
 #pragma mark - UIApplication Delegate
+/*! @brief AppDelegate的代理方法
+ *
+ * 应用程序第一次启动的时候会就会进入的方法，此方法中会做一些程序的初始化操作等
+ *
+ * @param application UIApplication应用程序实例对象 ， launchOptions 程序的一些初始首选项
+ * @return 成功返回YES，失败返回NO。
+ */
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions  
 {
@@ -597,14 +524,6 @@
     
     //向微信注册
     [WXApi registerApp:@"wxd1be1f55db841585"];
-    
-    //创建应用分类的数据库表
-    [AppRecommedDao createAppClassestable];
-    
-    //查看是否有新的应用推荐
-    [self ifNewsApp];
-    
-    
     
     timerTaskLock = [[NSObject alloc] init];
     timerTaskDoing = false;
@@ -642,13 +561,6 @@
         }
     }
     
-    self.user = [UserSettings currentUserSettings];
-    
-    //获取用户sim卡信息
-    CTTelephonyNetworkInfo* tni = [[CTTelephonyNetworkInfo alloc] init];
-    self.carrier = tni.subscriberCellularProvider;
-    [tni release];
-    
     //initialize database
     [self initDatabase:versionUpgrade];
     
@@ -656,8 +568,20 @@
         [self execUpgradeSQL:version oldVersion:oldVersion];
     }
     
+    //创建应用分类的数据库表
+    [AppRecommedDao createAppClassestable];
+    //查看是否有新的应用推荐
+    [self ifNewsApp];
+    
     self.refreshDatastats = NO;
     self.refreshDatasave = NO;
+    
+    self.user = [UserSettings currentUserSettings];
+    
+    //获取用户sim卡信息
+    CTTelephonyNetworkInfo* tni = [[CTTelephonyNetworkInfo alloc] init];
+    self.carrier = tni.subscriberCellularProvider;
+    [tni release];
     
     self.networkReachablity = [Reachability reachabilityWithHostName:P_HOST];
     
@@ -1023,26 +947,6 @@
         }
     }
     NSLog( @"++++++++++++++++4Faild to get token:%@", [error description]);
-}
-
-
-
-#pragma mark ----- UINavigation Delegate
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
-{
-    //	if ([viewController isKindOfClass:[SecondViewController class]])
-    //	{
-    //        [leveyTabBarController hidesTabBar:NO animated:YES];
-    //	}
-    
-    if (viewController.hidesBottomBarWhenPushed)
-    {
-        [leveyTabBarController hidesTabBar:YES animated:YES];
-    }
-    else
-    {
-        [leveyTabBarController hidesTabBar:NO animated:YES];
-    }
 }
 
 #pragma mark - install profile

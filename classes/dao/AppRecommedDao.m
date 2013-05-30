@@ -13,6 +13,13 @@
 
 @implementation AppRecommedDao
 
+
+/*! @brief 创建应用推荐分类表到数据库中
+ *
+ * 需要创建应用推荐分类表，表中记录应用推荐分类最后一次更新的时间。
+ * @param nil
+ * @return 成功返回YES，失败返回NO。
+ */
 + (BOOL)createAppClassestable
 {
     char * createTable = "create table if not exists APP_CLASSES(id integer primary key , icon text ,  name text , new integer , tim real) ";

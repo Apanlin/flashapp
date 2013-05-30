@@ -10,6 +10,7 @@
 #import "IFDataService.h"
 #import "StringUtil.h"
 #import "DateUtils.h"
+#import "AppDelegate.h"
 
 
 @interface IFDataViewController ()

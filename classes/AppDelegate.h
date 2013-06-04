@@ -61,7 +61,6 @@
 #define API_KEY @"30efb1a621c4bd711652ecafb7cbd3673a062b3f"
 #define API_VER @"1.5.5"
 
-
 #define RefreshNotification @"refreshNotification"
 #define TCChangedNotification @"TCChangedNotification"
 #define RefreshAppLockedNotification @"refreshAppLockedNotification"

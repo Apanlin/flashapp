@@ -224,13 +224,15 @@
     [userAgentStats removeAllObjects];
     
     //本月/上月/下月节省的流量
+    
+    //本月节省的流量
     self.currentStats = [StatsMonthDAO statForPeriod:startTime endTime:endTime];
     
     time_t firstDay = [StatsDayDAO getfirstDay];
     time_t now;
     time( &now );
     
-    time_t prevPeroid[2];
+    time_t prevPeroid[2]; //经过这个操作后 是得到上个月的结算 日期
     [TCUtils getPeriodOfTcMonth:prevPeroid time:startTime - 1];
     if ( prevPeroid[1] < firstDay ) {
         self.prevMonthStats = nil;

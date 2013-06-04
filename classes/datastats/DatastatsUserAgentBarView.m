@@ -74,10 +74,10 @@
         layerButton.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
         [self addSubview:layerButton];
         
-        imageView = [[UIImageView alloc] initWithFrame:CGRectMake(295, (frame.size.height - 14)/2, 10, 14)];
-        imageView.image = [UIImage imageNamed:@"left_arrow2.png"];
-        [self addSubview:imageView];
-        [imageView release];
+//        imageView = [[UIImageView alloc] initWithFrame:CGRectMake(295, (frame.size.height - 14)/2, 10, 14)];
+//        imageView.image = [UIImage imageNamed:@"left_arrow2.png"];
+//        [self addSubview:imageView];
+//        [imageView release];
     }
     return self;
 }

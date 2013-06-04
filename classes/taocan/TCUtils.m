@@ -184,6 +184,7 @@ typedef enum {
 + (void) getPeriodOfTcMonth:(time_t*)period time:(time_t)now
 {
     NSString* str = [DateUtils stringWithDateFormat:now format:@"yyyy-MM-dd-HH-mm-ss"];
+    NSLog(@"getPeriodOfTcMonth time is :%@",str);
     NSArray* arr = [str componentsSeparatedByString:@"-"];
     NSString* s = [arr objectAtIndex:0];
     int year = [s intValue];

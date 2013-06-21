@@ -9,6 +9,7 @@
 #import "LevelViewController.h"
 #import "AppDelegate.h"
 #import "UserSettings.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 @interface LevelViewController ()
 
@@ -68,7 +69,7 @@
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
 
     if ( title ) {
-        self.navigationItem.title = title;
+        [SetSecondViewBackBtnInNav setBackController:self anditemName:title];
     }
     else {
     	self.navigationItem.title = NSLocalizedString(@"set.levelView.navItem.title", nil);

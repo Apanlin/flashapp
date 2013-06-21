@@ -8,6 +8,7 @@
 
 #import "HelpNoDataViewController.h"
 #import "AppDelegate.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 @interface HelpNoDataViewController ()
 
@@ -39,7 +40,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    self.navigationItem.title = @"诊断与帮助";
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:@"诊断与帮助"];
     bgImageView.image = [[UIImage imageNamed:@"help_triangle_bg.png"] stretchableImageWithLeftCapWidth:50 topCapHeight:20];
 }
 

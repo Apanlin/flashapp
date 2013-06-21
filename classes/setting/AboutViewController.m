@@ -9,6 +9,7 @@
 #import "AboutViewController.h"
 #import "AppDelegate.h"
 #import "TwitterClient.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 #ifdef DFTraffic
 #import "AiDfTraffic.h"
@@ -50,7 +51,7 @@
     [super viewDidLoad];
     
     // Do any additional setup after loading the view from its nib.
-    self.navigationItem.title = NSLocalizedString(@"set.aboutView.navItem.title", nil);
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:NSLocalizedString(@"set.aboutView.navItem.title", nil)];
     
     NSString* version = [[NSUserDefaults standardUserDefaults] objectForKey:@"version"];
     if ( [@"1.4" compare:version] == NSOrderedSame ) {

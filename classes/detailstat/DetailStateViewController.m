@@ -54,6 +54,7 @@
         detailStats.before = totalBeforeOther;
         detailStats.after = totalAfterOther;
         [appDatas addObject:detailStats];
+        [detailStats release];
     }
 }
 

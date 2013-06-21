@@ -11,12 +11,15 @@
 #import "InstallProfileViewController.h"
 #import "AppDelegate.h"
 #import "TouchedView.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 @interface SetupViewController ()
 
 @end
 
 @implementation SetupViewController
+
+SetSecondViewBackBtnInNav *secondViewSet;
 
 @synthesize isSetup;
 
@@ -49,7 +52,6 @@
         else {
             view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 416)];
         }
-        self.navigationItem.title = @"新手上路";
     }
     self.view = view;
     
@@ -174,9 +176,16 @@
     UIImageView* imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 243, 280, 2)];
     imageView.image = [[UIImage imageNamed:@"setup_line.png"] stretchableImageWithLeftCapWidth:1 topCapHeight:0];
     [view addSubview:imageView];
+    [imageView release];
 }
 
-
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    if (!isSetup) {
+      secondViewSet =  [SetSecondViewBackBtnInNav setBackController:self anditemName:@"新手上路"];
+    }
+}
 
 - (void)viewDidUnload
 {
@@ -270,6 +279,7 @@
 - (void) close
 {
     [self.navigationController popViewControllerAnimated:YES];
+    [secondViewSet release];
 }
 
 

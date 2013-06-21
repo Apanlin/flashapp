@@ -10,6 +10,7 @@
 #import "HelpTextViewController.h"
 #import "HelpNoDataViewController.h"
 #import "AppDelegate.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 #define TAG_CELL_LABEL 101
 
@@ -39,7 +40,7 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.navigationItem.title = @"诊断与帮助";
+
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:nil];
     
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -50,6 +51,7 @@
 {
     [super viewWillAppear:animated];
     [[AppDelegate getAppDelegate].customTabBar hiddenTabBar];
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:@"诊断与帮助"];
 }
 
 - (void)viewDidUnload
@@ -281,7 +283,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     int row = indexPath.row;
-     AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
+//     AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
     if ( row == 0 ) {
         HelpNoDataViewController* controller = [[HelpNoDataViewController alloc] init];
         controller.hidesBottomBarWhenPushed = YES;

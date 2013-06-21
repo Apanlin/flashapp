@@ -22,6 +22,7 @@
 #import "IDCInfo.h"
 #import "DESCrypter.h"
 #import "StringUtil.h"
+#import "Flurry.h"
 
 @implementation TwitterClient
 
@@ -280,14 +281,14 @@
     if ( value && value != [NSNull null] ) {
         int qs = [value intValue];
         if ( qs == 0 ) {
-            pictureQsLevel = PIC_ZL_HIGH;
+                pictureQsLevel = PIC_ZL_LOW;
         }
         else if ( qs == 1 ) {
             pictureQsLevel = PIC_ZL_MIDDLE;
         }
         else if ( qs == 2 ) {
-            if ( pictureQsLevel!=PIC_ZL_LOW && pictureQsLevel!=PIC_ZL_NOCOMPRESS ) {
-                pictureQsLevel = PIC_ZL_LOW;
+            if ( pictureQsLevel!=PIC_ZL_HIGH && pictureQsLevel!=PIC_ZL_NOCOMPRESS ) {
+                pictureQsLevel = PIC_ZL_HIGH;
             }
         }
         user.pictureQsLevel = pictureQsLevel;
@@ -421,6 +422,7 @@
     
     NSArray* accessLogs = [result objectForKey:@"accessLog"];
     if ( accessLogs && [accessLogs count] > 0 ) {
+        
         //将新下载的数据写入数据库中
         time_t st = (time_t) (serverTime / 1000);
         time_t lt = (time_t) (t / 1000);
@@ -429,6 +431,22 @@
         //保存本次访问时间
         [SystemVariablesDAO updateKeyValue:user.idcServer value:[NSString stringWithFormat:@"%lld", lastTime]];
     }
+    
+    BOOL flurry_activate = [[NSUserDefaults standardUserDefaults] boolForKey:@"flurry_activate"];
+    
+    int proxyflag_int = [[result objectForKey:@"proxyFlag"] integerValue];
+    
+    if (0 != proxyflag_int) {
+        if (1 != proxyflag_int) {
+            if (!flurry_activate) {
+                [Flurry logEvent:@"USER_ACTIVATE_OK" withParameters:[NSDictionary dictionaryWithObjectsAndKeys:[result objectForKey:@"proxyFlag"],@"proxyFlag", nil]];
+                
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"flurry_activate"];
+            }
+        }
+    }
+    
+    NSLog(@"proxyFlag=================%@",[result objectForKey:@"proxyFlag"]);
     
     NSObject* value = [result objectForKey:@"proxyFlag"];
     if ( value && value != [NSNull null] ) {

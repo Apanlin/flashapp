@@ -1465,6 +1465,7 @@ typedef enum {
     controller.endTime = peroid[1];
     
     [self.navigationController pushViewController:controller animated:YES];
+    [controller release];
 }
 
 #pragma mark Data Source Loading / Reloading Methods

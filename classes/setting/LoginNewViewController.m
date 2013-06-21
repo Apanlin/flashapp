@@ -5,7 +5,8 @@
 //  Created by Qi Zhao on 12-7-28.
 //  Copyright (c) 2012年 Home. All rights reserved.
 //
-
+#import <TencentOpenAPI/TencentOAuth.h>
+#import <TencentOpenAPI/TencentOAuthObject.h>
 #import "LoginNewViewController.h"
 #import "RegisterNewViewController.h"
 #import "ForgotPasswdViewController.h"
@@ -13,6 +14,11 @@
 #import "AppDelegate.h"
 #import "StringUtil.h"
 #import "OpenUDID.h"
+#import "SetSecondViewBackBtnInNav.h"
+#import "ASIHTTPRequest.h"
+#import "UserSettings.h"
+#import "MyNetWorkClass.h"
+#import "MBProgressHUD.h"
 
 
 #define TAG_BG_IMAGEVIEW 101
@@ -23,6 +29,7 @@
 @end
 
 @implementation LoginNewViewController
+TencentOAuth *tencentOAuth;
 
 @synthesize sinaButton;
 @synthesize renrenButton;
@@ -65,7 +72,8 @@
 //    AppDelegate* appDelegate = (AppDelegate*)[UIApplication sharedApplication].delegate;
 //    [appDelegate.leveyTabBarController setTabBarTransparent:YES];
     
-    self.navigationItem.title = @"注册/登录";
+    
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:@"注册\\登陆" ];
     
     scrollView = (UIScrollView*) [self.view viewWithTag:TAG_SCROLLVIEW];
     scrollView.contentSize = CGSizeMake(320, 310);
@@ -110,6 +118,12 @@
     loadingView.hidden = YES;
     [self.view addSubview:loadingView];
     [loadingView release];
+    
+    MBProgressHUD *loginHUD = [[MBProgressHUD alloc] initWithView:self.view];
+    loginHUD.tag = 101010;
+    loginHUD.labelText = @"正在登陆请稍后...";
+    [self.view addSubview:loginHUD];
+    [loginHUD release];
 }
 
 
@@ -229,6 +243,19 @@
     }
 }
 
+- (void) afterLogin
+{
+    UINavigationController* nav = [[AppDelegate getAppDelegate] currentNavigationController];
+    if ( nav == self.navigationController ) {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
+    else {
+        [nav dismissModalViewControllerAnimated:YES];
+    }
+
+}
+
+
 
 #pragma mark - sns login methods
 
@@ -238,6 +265,7 @@
     controller.domain = domain;
     controller.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:controller animated:YES];
+    [controller release];
 }
 
 
@@ -255,12 +283,142 @@
 
 - (IBAction) loginByQQ
 {
-    [self loginSNS:@"QQ"];
+    thirdType = @"QQ";
+    NSArray *permissions = [NSArray arrayWithObjects:@"get_simple_userinfo",@"",@"add_share" ,@"add_t", nil];
+    tencentOAuth = [[TencentOAuth alloc] initWithAppId:@"100286927" andDelegate:self];
+    [tencentOAuth authorize:permissions inSafari:NO];
+    
+//    [self loginSNS:@"QQ"];
 }
 
 - (IBAction) loginByWangyiweibo
 {
     [self loginSNS:@"wangyiWeibo"];
+}
+
+#pragma mark - TencentOAuthDelegate
+/**
+ * 登录成功后的回调
+ */
+- (void)tencentDidLogin
+{
+    if (tencentOAuth.accessToken !=nil && 0 != tencentOAuth.accessToken) {
+        [tencentOAuth getUserInfo];
+        
+        MBProgressHUD *loginHUD ;
+        for (UIView *view in  [self.view subviews] ) {
+            if (view.tag == 101010) {
+                loginHUD = (MBProgressHUD *)view;
+            }
+        }
+        [loginHUD show:YES];
+        
+        //分享
+//        TCAddShareDic *shareDic = [TCAddShareDic dictionary];
+//        shareDic.paramTitle = @"分享加速宝测试";
+//        shareDic.paramUrl = @"http://www.flashapp.cn";
+//        shareDic.paramComment = @"加速的哦";//分享理由
+//        shareDic.paramSummary = @"网速慢，流量少！就用加速宝";//分享摘要
+//        [tencentOAuth addShareWithParams:shareDic];
+        
+        //记录下accessToken
+        [[NSUserDefaults standardUserDefaults] setObject:tencentOAuth.accessToken forKey:QQ_LOGIN_ACCESSTOKEN];
+        [[NSUserDefaults standardUserDefaults] setObject:tencentOAuth.openId forKey:QQ_LOGIN_OPENID];
+        [[NSUserDefaults standardUserDefaults] setObject:tencentOAuth.expirationDate forKey:QQ_LOGIN_BACKTIME];        
+    }
+}
+
+/**
+ * 登录失败后的回调
+ * \param cancelled 代表用户是否主动退出登录
+ */
+- (void)tencentDidNotLogin:(BOOL)cancelled
+{
+    if (cancelled) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"退出登录" message:@"您取消了登陆" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
+        [alertView release];
+    }else{
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登录失败" message:@"登陆失败，请重新登录。" delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil];
+        [alertView show];
+        [alertView release];
+    }
+}
+
+/**
+ * 登录时网络有问题的回调
+ */
+- (void)tencentDidNotNetWork
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登陆异常" message:@"您的网络似乎有问题，请检查网络后再登陆。" delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil];
+    [alertView show];
+    [alertView release];
+}
+
+#pragma mark - TencentSessionDelegate
+/**
+ * 退出登录的回调
+ */
+- (void)tencentDidLogout
+{
+    
+}
+
+/**
+ * 获取用户个人信息回调
+ * \param response API返回结果，具体定义参见sdkdef.h文件中\ref APIResponse
+ * \remarks 正确返回示例: \snippet example/getUserInfoResponse.exp success
+ *          错误返回示例: \snippet example/getUserInfoResponse.exp fail
+ */
+- (void)getUserInfoResponse:(APIResponse*) response
+{
+    MBProgressHUD *loginHUD ;
+    for (UIView *view in  [self.view subviews] ) {
+        if (view.tag == 101010) {
+            loginHUD = (MBProgressHUD *)view;
+        }
+    }
+    [loginHUD hide:YES];
+    
+    if (response.retCode == URLREQUEST_SUCCEED) {
+        
+        //设置用户的应户名
+        UserSettings* user = [AppDelegate getAppDelegate].user;
+        user.username = [tencentOAuth openId];
+        user.nickname = [response.jsonResponse objectForKey:@"nickname"];
+        [UserSettings saveUserSettings:user];
+       
+        //请求服务器 将 deviceID type=qq assessToken 传给服务器
+        NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[response.jsonResponse objectForKey:@"nickname"],@"nickname",tencentOAuth.openId,@"snsid",thirdType,@"snstype",tencentOAuth.accessToken,@"token" ,nil];
+        [[MyNetWorkClass getMyNetWork] startThirdLoginOKBackRequestType:dic completion:^(NSDictionary * result) {
+            int codeOK = [[result objectForKey:@"code"] integerValue];
+            if (codeOK == 200) {
+                user.level = [[result objectForKey:@"lv"] integerValue];
+                user.capacity = [[result objectForKey:@"quantity"] floatValue];
+                [UserSettings saveUserSettings:user];
+            }else{
+               
+            }
+            
+        }];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"登陆成功" message:@"恭喜您登陆成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil];
+        [alertView show];
+        [alertView release];
+        [self performSelector:@selector(afterLogin) withObject:nil];
+    }
+}
+
+/**
+ * 分享到QZone回调
+ * \param response API返回结果，具体定义参见sdkdef.h文件中\ref APIResponse
+ * \remarks 正确返回示例: \snippet example/addShareResponse.exp success
+ *          错误返回示例: \snippet example/addShareResponse.exp fail
+ */
+- (void)addShareResponse:(APIResponse*) response
+{
+    if (response.retCode == URLREQUEST_SUCCEED) {
+        NSLog(@"RESPONSE DIC IS = %@",response.jsonResponse);
+    }
 }
 
 

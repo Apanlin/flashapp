@@ -11,6 +11,7 @@
 #import "StringUtil.h"
 #import "UIDevice-Reachability.h"
 #import "OpenUDID.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 #define TEXT_PLACEHOLDER @"请详细描述您的意见和建议，谢谢！"
 
@@ -66,7 +67,9 @@
     [super viewDidLoad];
     
     // Do any additional setup after loading the view from its nib.
-    self.navigationItem.title = @"意见反馈";
+    
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:@"意见反馈"];
+    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"发送" style:UIBarButtonItemStylePlain target:self action:@selector(save)];
     if ( showClose ) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"关闭" style:UIBarButtonItemStylePlain target:self action:@selector(close)];

@@ -15,6 +15,7 @@
 #import "UserSettings.h"
 #import "Reachability.h"
 #import "TFConnection.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 #define TAG_RESULT_VIEW 101
 
@@ -25,6 +26,7 @@
 @end
 
 @implementation HelpNetBadViewController
+SetSecondViewBackBtnInNav *setSec ;
 
 @synthesize checkType;
 
@@ -44,7 +46,6 @@
     myView.backgroundColor = [UIColor colorWithRed:40.0/255.0 green:40.0/255.0 blue:40.0/255.0 alpha:1.0];
     myView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     
-    self.navigationItem.title = @"诊断与帮助";
     UIImageView* imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 25, 12, 12)];
     imageView.image = [UIImage imageNamed:@"help_prismatic.png"];
     [myView addSubview:imageView];
@@ -114,6 +115,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    setSec = [SetSecondViewBackBtnInNav setBackController:self anditemName:@"诊断与帮助"];
 }
 
 - (void)viewDidUnload
@@ -743,6 +745,7 @@
 - (void) close
 {
     [self.navigationController popViewControllerAnimated:YES];
+    [setSec release];
 }
 
 

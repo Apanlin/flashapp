@@ -16,6 +16,7 @@
 #import "NSString+SBJson.h"
 #import "BannerImageUtil.h"
 #import "ASIDownloadCache.h"
+#import "OpenUDID.h"
 
 
 @implementation MyNetWorkClass
@@ -32,6 +33,8 @@ static MyNetWorkClass *newWork;
     return newWork;
 }
 
+
+//------------------------------应用推荐--------------------------//
 -(void)startAppFenLei:(void (^)(NSDictionary *))result
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -116,9 +119,40 @@ static MyNetWorkClass *newWork;
     });
 }
 
+//--------------------------------登陆--------------------------------------//
+- (void)startThirdLoginOKBackRequestType:(NSDictionary *)loginDic completion:(void(^)(NSDictionary *))result
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        NSString *urlString = [NSString stringWithFormat:@"http://p.flashapp.cn/api/users/registsns.json?appid=%d&deviceId=%@&nickname=%@&snsid=%@&snstype=%@&token=%@",APP_ID,[OpenUDID value],[loginDic objectForKey:@"nickname"],[loginDic objectForKey:@"snsid"],[loginDic objectForKey:@"snstype"],[loginDic objectForKey:@"token"]];
+         urlString = [self addcChlAndrdAndCodeAndVer:urlString requestTypeDic:loginDic];
+        
+        NSString *newURL = (NSString*)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)urlString, (CFStringRef)@"%", NULL, kCFStringEncodingUTF8);
+        
+        [self jsonRequestNoCacheWithURL:newURL completion:result];
+    });
+}
+
+- (NSString *)addcChlAndrdAndCodeAndVer:(NSString *)urlStr requestTypeDic:(NSDictionary *)dic
+{
+    //随机数
+    int rd = ((float) rand()) / RAND_MAX * 10000;
+    
+    NSString* deviceId = [OpenUDID value];
+    //MD5加密
+    NSString* s = [NSString stringWithFormat:@"%@%@%@%@%@%d", deviceId, CHANNEL, [dic objectForKey:@"snsid"],[dic objectForKey:@"snstype"], API_KEY,rd ];
+    //MD5加密
+    NSString* code = [s md5HexDigest];
+    
+    //生成新的url
+    NSString *newUrl = [NSString stringWithFormat:@"%@&chl=%@&rd=%d&code=%@&ver=%@",urlStr,CHANNEL,rd,code,API_VER];
+    
+    return newUrl;
+}
+
+#pragma mark -- 请求服务器 然后将服务器返回的结果通过 block 返给前面调用的接口方法 ， 一个带缓存 ， 一个不带缓存
 -(void)jsonRequestNoCacheWithURL:(NSString *)urlString completion:(void (^)(NSDictionary *))result
 {
-    
 //    NSLog(@"request URL is : %@",urlString);
     NSMutableDictionary *jsonRequest = [[NSMutableDictionary alloc] initWithCapacity:3];
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:urlString]];
@@ -134,6 +168,8 @@ static MyNetWorkClass *newWork;
         dispatch_async(dispatch_get_main_queue(), ^{
             result(jsonRequest);
         });
+    }else{
+        NSLog(@"%@",[error localizedDescription]);
     }
     [jsonRequest release];
 }
@@ -170,6 +206,8 @@ static MyNetWorkClass *newWork;
         });
     }
 }
+
+
 
 #pragma mark ------- ASIHttpRequest Delegate
 - (void)requestFinished:(ASIHTTPRequest *)request

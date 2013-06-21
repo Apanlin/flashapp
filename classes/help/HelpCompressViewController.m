@@ -14,6 +14,7 @@
 #import "Reachability.h"
 #import "TCUtils.h"
 #import "UIDevice-Reachability.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 @interface HelpCompressViewController ()
 
@@ -63,7 +64,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    self.navigationItem.title = @"诊断与帮助";
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:@"诊断与帮助"];
     
     checkBgImageView.image = [[UIImage imageNamed:@"help_triangle_bg.png"] stretchableImageWithLeftCapWidth:50 topCapHeight:20];
     resultBgImageView.image = [[UIImage imageNamed:@"help_result_bg.png"] stretchableImageWithLeftCapWidth:21 topCapHeight:33];
@@ -171,7 +172,7 @@
     NSOperationQueue* queue = [[NSOperationQueue alloc] init];
     queue.maxConcurrentOperationCount = 1;
     [queue addOperation:operation];
-
+    [queue release];
 }
 
 

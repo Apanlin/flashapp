@@ -9,6 +9,7 @@
 #import "HelpLockAppViewController.h"
 #import "UserAgentLockDAO.h"
 #import "AppDelegate.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 @interface HelpLockAppViewController ()
 
@@ -43,7 +44,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
 
-    self.navigationItem.title = @"锁网功能";
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:@"锁网功能"];
     
     bgImageView.image = [[UIImage imageNamed:@"help_triangle_bg.png"] stretchableImageWithLeftCapWidth:50 topCapHeight:20];
     [resumeButton setBackgroundImage:[[UIImage imageNamed:@"blueButton2.png"] stretchableImageWithLeftCapWidth:7 topCapHeight:8] forState:UIControlStateNormal];

@@ -14,6 +14,8 @@
 #import "TwitterClient.h"
 #import "NSString+SBJSON.h"
 #import "MBProgressHUD.h"
+#import "SetSecondViewBackBtnInNav.h"
+
 //用于在图片上轻扫时判断距离
 #define HORIZ_SWIPE_DRAG_MIN    100
 #define VERT_SWIPE_DRAG_MIN     50
@@ -75,15 +77,7 @@
     [self.compressImgView addGestureRecognizer:rightGesture];
     [rightGesture release];
     
-    
-    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-    btn.frame = CGRectMake(0, 0, 40, 32);
-    [btn setBackgroundImage:[UIImage imageNamed:@"barButton_bg.png"] forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
-    [btn setImage:[UIImage imageNamed:@"appBackBtn.png"] forState:UIControlStateNormal];
-    UIBarButtonItem *leftBtn = [[UIBarButtonItem alloc] initWithCustomView:btn];
-    self.navigationItem.leftBarButtonItem = leftBtn;
-    [leftBtn release];
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:@"图片质量"];
     
     _saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_saveBtn setBackgroundImage:[UIImage imageNamed:@"barButton_bg.png"] forState:UIControlStateNormal];
@@ -97,9 +91,6 @@
 //    rightBar.enabled = NO;
     self.navigationItem.rightBarButtonItem =  rightBar;
     [rightBar release];
-    
-    
-    self.navigationItem.title = @"图片质量";
     
 }
 

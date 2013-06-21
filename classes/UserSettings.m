@@ -87,6 +87,7 @@
  */
 + (UserSettings*) currentUserSettings
 {
+    
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     UserSettings* settings = [[[UserSettings alloc] init] autorelease];
     settings.userId = [userDefaults integerForKey:@"userId"];
@@ -154,6 +155,7 @@
         if ( [@"appstore" isEqualToString:CHANNEL] ) settings.stype = @"vpn";
         else settings.stype = @"apn";
     }
+    
     return settings;
 }
 

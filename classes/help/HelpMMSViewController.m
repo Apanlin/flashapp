@@ -10,6 +10,7 @@
 #import <CoreTelephony/CTCarrier.h>
 #import "HelpMMSViewController.h"
 #import "AppDelegate.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 #define TAG_BACKGROUND_IMAGEVIEW 101
 
@@ -36,11 +37,11 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:@"诊断与帮助"];
     
     UIImageView* imageView = (UIImageView*) [self.view viewWithTag:TAG_BACKGROUND_IMAGEVIEW];
     imageView.image = [[UIImage imageNamed:@"help_triangle_bg.png"] stretchableImageWithLeftCapWidth:50 topCapHeight:20];
     
-    self.navigationItem.title = @"诊断与帮助";
     scrollview.contentSize = CGSizeMake(320, 1100);
 }
 

@@ -12,6 +12,7 @@
 #import "AppDelegate.h"
 #import "TwitterClient.h"
 #import "StringUtil.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 #define TAG_NICKNAME 101
 #define TAG_PHONE 102
@@ -60,7 +61,18 @@
     self.tableView.separatorColor = [UIColor colorWithRed:79.0/255.0 green:79.0/255.0 blue:79.0/255.0 alpha:1.0f];
 
     // Do any additional setup after loading the view from its nib.
-    self.navigationItem.title = NSLocalizedString(@"set.accountView.navItem.title", nil);
+//    self.navigationItem.title = NSLocalizedString(@"set.accountView.navItem.title", nil);
+    
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:NSLocalizedString(@"set.accountView.navItem.title", nil)];
+    
+//    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+//    btn.frame = CGRectMake(0, 0, 40, 32);
+//    [btn setBackgroundImage:[UIImage imageNamed:@"barButton_bg.png"] forState:UIControlStateNormal];
+//    [btn addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
+//    [btn setImage:[UIImage imageNamed:@"appBackBtn.png"] forState:UIControlStateNormal];
+//    UIBarButtonItem *leftBtn = [[UIBarButtonItem alloc] initWithCustomView:btn];
+//    self.navigationItem.leftBarButtonItem = leftBtn;
+//    [leftBtn release];
     
     self.tableView.backgroundColor = [UIColor clearColor];
     
@@ -86,6 +98,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     [[AppDelegate getAppDelegate].customTabBar hiddenTabBar];
 }
 
@@ -113,13 +126,14 @@
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    UserSettings* user = [AppDelegate getAppDelegate].user;
-    if ( user.snsDomain ) {
-        return 2;
-    }
-    else {
-        return 4;
-    }
+//    UserSettings* user = [AppDelegate getAppDelegate].user;
+//    if ( user.snsDomain ) {
+//        return 2;
+//    }
+//    else {
+//        return 4;
+//    }
+    return 1;
 }
 
 
@@ -149,76 +163,76 @@
         [cell.contentView addSubview:textField];
         [textField release];
     }
-    else if ( row == 1 ) {
-        cell.textLabel.text = NSLocalizedString(@"set.accountView.mobilePhoneLabel.text", nil);
-        UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(80, 12, 200, 20)];
-        label.textAlignment = UITextAlignmentRight;
-        label.backgroundColor = [UIColor clearColor];
-        label.textColor = [UIColor colorWithRed:132.0f/255.0f green:132.0f/255.0f blue:132.0f/255.0f alpha:1.0f];
-        label.font = [UIFont systemFontOfSize:16];
-        
-        if ( user.username ) {
-            NSRange range = [user.username rangeOfString:@"_sinaWeibo" options:NSCaseInsensitiveSearch];
-            if ( range.location != NSNotFound ) {
-                label.text = @"新浪微博帐号";
-            }
-            
-            if ( range.location == NSNotFound ) {
-                range = [user.username rangeOfString:@"_renren" options:NSCaseInsensitiveSearch];
-                if ( range.location != NSNotFound ) {
-                    label.text = @"人人网帐号";
-                }
-            }
-
-            if ( range.location == NSNotFound ) {
-                range = [user.username rangeOfString:@"_qq" options:NSCaseInsensitiveSearch];
-                if ( range.location != NSNotFound ) {
-                    label.text = @"QQ帐号";
-                }
-            }
-            
-            if ( range.location == NSNotFound ) {
-                range = [user.username rangeOfString:@"_baidu" options:NSCaseInsensitiveSearch];
-                if ( range.location != NSNotFound ) {
-                    label.text = @"百度帐号";
-                }
-            }
-
-            if ( range.location == NSNotFound ) {
-                range = [user.username rangeOfString:@"_wangyiWeibo" options:NSCaseInsensitiveSearch];
-                if ( range.location != NSNotFound ) {
-                    label.text = @"网易微博帐号";
-                }
-            }
-
-            if ( range.location == NSNotFound ) {
-                label.text = user.username;
-            }
-        }
-        [cell.contentView addSubview:label];
-        [label release];
-        /*
-        UITextField* textField = [[UITextField alloc] initWithFrame:CGRectMake(80, 12, 200, 20)];
-        textField.textAlignment = UITextAlignmentRight;
-        textField.backgroundColor = [UIColor clearColor];
-        textField.textColor = [UIColor colorWithRed:132.0f/255.0f green:132.0f/255.0f blue:132.0f/255.0f alpha:1.0f];
-        textField.keyboardType = UIKeyboardTypePhonePad;
-        textField.font = [UIFont systemFontOfSize:16];
-        textField.tag = TAG_PHONE;
-        textField.delegate = self;
-        textField.placeholder = @"请输入手机号码";
-        textField.text = user.username;
-        [cell.contentView addSubview:textField];
-        [textField release];*/
-    }
-    else if ( row == 2 ) {
-        cell.textLabel.text = NSLocalizedString(@"set.accountView.modifyPassWord.label.text", nil);
-        cell.accessoryView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"left_arrow.png"]] autorelease];
-    }
-    else if ( row == 3 ) {
-        cell.textLabel.text = NSLocalizedString(@"set.accountView.forgetPassWord.label.text", nil);
-        cell.accessoryView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"left_arrow.png"]] autorelease];
-    }
+//    else if ( row == 1 ) {
+//        cell.textLabel.text = NSLocalizedString(@"set.accountView.mobilePhoneLabel.text", nil);
+//        UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(80, 12, 200, 20)];
+//        label.textAlignment = UITextAlignmentRight;
+//        label.backgroundColor = [UIColor clearColor];
+//        label.textColor = [UIColor colorWithRed:132.0f/255.0f green:132.0f/255.0f blue:132.0f/255.0f alpha:1.0f];
+//        label.font = [UIFont systemFontOfSize:16];
+//        
+//        if ( user.username ) {
+//            NSRange range = [user.username rangeOfString:@"_sinaWeibo" options:NSCaseInsensitiveSearch];
+//            if ( range.location != NSNotFound ) {
+//                label.text = @"新浪微博帐号";
+//            }
+//            
+//            if ( range.location == NSNotFound ) {
+//                range = [user.username rangeOfString:@"_renren" options:NSCaseInsensitiveSearch];
+//                if ( range.location != NSNotFound ) {
+//                    label.text = @"人人网帐号";
+//                }
+//            }
+//
+//            if ( range.location == NSNotFound ) {
+//                range = [user.username rangeOfString:@"_qq" options:NSCaseInsensitiveSearch];
+//                if ( range.location != NSNotFound ) {
+//                    label.text = @"QQ帐号";
+//                }
+//            }
+//            
+//            if ( range.location == NSNotFound ) {
+//                range = [user.username rangeOfString:@"_baidu" options:NSCaseInsensitiveSearch];
+//                if ( range.location != NSNotFound ) {
+//                    label.text = @"百度帐号";
+//                }
+//            }
+//
+//            if ( range.location == NSNotFound ) {
+//                range = [user.username rangeOfString:@"_wangyiWeibo" options:NSCaseInsensitiveSearch];
+//                if ( range.location != NSNotFound ) {
+//                    label.text = @"网易微博帐号";
+//                }
+//            }
+//
+//            if ( range.location == NSNotFound ) {
+//                label.text = user.username;
+//            }
+//        }
+//        [cell.contentView addSubview:label];
+//        [label release];
+//        /*
+//        UITextField* textField = [[UITextField alloc] initWithFrame:CGRectMake(80, 12, 200, 20)];
+//        textField.textAlignment = UITextAlignmentRight;
+//        textField.backgroundColor = [UIColor clearColor];
+//        textField.textColor = [UIColor colorWithRed:132.0f/255.0f green:132.0f/255.0f blue:132.0f/255.0f alpha:1.0f];
+//        textField.keyboardType = UIKeyboardTypePhonePad;
+//        textField.font = [UIFont systemFontOfSize:16];
+//        textField.tag = TAG_PHONE;
+//        textField.delegate = self;
+//        textField.placeholder = @"请输入手机号码";
+//        textField.text = user.username;
+//        [cell.contentView addSubview:textField];
+//        [textField release];*/
+//    }
+//    else if ( row == 2 ) {
+//        cell.textLabel.text = NSLocalizedString(@"set.accountView.modifyPassWord.label.text", nil);
+//        cell.accessoryView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"left_arrow.png"]] autorelease];
+//    }
+//    else if ( row == 3 ) {
+//        cell.textLabel.text = NSLocalizedString(@"set.accountView.forgetPassWord.label.text", nil);
+//        cell.accessoryView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"left_arrow.png"]] autorelease];
+//    }
     
     return cell;
 }
@@ -344,6 +358,7 @@
     
     [self.navigationController popViewControllerAnimated:YES];
 }
+
 
 
 @end

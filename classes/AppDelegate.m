@@ -8,6 +8,7 @@
 #import <CoreTelephony/CTCall.h>
 #import <CoreTelephony/CTCallCenter.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
+#import <TencentOpenAPI/TencentOAuth.h>
 #import "AppDelegate.h"
 #import "DatasaveViewController.h"
 #import "DatastatsScrollViewController.h"
@@ -39,6 +40,7 @@
 #import "AppClasses.h"
 #import "AppRecommedDao.h"
 #import "CustomTabBarViewController.h"
+#import "Flurry.h"
 
 #ifdef DFTraffic
 #import "AiDfTraffic.h"
@@ -60,6 +62,7 @@
 @synthesize adjustSMSSend;
 @synthesize refreshingLock;
 @synthesize rootNav;
+@synthesize customTabBar;
 
 
 #pragma mark - init & destroy
@@ -76,7 +79,8 @@
     [operationQueue release];
     [locationManager release];
     [rootNav release];
-    [_customTabBar release];
+    [customTabBar release];
+    
     [super dealloc];
 }
 
@@ -331,8 +335,8 @@
 
 - (void) showDatasaveView:(BOOL)justInstallProfile
 {
-    self.customTabBar = [[CustomTabBarViewController alloc] initWithInstallingProfile:justInstallProfile];
-	self.window.rootViewController = self.customTabBar;
+    customTabBar = [[CustomTabBarViewController alloc] initWithInstallingProfile:justInstallProfile];
+	self.window.rootViewController = customTabBar;
 }
 
 
@@ -509,6 +513,13 @@
     }];
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    NSLog(@"proxyFlag is change old is %@ , new is %@ .",[change valueForKey:@"new"],[change valueForKey:@"old"]);
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"proxyflagischange" object:nil];
+}
+
+
 #pragma mark - UIApplication Delegate
 /*! @brief AppDelegate的代理方法
  *
@@ -524,6 +535,16 @@
     
     //向微信注册
     [WXApi registerApp:@"wxd1be1f55db841585"];
+    
+    //flurry注册
+    [Flurry startSession:@"433YMQ24HNQK3JFNK98H"];
+    [Flurry logEvent:@"USER_OPEN_APP"]; //统计软件开启次数
+    //统计渠道
+    BOOL flurry_channel = [[NSUserDefaults standardUserDefaults] boolForKey:@"flurry_channel"];
+    if (!flurry_channel) {
+        [Flurry logEvent:@"APP_CHANNEL" withParameters:[NSDictionary dictionaryWithObjectsAndKeys:CHANNEL ,@"channel_name" ,nil]];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"flurry_channel"];
+    }
     
     timerTaskLock = [[NSObject alloc] init];
     timerTaskDoing = false;
@@ -577,6 +598,8 @@
     self.refreshDatasave = NO;
     
     self.user = [UserSettings currentUserSettings];
+    
+    [user addObserver:self forKeyPath:@"proxyFlag" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
     
     //获取用户sim卡信息
     CTTelephonyNetworkInfo* tni = [[CTTelephonyNetworkInfo alloc] init];
@@ -692,10 +715,13 @@
     NSLog(@"++++++++++++++applicationDidBecomeActive");
     float currentCapacity = [UserSettings currentCapacity];
     if ( currentCapacity > 0 ) {
+        
+        //获得用户的 可压缩数据的数值
         [self incrDayCapacity];
         
         //访问getMemberInfo接口
         [self getMemberInfo];
+        
     }
     
     /*if ( !timer || !timer.isValid ) {
@@ -720,9 +746,11 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     /*
-     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
      If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
      */
+    [Flurry logEvent:@"APP_GO_BACKGROUND"];//应用程序被挂起的次数
+    
     NSLog(@"++++++++++++++applicationDidEnterBackground");
 }
 
@@ -813,6 +841,7 @@
                     user.proxyPort = [proxyPort intValue];
                 }
 
+                //1 是安装 0 是卸载
                 if ( [@"1" compare:setInstall] == NSOrderedSame ) {
                     NSString* stype = [params objectForKey:@"stype"];
                     if ( stype ) {
@@ -827,6 +856,8 @@
                     }
                 }
                 else {
+                    //这里要判断用户是否真的卸载了描述文件
+                    
                     [UserSettings saveCapacity:[capacity floatValue] status:[status intValue] proxyFlag:INSTALL_FLAG_NO];
                     user.proxyFlag = INSTALL_FLAG_NO;
                 }
@@ -887,6 +918,11 @@
 
             return YES;
         }
+    }
+    
+    NSRange qqLoginRange = [urlString rangeOfString:@"tencent100286927"];
+    if (qqLoginRange.length > 0) {
+        return [TencentOAuth HandleOpenURL:url];
     }
     
     //For微信SDK

@@ -8,6 +8,7 @@
 
 #import "WeiboViewController.h"
 #import "AppDelegate.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 @implementation WeiboViewController
 
@@ -52,8 +53,9 @@
     [super viewDidLoad];
     
     // Do any additional setup after loading the view from its nib.
-    self.navigationItem.title = NSLocalizedString(@"set.weiboView.navItem.title", nil);
     self.view.backgroundColor = [UIColor colorWithRed:46.0f/255.0f green:47.0f/255.0f blue:47.0f/255.0f alpha:1.0f];
+    
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:NSLocalizedString(@"set.weiboView.navItem.title", nil)];
     
     UIImage* image = [[UIImage imageNamed:@"cell_bg.png"] stretchableImageWithLeftCapWidth:20 topCapHeight:14];
     weiboImageView.image = image;

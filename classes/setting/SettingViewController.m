@@ -117,7 +117,7 @@
     
     self.view.frame = CGRectMake(0, 0, 320, [[UIScreen mainScreen] applicationFrame].size.height-44-49);
     
-    NSLog(@"bounds = %f , app = %f",[[UIScreen mainScreen] bounds].size.height-44-49 , [[UIScreen mainScreen] applicationFrame].size.height-44-49);
+//    NSLog(@"bounds = %f , app = %f",[[UIScreen mainScreen] bounds].size.height-44-49 , [[UIScreen mainScreen] applicationFrame].size.height-44-49);
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -125,7 +125,14 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTableView) name:@"proxyflagischange" object:nil];
+    
     [self loadData];
+}
+
+- (void)changeTableView
+{
+    [self.tableView reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -259,7 +266,7 @@
             if ( version >= 4.0 ) {
                 if ( row == 0 ) {
                     //网速优化
-                    return [self tableView:tableView ChangeCellForRowAtIndexPath:indexPath];
+                    return [self tableView:tableView labelCellForRowAtIndexPath:indexPath];
                 }
                 else if ( row == 1 ) {
                     return [self tableView:tableView labelCellForRowAtIndexPath:indexPath];
@@ -393,7 +400,7 @@
                 if ( row == 0 ) {
                     //网速优化
                     //不会出现在这里
-//                    NSString* s = NSLocalizedString(@"set.speed.optimization", nil);
+                    cell.textLabel.text = NSLocalizedString(@"set.speed.optimization", nil);
                 }
                 else if ( row == 1 ) {
                     //图片压缩质量

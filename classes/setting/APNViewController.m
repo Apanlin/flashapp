@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "StringUtil.h"
 #import "REString.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 @interface APNViewController ()
 
@@ -69,7 +70,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    self.navigationItem.title = NSLocalizedString(@"set.APNView.navItem.title", nil);
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:NSLocalizedString(@"set.APNView.navItem.title", nil)];
     
     bgImageView.image = [[UIImage imageNamed:@"black_bg_b.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:10];
     [submitButton setBackgroundImage:[[UIImage imageNamed:@"blueButton1.png"] stretchableImageWithLeftCapWidth:13 topCapHeight:0] forState:UIControlStateNormal];

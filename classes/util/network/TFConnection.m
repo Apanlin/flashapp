@@ -64,7 +64,6 @@ NSString *TWITTERFON_FORM_BOUNDARY = @"0194784892923";
     return [self composeURLVerifyCode:url appendStr:nil];
 }
 
-
 + (NSString*) composeURLVerifyCode:(NSString*)url appendStr:(NSString*)appendStr
 {
     if ( !url ){

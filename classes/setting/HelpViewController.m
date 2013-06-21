@@ -9,6 +9,7 @@
 #import "HelpViewController.h"
 #import "AppDelegate.h"
 #import "StringUtil.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 @implementation HelpViewController
 
@@ -57,10 +58,7 @@
     
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     
-    NSString* title = self.navigationItem.title;
-    if ( !title ) {
-        self.navigationItem.title = NSLocalizedString(@"set.helpView.navItem.title", nil);
-    }
+    [SetSecondViewBackBtnInNav setBackController:self anditemName:NSLocalizedString(@"set.helpView.navItem.title", nil)];
     
     //如果是新建nav打开的，则显示“关闭”按钮；否则不显示
     if ( showCloseButton ) {

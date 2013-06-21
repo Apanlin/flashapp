@@ -8,6 +8,7 @@
 
 #import "HelpTextViewController.h"
 #import "AppDelegate.h"
+#import "SetSecondViewBackBtnInNav.h"
 
 @interface HelpTextViewController ()
 
@@ -53,7 +54,19 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
 
+//    [SetSecondViewBackBtnInNav setBackController:self anditemName:@"诊断与帮助"];
+    
     self.navigationItem.title = @"诊断与帮助";
+    
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn.frame = CGRectMake(0, 0, 40, 32);
+    [btn setBackgroundImage:[UIImage imageNamed:@"barButton_bg.png"] forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
+    [btn setImage:[UIImage imageNamed:@"appBackBtn.png"] forState:UIControlStateNormal];
+    UIBarButtonItem *leftBtn = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    self.navigationItem.leftBarButtonItem = leftBtn;
+    [leftBtn release];
+    
     bgImageView.image = [[UIImage imageNamed:@"help_triangle_bg.png"] stretchableImageWithLeftCapWidth:50 topCapHeight:20];
 
     CGFloat height = 0;
@@ -98,6 +111,10 @@
     self.bgImageView = nil;
 }
 
+- (void)close
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {

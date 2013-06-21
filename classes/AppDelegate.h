@@ -76,12 +76,13 @@
 
 //#define CHANNEL @"appstore"
 
-#define CHANNEL @"flashapp_market"
+//#define CHANNEL @"flashapp_market"
 
 //#define CHANNEL @"PP helper_market"
 
 
-//#define CHANNEL @"91_market"
+#define CHANNEL @"91_market"
+//#define CHANNEL @"178_market"
 //#define CHANNEL @"weifeng_market"
 //#define CHANNEL @"tongbutui_market"
 //#define CHANNEL @"163_market"
@@ -105,6 +106,11 @@
 #define UD_LOCATION_ENABLED @"locationEnabled"
 
 #define RGB(A,B,C) [UIColor colorWithRed:A/255.0 green:B/255.0 blue:C/255.0 alpha:1.0]
+
+// QQ login accessToken , openId , 过期时间
+#define QQ_LOGIN_ACCESSTOKEN @"qq_accessTonken"
+#define QQ_LOGIN_OPENID @"qq_openId"
+#define QQ_LOGIN_BACKTIME @"qq_backTime"
 
 
 //联通免流量

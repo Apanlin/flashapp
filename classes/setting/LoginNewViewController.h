@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <TencentOpenAPI/TencentOAuth.h>
 #import "AttributedButton.h"
 #import "TwitterClient.h"
 #import "LoadingView.h"
 
-@interface LoginNewViewController : UIViewController <UITextFieldDelegate>
+@interface LoginNewViewController : UIViewController <UITextFieldDelegate , TencentSessionDelegate>
 {
     UIButton* sinaButton;
     UIButton* renrenButton;
@@ -28,6 +29,10 @@
     LoadingView* loadingView;
     
     TwitterClient* client;
+    
+    //第三方登陆类型
+    NSString *thirdType;
+    
 }
 
 @property (nonatomic, retain) IBOutlet UIButton* sinaButton;

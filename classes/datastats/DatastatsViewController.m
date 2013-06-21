@@ -1105,6 +1105,8 @@
     controller.navigationItem.title = @"分享";
     UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:controller];
     [[[AppDelegate getAppDelegate] currentNavigationController] presentModalViewController:nav animated:YES];
+    [controller release];
+    [nav release];
 }
 
 
